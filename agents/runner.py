@@ -99,19 +99,28 @@ export default defineConfig({{
             )
         report = json.loads(results_path.read_text())
 
+        # Playwright nests specs inside describe() blocks as sub-suites — traverse recursively
+        def collect_specs(node: dict) -> list[dict]:
+            specs = list(node.get("specs", []))
+            for child in node.get("suites", []):
+                specs.extend(collect_specs(child))
+            return specs
+
         results: list[TestResult] = []
-        for spec in report.get("suites", []):
-            for case in spec.get("specs", []):
-                t = case["tests"][0]
-                res = t["results"][0]
+        for top_suite in report.get("suites", []):
+            for case in collect_specs(top_suite):
+                if not case.get("tests"):
+                    continue
+                t   = case["tests"][0]
+                res = t["results"][0] if t.get("results") else {}
                 results.append(TestResult(
-                    id=case["title"].split(":")[0],
+                    id=case["title"].split(":")[0].strip(),
                     name=case["title"],
                     type=TestType.E2E,
                     priority=Priority.P1,
-                    passed=res["status"] == "passed",
+                    passed=res.get("status") == "passed",
                     duration_ms=res.get("duration", 0),
-                    retries=len(t["results"]) - 1,
+                    retries=len(t.get("results", [])) - 1,
                     error=(res.get("error") or {}).get("message"),
                 ))
         return self._rollup(suite.issue_number, results)
