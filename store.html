@@ -263,7 +263,7 @@
           <div class="card-desc">${p.desc}</div>
           <div class="card-price" data-testid="product-price">$${p.price.toFixed(2)}</div>
         </div>
-        <button class="add-btn" id="btn-${p.id}" data-testid="add-to-cart-${p.id}" onclick="addToCart(${p.id})">Buy Now</button>
+        <button class="add-btn" id="btn-${p.id}" data-testid="add-to-cart-${p.id}" onclick="addToCart(${p.id})">Add to Cart</button>
       </div>
     `).join("");
   }
@@ -275,7 +275,7 @@
     const btn = document.getElementById(`btn-${id}`);
     btn.textContent = "Added!";
     btn.classList.add("added");
-    setTimeout(() => { btn.textContent = "Buy Now"; btn.classList.remove("added"); }, 1000);
+    setTimeout(() => { btn.textContent = "Add to Cart"; btn.classList.remove("added"); }, 1000);
     showToast(`${p.name} added to cart`);
   }
 
