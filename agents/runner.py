@@ -37,10 +37,22 @@ class RunnerAgent:
 
     # ── write generated files to disk ───────────────────────────
     def _materialise(self, suite: GeneratedSuite) -> None:
+        self.workspace.mkdir(parents=True, exist_ok=True)
         for f in suite.files:
             dest = self.workspace / f.path
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_text(f.content, encoding="utf-8")
+
+        # Symlink parent node_modules so playwright.config.ts can be compiled
+        node_link = self.workspace / "node_modules"
+        parent_modules = Path.cwd() / "node_modules"
+        if parent_modules.exists() and not node_link.exists():
+            node_link.symlink_to(parent_modules.resolve())
+
+        # Minimal package.json so npx can resolve the local playwright install
+        pkg = self.workspace / "package.json"
+        if not pkg.exists():
+            pkg.write_text('{"name":"qa-suite","private":true}', encoding="utf-8")
 
     # ── real Playwright run ─────────────────────────────────────
     def _run_real(self, suite: GeneratedSuite) -> RunResults:
@@ -59,7 +71,8 @@ class RunnerAgent:
         if not results_path.exists():
             raise RuntimeError(
                 f"Playwright produced no output (exit {result.returncode}).\n"
-                f"Stderr: {result.stderr[:800]}"
+                f"stdout: {result.stdout[:400]}\n"
+                f"stderr: {result.stderr[:800]}"
             )
         report = json.loads(results_path.read_text())
 
