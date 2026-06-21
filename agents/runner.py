@@ -20,6 +20,7 @@ Two modes:
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -38,18 +39,41 @@ class RunnerAgent:
     # ── write generated files to disk ───────────────────────────
     def _materialise(self, suite: GeneratedSuite) -> None:
         self.workspace.mkdir(parents=True, exist_ok=True)
+
+        # Write only spec files — skip any config the LLM generated; we provide our own
         for f in suite.files:
+            if "playwright.config" in f.path:
+                continue
             dest = self.workspace / f.path
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_text(f.content, encoding="utf-8")
 
-        # Symlink parent node_modules so playwright.config.ts can be compiled
+        # Write a guaranteed-working config — reads QA_TARGET_URL so the right
+        # app is tested; writes JSON report to a file (not stdout) for reliability
+        target_url = os.environ.get("QA_TARGET_URL", "https://demoqa.com")
+        (self.workspace / "playwright.config.ts").write_text(
+            f"""import {{ defineConfig }} from '@playwright/test';
+export default defineConfig({{
+  testDir: './tests',
+  timeout: 30_000,
+  retries: 1,
+  use: {{
+    headless: true,
+    baseURL: '{target_url}',
+    screenshot: 'only-on-failure',
+  }},
+  reporter: [['json', {{ outputFile: 'results.json' }}]],
+}});
+""",
+            encoding="utf-8",
+        )
+
+        # Symlink parent node_modules so the config can be compiled by Playwright
         node_link = self.workspace / "node_modules"
         parent_modules = Path.cwd() / "node_modules"
         if parent_modules.exists() and not node_link.exists():
             node_link.symlink_to(parent_modules.resolve())
 
-        # Minimal package.json so npx can resolve the local playwright install
         pkg = self.workspace / "package.json"
         if not pkg.exists():
             pkg.write_text('{"name":"qa-suite","private":true}', encoding="utf-8")
@@ -57,20 +81,18 @@ class RunnerAgent:
     # ── real Playwright run ─────────────────────────────────────
     def _run_real(self, suite: GeneratedSuite) -> RunResults:
         self._materialise(suite)
+        # Config writes JSON to results.json via reporter option — no stdout capture needed
         result = subprocess.run(
-            ["npx", "playwright", "test", "--reporter=json"],
+            ["npx", "playwright", "test"],
             cwd=self.workspace,
             capture_output=True,
             text=True,
             check=False,
         )
-        # Playwright JSON reporter writes to stdout — save it to a file
         results_path = self.workspace / "results.json"
-        if result.stdout.strip():
-            results_path.write_text(result.stdout, encoding="utf-8")
         if not results_path.exists():
             raise RuntimeError(
-                f"Playwright produced no output (exit {result.returncode}).\n"
+                f"Playwright produced no results.json (exit {result.returncode}).\n"
                 f"stdout: {result.stdout[:400]}\n"
                 f"stderr: {result.stderr[:800]}"
             )
