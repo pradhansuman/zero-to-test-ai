@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 from pathlib import Path
 
@@ -45,9 +46,23 @@ class RunnerAgent:
             dest = self.workspace / f.path
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_text(f.content, encoding="utf-8")
-            # Print first spec file so we can see selectors and navigation in CI output
+            # Print first spec so we can see selectors + navigation in CI output
             if dest.suffix == ".ts" and "spec" in dest.name:
-                print(f"[runner] spec preview ({f.path}):\n{f.content[:800]}\n---")
+                print(f"[runner] spec ({f.path}):\n{f.content[:1000]}\n---")
+
+    # ── patch relative page.goto() calls to use the absolute target URL ────────
+    def _fix_goto_urls(self, target_url: str) -> None:
+        for spec in self.workspace.rglob("*.spec.ts"):
+            content = spec.read_text(encoding="utf-8")
+            # Replace goto('/'), goto(''), goto('.'), goto('./') with the full URL
+            fixed = re.sub(
+                r"""page\.goto\(\s*['"](?:/\.?/?|\./?|)['"]""",
+                f"page.goto('{target_url}'",
+                content,
+            )
+            if fixed != content:
+                print(f"[runner] patched goto URL in {spec.name}")
+                spec.write_text(fixed, encoding="utf-8")
 
     # ── real Playwright run ─────────────────────────────────────
     def _run_real(self, suite: GeneratedSuite) -> RunResults:
@@ -58,6 +73,7 @@ class RunnerAgent:
         test_dir     = (self.workspace / "tests").resolve()
         results_path = (self.workspace / "results.json").resolve()
         target_url   = os.environ.get("QA_TARGET_URL", "https://demoqa.com")
+        self._fix_goto_urls(target_url)
 
         # Write a temp config at project root so Playwright resolves @playwright/test
         tmp_cfg = project_root / "pw-qa-runner.config.ts"

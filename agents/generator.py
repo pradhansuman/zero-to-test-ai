@@ -38,6 +38,9 @@ Rules:
   unit scenarios exist; always emit a playwright.config.ts.
 - Prefer data-testid selectors; fall back to role/label. Never use brittle
   nth-child or text selectors for critical assertions.
+- NAVIGATION: ALWAYS call page.goto() with the FULL absolute URL from "Target app URL".
+  Never use relative paths like '/', './', or '' in page.goto(). The baseURL in the
+  config is a fallback only — rely on the explicit URL instead.
 - Add Allure annotations (allure.severity, allure.story) per test.
 - Use Promise.all when racing a network request with a UI action.
 - NEVER weaken security: no rejectUnauthorized:false, no hardcoded secrets,

@@ -114,7 +114,15 @@ jobs:
           script: |
             const fs      = require('fs');
             const out     = fs.readFileSync('pipeline_output.txt', 'utf8');
-            const body    = out.split('\n').slice(-20).join('\n');
+            const lines   = out.split('\n');
+            // Show spec preview (first 25 lines after marker) + last 20 lines of results
+            const previewIdx = lines.findIndex(l => l.includes('[runner] spec ('));
+            const specSection = previewIdx >= 0
+              ? '\n<details><summary>📄 Generated spec (first look)</summary>\n\n```typescript\n'
+                + lines.slice(previewIdx, previewIdx + 25).join('\n')
+                + '\n```\n</details>\n'
+              : '';
+            const body    = lines.slice(-20).join('\n') + specSection;
             const icon    = '${{ steps.qa.outputs.gate }}' === 'pass' ? '✅' : '❌';
             const appUrl  = '${{ steps.extract_url.outputs.app_url }}';
             const urlNote = appUrl
