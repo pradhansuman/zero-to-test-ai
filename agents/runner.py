@@ -81,14 +81,37 @@ export default defineConfig({{
     # ── real Playwright run ─────────────────────────────────────
     def _run_real(self, suite: GeneratedSuite) -> RunResults:
         self._materialise(suite)
-        # Config writes JSON to results.json via reporter option — no stdout capture needed
-        result = subprocess.run(
-            ["npx", "playwright", "test"],
+
+        # Use local binary (via symlinked node_modules) to avoid version mismatch
+        pw_bin = self.workspace / "node_modules" / ".bin" / "playwright"
+        cmd = [str(pw_bin) if pw_bin.exists() else "npx playwright", "test"]
+        if not pw_bin.exists():
+            cmd = ["npx", "playwright", "test"]
+
+        # Pre-flight: list discovered tests so errors appear in the pipeline output
+        list_result = subprocess.run(
+            cmd[:-1] + ["test", "--list"] if pw_bin.exists() else ["npx", "playwright", "test", "--list"],
             cwd=self.workspace,
             capture_output=True,
             text=True,
             check=False,
         )
+        print(f"[runner] test discovery:\n{list_result.stdout[:600] or '(empty)'}")
+        if list_result.stderr:
+            print(f"[runner] discovery errors:\n{list_result.stderr[:600]}")
+
+        # Run the tests — config writes results.json via reporter option
+        result = subprocess.run(
+            cmd,
+            cwd=self.workspace,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        print(f"[runner] playwright exit={result.returncode}")
+        if result.stderr:
+            print(f"[runner] stderr:\n{result.stderr[:800]}")
+
         results_path = self.workspace / "results.json"
         if not results_path.exists():
             raise RuntimeError(
