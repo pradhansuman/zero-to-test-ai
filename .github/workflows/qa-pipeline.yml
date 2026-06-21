@@ -78,7 +78,7 @@ jobs:
           python3 -m orchestrator.pipeline \
             "${{ github.repository }}" \
             "${{ github.event.issue.number }}" \
-            --token "$GH_TOKEN" \
+            --token "$GH_TOKEN" --real \
             2>&1 | tee pipeline_output.txt
           REAL_EXIT=${PIPESTATUS[0]}
 
