@@ -19,9 +19,10 @@ on:
       - 'contracts/**'
       - 'orchestrator/**'
 
-  # TRIGGER 4: Scheduled scan — every 6 hours, check for new unprocessed issues
-  schedule:
-    - cron: '0 */6 * * *'   # runs at 00:00, 06:00, 12:00, 18:00 UTC
+  # TRIGGER 4: Scheduled scan — DISABLED to preserve API credits
+  # Re-enable by uncommenting the lines below when you have spare credits
+  # schedule:
+  #   - cron: '0 */6 * * *'   # runs at 00:00, 06:00, 12:00, 18:00 UTC
 
   # TRIGGER 5: Manual run from GitHub UI → Actions tab → Run workflow
   workflow_dispatch:
@@ -73,16 +74,20 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Capture BOTH stdout and stderr so errors appear in the issue comment
+          # Run real pipeline — capture stdout+stderr; save exit code via PIPESTATUS
           python3 -m orchestrator.pipeline \
             "${{ github.repository }}" \
             "${{ github.event.issue.number }}" \
             --token "$GH_TOKEN" \
             2>&1 | tee pipeline_output.txt
+          REAL_EXIT=${PIPESTATUS[0]}
 
-          # If output is empty or has an error, fall back to demo mode so comment is never blank
-          if [ ! -s pipeline_output.txt ] || grep -qi "error\|traceback\|credit" pipeline_output.txt; then
-            echo "⚠️  Live run failed — running demo mode as fallback" | tee -a pipeline_output.txt
+          # Print the exit code and first error line so it appears in the comment
+          echo "Pipeline exit code: $REAL_EXIT" | tee -a pipeline_output.txt
+
+          # Fall back ONLY when the real run crashed AND produced no Gate result
+          if [ "$REAL_EXIT" -ne 0 ] && ! grep -q "Gate:" pipeline_output.txt; then
+            echo "⚠️  Live run failed (exit $REAL_EXIT) — falling back to demo mode" | tee -a pipeline_output.txt
             python3 -m orchestrator.pipeline --demo --offline 2>&1 | tee -a pipeline_output.txt
           fi
 
