@@ -1,11 +1,134 @@
 # AI-Assisted QA Framework — 5-Agent Pipeline
 
-From a real GitHub issue to a passing/failing test report — fully automated.
+From a real GitHub issue to a passing/failing Playwright test report — fully automated.
 
 ```
 IssueRef ─▶ Ingestor ─▶ Planner ─▶ Generator ─▶ Runner ─▶ Healer ─▶ Reporter ─▶ ReportArtifact
            (GitHub)     (LLM)       (LLM)        (Playwright) (LLM)    (LLM+rules)
 ```
+
+---
+
+## Quick Start — Run It in 5 Minutes
+
+### Step 1 — Prerequisites
+
+Make sure these are installed on your machine:
+
+| Tool | Check | Install |
+|---|---|---|
+| Python 3.10+ | `python3 --version` | [python.org](https://python.org) |
+| Node.js 18+ | `node --version` | [nodejs.org](https://nodejs.org) |
+| Git | `git --version` | pre-installed on Mac/Linux |
+
+---
+
+### Step 2 — Clone & Install
+
+```bash
+git clone https://github.com/pradhansuman/qa-agent-pipeline.git
+cd qa-agent-pipeline
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Install Playwright browsers (needed for real test runs only)
+npm i -D @playwright/test allure-playwright
+npx playwright install chromium
+```
+
+---
+
+### Step 3 — Try It Instantly (No API Key Needed)
+
+This runs the full 6-stage pipeline with zero internet and zero cost.
+All LLM responses are pre-baked stubs — same code paths, same contracts:
+
+```bash
+python -m orchestrator.pipeline --demo --offline
+```
+
+**Expected output:**
+
+```
+  [ ingested] ok
+  [  planned] ok
+  [generated] ok
+  [   tested] ok
+  [   healed] ok
+  [ reported] ok
+
+Issue #1042: Login form allows empty email submission
+Plan:  5 scenarios, risk=high
+Run:   5/5 passed (100.0%)
+Heal:  1 recovered by self-healing agent
+         TC-002: [data-testid="submit-btn"] → [data-testid="login-submit"] (conf 0.93)
+Gate:  PASS
+```
+
+If you see this output — everything is working. ✅
+
+---
+
+### Step 4 — Run Against a Real GitHub Issue (Needs API Key)
+
+```bash
+# Set your Anthropic API key
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# Pull a real public GitHub issue, plan + generate + simulate + report
+python -m orchestrator.pipeline facebook/react 28000
+```
+
+**Optional: add a GitHub token to avoid rate limits**
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+python -m orchestrator.pipeline facebook/react 28000 --token ghp_yourGitHubToken
+```
+
+Get a free GitHub token at: Settings → Developer Settings → Personal Access Tokens → Generate (no scopes needed for public repos).
+
+---
+
+### Step 5 — Run Against a Real Website with Live Playwright
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+python -m orchestrator.pipeline myorg/myapp 1042 --token ghp_xxx --real
+```
+
+The `--real` flag launches a real Chromium browser, executes the generated tests, and the HealerAgent repairs any broken selectors automatically.
+
+---
+
+### Step 6 — Try the 5-Agent Council (Bonus)
+
+A separate deliberation system where 5 AI agents debate any question:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+python council.py
+
+# No API key? Use demo mode:
+python council.py --demo
+```
+
+Type any question at the prompt. All 5 agents (Researcher, Creative, Critic, Safety Guard, Synthesizer) debate it across two rounds before giving a final answer.
+
+---
+
+### Common Errors & Fixes
+
+| Error | Fix |
+|---|---|
+| `ModuleNotFoundError: anthropic` | Run `pip install -r requirements.txt` |
+| `ANTHROPIC_API_KEY not set` | Run `export ANTHROPIC_API_KEY=sk-ant-...` |
+| `npx playwright install` fails | Run `npm install` first, then retry |
+| GitHub 403 / rate limit | Add `--token ghp_xxx` with a free GitHub token |
+| `credit balance too low` | Add credits at console.anthropic.com |
+
+---
 
 Every arrow is a typed Pydantic contract (`contracts/schemas.py`). Agents
 share nothing but these models, so any stage can be mocked, swapped, or re-run
