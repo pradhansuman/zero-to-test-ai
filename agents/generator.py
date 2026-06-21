@@ -18,9 +18,12 @@ must touch credentials it uses env vars and is flagged in `notes`.
 from __future__ import annotations
 
 import json
+import os
 
 from agents.base import Agent
 from contracts.schemas import TestPlan, GeneratedSuite
+
+DEMOQA_BASE = "https://demoqa.com"
 
 
 class GeneratorAgent(Agent):
@@ -62,6 +65,14 @@ Return ONLY JSON matching this shape — no markdown:
 }"""
 
     def run(self, plan: TestPlan) -> GeneratedSuite:
+        # Use staging URL from CI env var; fall back to DemoQA when not provided
+        target_url = os.environ.get("QA_TARGET_URL", "").strip() or DEMOQA_BASE
+        url_note = (
+            f"Target app URL: {target_url}"
+            if target_url != DEMOQA_BASE
+            else f"Target app URL: {DEMOQA_BASE} (DemoQA demo environment — no staging URL was provided)"
+        )
+
         scenarios = "\n\n".join(
             f"{s.id} [{s.type.value}/{s.priority.value}] {s.name}\n"
             f"  desc: {s.description}\n"
@@ -72,7 +83,8 @@ Return ONLY JSON matching this shape — no markdown:
         prompt = (
             f"Issue #{plan.issue_number}\n"
             f"Plan summary: {plan.summary}\n"
-            f"Risk: {plan.risk_level.value} — {plan.risk_rationale}\n\n"
+            f"Risk: {plan.risk_level.value} — {plan.risk_rationale}\n"
+            f"{url_note}\n\n"
             f"Scenarios to implement:\n{scenarios}\n"
         )
         suite = self._complete_json(prompt, GeneratedSuite, max_tokens=8000)
