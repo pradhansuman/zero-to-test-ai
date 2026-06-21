@@ -39,8 +39,6 @@ class RunnerAgent:
     # ── write generated files to disk ───────────────────────────
     def _materialise(self, suite: GeneratedSuite) -> None:
         self.workspace.mkdir(parents=True, exist_ok=True)
-
-        # Write only spec files — skip any config the LLM generated; we provide our own
         for f in suite.files:
             if "playwright.config" in f.path:
                 continue
@@ -48,76 +46,56 @@ class RunnerAgent:
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_text(f.content, encoding="utf-8")
 
-        # Write a guaranteed-working config — reads QA_TARGET_URL so the right
-        # app is tested; writes JSON report to a file (not stdout) for reliability
-        target_url = os.environ.get("QA_TARGET_URL", "https://demoqa.com")
-        (self.workspace / "playwright.config.ts").write_text(
+    # ── real Playwright run ─────────────────────────────────────
+    def _run_real(self, suite: GeneratedSuite) -> RunResults:
+        self._materialise(suite)
+
+        # Run from project root (where node_modules lives) — avoids all symlink issues
+        project_root = Path.cwd()
+        test_dir     = (self.workspace / "tests").resolve()
+        results_path = (self.workspace / "results.json").resolve()
+        target_url   = os.environ.get("QA_TARGET_URL", "https://demoqa.com")
+
+        # Write a temp config at project root so Playwright resolves @playwright/test
+        tmp_cfg = project_root / "pw-qa-runner.config.ts"
+        tmp_cfg.write_text(
             f"""import {{ defineConfig }} from '@playwright/test';
 export default defineConfig({{
-  testDir: './tests',
+  testDir: '{test_dir}',
   timeout: 30_000,
   retries: 1,
-  use: {{
-    headless: true,
-    baseURL: '{target_url}',
-    screenshot: 'only-on-failure',
-  }},
-  reporter: [['json', {{ outputFile: 'results.json' }}]],
+  use: {{ headless: true, baseURL: '{target_url}' }},
+  reporter: [['json', {{ outputFile: '{results_path}' }}]],
 }});
 """,
             encoding="utf-8",
         )
 
-        # Symlink parent node_modules so the config can be compiled by Playwright
-        node_link = self.workspace / "node_modules"
-        parent_modules = Path.cwd() / "node_modules"
-        if parent_modules.exists() and not node_link.exists():
-            node_link.symlink_to(parent_modules.resolve())
+        try:
+            # Pre-flight: list discovered tests
+            list_result = subprocess.run(
+                ["npx", "playwright", "test", "--config", str(tmp_cfg), "--list"],
+                cwd=project_root, capture_output=True, text=True, check=False,
+            )
+            print(f"[runner] discovered tests:\n{list_result.stdout[:600] or '(none)'}")
+            if list_result.stderr.strip():
+                print(f"[runner] discovery stderr:\n{list_result.stderr[:400]}")
 
-        pkg = self.workspace / "package.json"
-        if not pkg.exists():
-            pkg.write_text('{"name":"qa-suite","private":true}', encoding="utf-8")
+            # Run tests
+            result = subprocess.run(
+                ["npx", "playwright", "test", "--config", str(tmp_cfg)],
+                cwd=project_root, capture_output=True, text=True, check=False,
+            )
+            print(f"[runner] exit={result.returncode}")
+            if result.stderr.strip():
+                print(f"[runner] stderr:\n{result.stderr[:600]}")
+        finally:
+            tmp_cfg.unlink(missing_ok=True)
 
-    # ── real Playwright run ─────────────────────────────────────
-    def _run_real(self, suite: GeneratedSuite) -> RunResults:
-        self._materialise(suite)
-
-        # Use local binary (via symlinked node_modules) to avoid version mismatch
-        pw_bin = self.workspace / "node_modules" / ".bin" / "playwright"
-        cmd = [str(pw_bin) if pw_bin.exists() else "npx playwright", "test"]
-        if not pw_bin.exists():
-            cmd = ["npx", "playwright", "test"]
-
-        # Pre-flight: list discovered tests so errors appear in the pipeline output
-        list_result = subprocess.run(
-            cmd[:-1] + ["test", "--list"] if pw_bin.exists() else ["npx", "playwright", "test", "--list"],
-            cwd=self.workspace,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        print(f"[runner] test discovery:\n{list_result.stdout[:600] or '(empty)'}")
-        if list_result.stderr:
-            print(f"[runner] discovery errors:\n{list_result.stderr[:600]}")
-
-        # Run the tests — config writes results.json via reporter option
-        result = subprocess.run(
-            cmd,
-            cwd=self.workspace,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        print(f"[runner] playwright exit={result.returncode}")
-        if result.stderr:
-            print(f"[runner] stderr:\n{result.stderr[:800]}")
-
-        results_path = self.workspace / "results.json"
         if not results_path.exists():
             raise RuntimeError(
                 f"Playwright produced no results.json (exit {result.returncode}).\n"
-                f"stdout: {result.stdout[:400]}\n"
-                f"stderr: {result.stderr[:800]}"
+                f"stdout: {result.stdout[:400]}\nstderr: {result.stderr[:800]}"
             )
         report = json.loads(results_path.read_text())
 
