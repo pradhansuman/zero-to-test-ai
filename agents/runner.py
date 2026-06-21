@@ -45,6 +45,9 @@ class RunnerAgent:
             dest = self.workspace / f.path
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_text(f.content, encoding="utf-8")
+            # Print first spec file so we can see selectors and navigation in CI output
+            if dest.suffix == ".ts" and "spec" in dest.name:
+                print(f"[runner] spec preview ({f.path}):\n{f.content[:800]}\n---")
 
     # ── real Playwright run ─────────────────────────────────────
     def _run_real(self, suite: GeneratedSuite) -> RunResults:
