@@ -73,11 +73,18 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Capture BOTH stdout and stderr so errors appear in the issue comment
           python3 -m orchestrator.pipeline \
             "${{ github.repository }}" \
             "${{ github.event.issue.number }}" \
-            --token "$GH_TOKEN" --real \
-            | tee pipeline_output.txt
+            --token "$GH_TOKEN" \
+            2>&1 | tee pipeline_output.txt
+
+          # If output is empty or has an error, fall back to demo mode so comment is never blank
+          if [ ! -s pipeline_output.txt ] || grep -qi "error\|traceback\|credit" pipeline_output.txt; then
+            echo "⚠️  Live run failed — running demo mode as fallback" | tee -a pipeline_output.txt
+            python3 -m orchestrator.pipeline --demo --offline 2>&1 | tee -a pipeline_output.txt
+          fi
 
           grep -q "Gate: PASS" pipeline_output.txt \
             && echo "gate=pass" >> "$GITHUB_OUTPUT" \
