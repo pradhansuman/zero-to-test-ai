@@ -104,7 +104,9 @@ Return ONLY JSON matching this shape — no markdown:
                 "  [data-testid=\"product-price\"]    — price text, format $XX.XX inside a card\n"
                 "  [data-testid=\"add-to-cart\"]      — 'Add to Cart' button inside each card\n"
                 "To open sidebar: click [data-testid=\"cart-button\"], then wait for "
-                "[data-testid=\"cart-sidebar\"].open before reading cart-total.\n"
+                "[data-testid=\"cart-sidebar\"].open using page.waitForSelector('#cart-sidebar.open') "
+                "before reading cart-total. Do NOT use waitFor({ state: 'visible' }) on the sidebar "
+                "because it is always in the DOM — use the .open CSS class selector instead.\n"
             )
 
         prompt = (

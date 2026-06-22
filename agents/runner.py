@@ -67,11 +67,14 @@ class RunnerAgent:
                 init_snippet + f"await page.goto('{target_url}'",
             )
 
-            # After clicking cart-button, wait for sidebar to slide open
-            content = re.sub(
-                r"(await\s+(?:\w+\.)?(?:cartButton|cartBtn|cartIcon)\.click\(\))",
-                r"\1;\n    await page.waitForSelector('[data-testid=\"cart-sidebar\"].open, #cart-sidebar.open', { timeout: 5000 }).catch(() => {})",
-                content,
+            # Replace waitFor visible on cart-sidebar with a class-based check
+            # (sidebar is always in DOM; visibility is determined by .open class, not display)
+            content = content.replace(
+                "page.locator('[data-testid=\"cart-sidebar\"]').waitFor({ state: 'visible' })",
+                "page.waitForSelector('#cart-sidebar.open, [data-testid=\"cart-sidebar\"].open')",
+            ).replace(
+                'page.locator(\'[data-testid="cart-sidebar"]\').waitFor({ state: \'visible\' })',
+                'page.waitForSelector(\'#cart-sidebar.open, [data-testid="cart-sidebar"].open\')',
             )
 
             # Fix relative page.goto() calls
