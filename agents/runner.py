@@ -56,13 +56,15 @@ class RunnerAgent:
             content = spec.read_text(encoding="utf-8")
             original = content
 
-            # Clear localStorage before each test so cart state doesn't bleed between tests
+            # Use addInitScript so localStorage is cleared BEFORE the page's JS runs
+            # (page.evaluate before goto fails with SecurityError on about:blank)
+            init_snippet = "await page.addInitScript(() => { try { localStorage.clear(); } catch(e) {} });\n    "
             content = content.replace(
                 "await page.goto(APP_URL",
-                "await page.evaluate(() => localStorage.clear());\n    await page.goto(APP_URL",
+                init_snippet + "await page.goto(APP_URL",
             ).replace(
                 f"await page.goto('{target_url}'",
-                f"await page.evaluate(() => localStorage.clear());\n    await page.goto('{target_url}'",
+                init_snippet + f"await page.goto('{target_url}'",
             )
 
             # After clicking cart-button, wait for sidebar to slide open
