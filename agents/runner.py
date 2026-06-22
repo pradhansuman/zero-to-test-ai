@@ -56,6 +56,22 @@ class RunnerAgent:
             content = spec.read_text(encoding="utf-8")
             original = content
 
+            # Clear localStorage before each test so cart state doesn't bleed between tests
+            content = content.replace(
+                "await page.goto(APP_URL",
+                "await page.evaluate(() => localStorage.clear());\n    await page.goto(APP_URL",
+            ).replace(
+                f"await page.goto('{target_url}'",
+                f"await page.evaluate(() => localStorage.clear());\n    await page.goto('{target_url}'",
+            )
+
+            # After clicking cart-button, wait for sidebar to slide open
+            content = re.sub(
+                r"(await\s+(?:\w+\.)?(?:cartButton|cartBtn|cartIcon)\.click\(\))",
+                r"\1;\n    await page.waitForSelector('[data-testid=\"cart-sidebar\"].open, #cart-sidebar.open', { timeout: 5000 }).catch(() => {})",
+                content,
+            )
+
             # Fix relative page.goto() calls
             content = re.sub(
                 r"""page\.goto\(\s*['"](?:/\.?/?|\./?|)['"]""",
