@@ -79,25 +79,56 @@ class RunnerAgent:
                 content,
             )
 
-            # Normalise common testid variations the LLM uses inconsistently
+            # Regex-based testid normalisation — catches any LLM variation for cart/add-to-cart
+            # cart trigger button: any testid containing "cart" and ("btn"|"button"|"toggle"|"icon")
+            content = re.sub(
+                r'\[data-testid=["\'](?:cart[-_]?(?:btn|button|toggle(?:[-_]?btn)?|icon|open)|'
+                r'open[-_]?cart|toggle[-_]?cart)["\'](?!\.open)',
+                '[data-testid="cart-button"]',
+                content,
+            )
+            content = re.sub(
+                r'getByTestId\(["\'](?:cart[-_]?(?:btn|button|toggle(?:[-_]?btn)?|icon|open)|'
+                r'open[-_]?cart|toggle[-_]?cart)["\'](?!\.open)\)',
+                'getByTestId("cart-button")',
+                content,
+            )
+            # add-to-cart button: any testid starting with "add" + "cart"
+            content = re.sub(
+                r'\[data-testid=["\']add[-_](?:to[-_])?cart(?:[-_]btn)?\["\']',
+                '[data-testid="add-to-cart"]',
+                content,
+            )
+            content = re.sub(
+                r'getByTestId\(["\']add[-_](?:to[-_])?cart(?:[-_]btn)?["\'](?!\.)\)',
+                'getByTestId("add-to-cart")',
+                content,
+            )
+            # cart total: any testid with "total" or "cart-total" variations
+            content = re.sub(
+                r'\[data-testid=["\'](?:cart[-_]?)?(?:sidebar[-_]?)?total(?:[-_]price|[-_]amount)?\["\']',
+                '[data-testid="cart-total"]',
+                content,
+            )
+            # Static alias table for exact matches not caught above
             testid_aliases = {
-                "cart-btn":       "cart-button",
-                "cart-icon":      "cart-button",
-                "cart-toggle":    "cart-button",
-                "open-cart":      "cart-button",
+                "add-to-cart-btn":    "add-to-cart",
+                "add-cart":           "add-to-cart",
+                "cart-btn":           "cart-button",
+                "cart-icon":          "cart-button",
+                "cart-toggle":        "cart-button",
+                "cart-toggle-btn":    "cart-button",
+                "toggle-cart-btn":    "cart-button",
+                "open-cart":          "cart-button",
                 "cart-sidebar-total": "cart-total",
-                "sidebar-total":  "cart-total",
-                "total-price":    "cart-total",
-                "add-to-cart-btn": "add-to-cart",
-                "add-cart":       "add-to-cart",
+                "sidebar-total":      "cart-total",
+                "total-price":        "cart-total",
+                "cart-total-amount":  "cart-total",
             }
             for wrong, right in testid_aliases.items():
-                content = content.replace(f'data-testid="{wrong}"', f'data-testid="{right}"')
-                content = content.replace(f"data-testid='{wrong}'", f"data-testid='{right}'")
-                content = content.replace(f'[data-testid="{wrong}"]', f'[data-testid="{right}"]')
-                content = content.replace(f"[data-testid='{wrong}']", f"[data-testid='{right}']")
-                content = content.replace(f'getByTestId("{wrong}")', f'getByTestId("{right}")')
-                content = content.replace(f"getByTestId('{wrong}')", f"getByTestId('{right}')")
+                for q in ('"', "'"):
+                    content = content.replace(f'[data-testid={q}{wrong}{q}]', f'[data-testid="{right}"]')
+                    content = content.replace(f'getByTestId({q}{wrong}{q})', f'getByTestId("{right}")')
 
             # Fix allure import — must be named import { allure }, not namespace import
             content = re.sub(

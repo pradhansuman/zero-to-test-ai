@@ -87,11 +87,31 @@ Return ONLY JSON matching this shape — no markdown:
             f"  expected: {s.expected}"
             for s in plan.scenarios
         )
+        # For the ShopNow demo store, inject exact testid map so the LLM doesn't guess
+        store_hint = ""
+        if "pradhansuman.github.io" in target_url or "store.html" in target_url:
+            store_hint = (
+                "\nKnown data-testid attributes for this app (use EXACTLY these, no variations):\n"
+                "  [data-testid=\"cart-button\"]      — header button that opens/closes cart sidebar\n"
+                "  [data-testid=\"cart-count\"]       — item count badge inside the cart button\n"
+                "  [data-testid=\"cart-sidebar\"]     — the cart panel (has class 'open' when visible)\n"
+                "  [data-testid=\"cart-items\"]       — container listing cart line items\n"
+                "  [data-testid=\"cart-total\"]       — span showing running total, e.g. $79.99\n"
+                "  [data-testid=\"checkout-btn\"]     — checkout button inside sidebar\n"
+                "  [data-testid=\"product-grid\"]     — grid of product cards\n"
+                "  [data-testid=\"product-card\"]     — individual product card (multiple)\n"
+                "  [data-testid=\"product-name\"]     — product name text inside a card\n"
+                "  [data-testid=\"product-price\"]    — price text, format $XX.XX inside a card\n"
+                "  [data-testid=\"add-to-cart\"]      — 'Add to Cart' button inside each card\n"
+                "To open sidebar: click [data-testid=\"cart-button\"], then wait for "
+                "[data-testid=\"cart-sidebar\"].open before reading cart-total.\n"
+            )
+
         prompt = (
             f"Issue #{plan.issue_number}\n"
             f"Plan summary: {plan.summary}\n"
             f"Risk: {plan.risk_level.value} — {plan.risk_rationale}\n"
-            f"{url_note}\n\n"
+            f"{url_note}{store_hint}\n\n"
             f"Scenarios to implement:\n{scenarios}\n"
         )
         suite = self._complete_json(prompt, GeneratedSuite, max_tokens=8000)
