@@ -81,38 +81,7 @@ class RunnerAgent:
                 content,
             )
 
-            # Regex-based testid normalisation — catches any LLM variation for cart/add-to-cart
-            # cart trigger button: any testid containing "cart" and ("btn"|"button"|"toggle"|"icon")
-            content = re.sub(
-                r'\[data-testid=["\'](?:cart[-_]?(?:btn|button|toggle(?:[-_]?btn)?|icon|open)|'
-                r'open[-_]?cart|toggle[-_]?cart)["\'](?!\.open)',
-                '[data-testid="cart-button"]',
-                content,
-            )
-            content = re.sub(
-                r'getByTestId\(["\'](?:cart[-_]?(?:btn|button|toggle(?:[-_]?btn)?|icon|open)|'
-                r'open[-_]?cart|toggle[-_]?cart)["\'](?!\.open)\)',
-                'getByTestId("cart-button")',
-                content,
-            )
-            # add-to-cart button: any testid starting with "add" + "cart"
-            content = re.sub(
-                r'\[data-testid=["\']add[-_](?:to[-_])?cart(?:[-_]btn)?\["\']',
-                '[data-testid="add-to-cart"]',
-                content,
-            )
-            content = re.sub(
-                r'getByTestId\(["\']add[-_](?:to[-_])?cart(?:[-_]btn)?["\'](?!\.)\)',
-                'getByTestId("add-to-cart")',
-                content,
-            )
-            # cart total: any testid with "total" or "cart-total" variations
-            content = re.sub(
-                r'\[data-testid=["\'](?:cart[-_]?)?(?:sidebar[-_]?)?total(?:[-_]price|[-_]amount)?\["\']',
-                '[data-testid="cart-total"]',
-                content,
-            )
-            # Static alias table for exact matches not caught above
+            # Static alias table — exact testid substitutions only (no regex to avoid corrupt selectors)
             testid_aliases = {
                 "add-to-cart-btn":    "add-to-cart",
                 "add-cart":           "add-to-cart",
@@ -120,12 +89,16 @@ class RunnerAgent:
                 "cart-icon":          "cart-button",
                 "cart-toggle":        "cart-button",
                 "cart-toggle-btn":    "cart-button",
+                "toggle-cart":        "cart-button",
                 "toggle-cart-btn":    "cart-button",
                 "open-cart":          "cart-button",
+                "cart-open-btn":      "cart-button",
                 "cart-sidebar-total": "cart-total",
                 "sidebar-total":      "cart-total",
                 "total-price":        "cart-total",
                 "cart-total-amount":  "cart-total",
+                "cart-total-price":   "cart-total",
+                "price-total":        "cart-total",
             }
             for wrong, right in testid_aliases.items():
                 for q in ('"', "'"):

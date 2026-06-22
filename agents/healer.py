@@ -83,7 +83,7 @@ def extract_selector(error: Optional[str]) -> Optional[str]:
 
 class _Repair(BaseModel):
     """The Healer's LLM sub-contract — selector repair only."""
-    new_selector: str
+    new_selector: str | None = None  # null means LLM couldn't find an alternative
     rationale: str
     confidence: float
 
@@ -151,8 +151,9 @@ Return ONLY JSON:
             file_path=target_file.path if target_file else None,
         )
 
-        # low confidence -> do not patch, leave the failure for a human
-        if repair.confidence < self.min_confidence or not target_file or not old_sel:
+        # low confidence, no new selector, or no file to patch → leave for a human
+        if (not repair.new_selector or repair.confidence < self.min_confidence
+                or not target_file or not old_sel):
             attempt.rerun_passed = False
             return attempt
 
