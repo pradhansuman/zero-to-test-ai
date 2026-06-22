@@ -101,6 +101,30 @@ class RunnerAgent:
                     content = content.replace(f'[data-testid={q}{wrong}{q}]', f'[data-testid="{right}"]')
                     content = content.replace(f'getByTestId({q}{wrong}{q})', f'getByTestId("{right}")')
 
+            # Fix "click card then click add-to-cart globally" anti-pattern.
+            # LLM sometimes generates:
+            #   await cards[i].click();            <- clicking the card has no handler
+            #   await page.click('[data-testid="add-to-cart"]');  <- always picks product 0
+            # Correct form:
+            #   await cards[i].locator('[data-testid="add-to-cart"]').click();
+            content = re.sub(
+                r'await\s+(\w+)\[(\w+)\]\.click\(\);\s*\n(\s*)await\s+page\.'
+                r'(?:click|locator)\([\'"]?\[data-testid=[\'"]add-to-cart[\'"]\][\'"]?\)'
+                r'(?:\.click\(\))?\s*;',
+                r'await \1[\2].locator(\'[data-testid="add-to-cart"]\').click();',
+                content,
+                flags=re.MULTILINE,
+            )
+            # Same pattern but with a plain variable (e.g. await card.click() → await card.locator(...))
+            content = re.sub(
+                r'await\s+((?:card|product|item)\w*)\.click\(\);\s*\n(\s*)await\s+page\.'
+                r'(?:click|locator)\([\'"]?\[data-testid=[\'"]add-to-cart[\'"]\][\'"]?\)'
+                r'(?:\.click\(\))?\s*;',
+                r'await \1.locator(\'[data-testid="add-to-cart"]\').click();',
+                content,
+                flags=re.MULTILINE | re.IGNORECASE,
+            )
+
             # Fix allure import — must be named import { allure }, not namespace import
             content = re.sub(
                 r"import\s+\*\s+as\s+allure\s+from\s+['\"]allure-(?:js-commons|playwright)['\"]",

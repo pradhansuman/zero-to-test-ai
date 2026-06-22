@@ -112,6 +112,21 @@ Return ONLY JSON matching this shape — no markdown:
                 "To open sidebar: click [data-testid=\"cart-button\"], then wait with "
                 "page.waitForSelector('#cart-sidebar.open'). "
                 "Do NOT use waitFor({ state: 'visible' }) on the sidebar — it is always in the DOM.\n"
+                "\nCRITICAL — adding a specific product to cart (use EXACTLY this pattern):\n"
+                "  const cards = page.locator('[data-testid=\"product-card\"]');\n"
+                "  await cards.nth(0).locator('[data-testid=\"add-to-cart\"]').click(); // product 1\n"
+                "  await cards.nth(1).locator('[data-testid=\"add-to-cart\"]').click(); // product 2\n"
+                "NEVER do these (both are wrong):\n"
+                "  await cards.nth(0).click();  // clicking the card itself has NO effect (no handler)\n"
+                "  await page.click('[data-testid=\"add-to-cart\"]');  // always clicks product 1 regardless of index\n"
+                "To read a specific product's price: await cards.nth(0).locator('[data-testid=\"product-price\"]').textContent()\n"
+                "\nCRITICAL — opening the cart sidebar safely:\n"
+                "  const isSidebarOpen = await page.locator('[data-testid=\"cart-sidebar\"].open').count();\n"
+                "  if (!isSidebarOpen) {\n"
+                "    await page.click('[data-testid=\"cart-button\"]');\n"
+                "    await page.waitForSelector('[data-testid=\"cart-sidebar\"].open');\n"
+                "  }\n"
+                "Do NOT click cart-button if sidebar is already open — it will toggle it closed and time out.\n"
             )
 
         prompt = (
