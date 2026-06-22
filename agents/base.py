@@ -42,6 +42,7 @@ class Agent:
         resp = self.client.messages.create(
             model=self.model,
             max_tokens=max_tokens,
+            temperature=0,
             system=self.SYSTEM,
             messages=[{"role": "user", "content": user_prompt}],
         )
