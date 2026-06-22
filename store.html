@@ -317,11 +317,11 @@
             <div class="cart-item-price">$${p.price.toFixed(2)} each</div>
           </div>
           <div class="qty-ctrl">
-            <button onclick="changeQty(${id}, -1)">−</button>
-            <span>${cart[id]}</span>
-            <button onclick="changeQty(${id}, +1)">+</button>
+            <button data-testid="qty-decrease" data-product-id="${id}" onclick="changeQty(${id}, -1)">−</button>
+            <span data-testid="qty-value" data-product-id="${id}">${cart[id]}</span>
+            <button data-testid="qty-increase" data-product-id="${id}" onclick="changeQty(${id}, +1)">+</button>
           </div>
-          <button class="remove-btn" onclick="removeItem(${id})" title="Delete item">🗑</button>
+          <button class="remove-btn" data-testid="remove-item" data-product-id="${id}" onclick="removeItem(${id})" title="Delete item">🗑</button>
         </div>
       `;
     }).join("");
