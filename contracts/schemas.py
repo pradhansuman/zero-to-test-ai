@@ -71,7 +71,7 @@ class IssuePayload(BaseModel):
     ready_for_planner: bool = True
 
 
-# ─────────────── stage 2 — Planner Agent ───────────────
+# ─────────────── stage 2 — Strategist / TestDesigner Agent ─────────────────
 class TestScenario(BaseModel):
     id: str = Field(..., description="TC-001, TC-002, ...")
     name: str
@@ -80,16 +80,26 @@ class TestScenario(BaseModel):
     description: str
     steps: list[str]
     expected: str
+    # enriched fields — optional for backward compat, populated by StrategistAgent
+    coverage_type: Optional[str] = Field(
+        None, description="happy | negative | boundary | security | state | concurrency"
+    )
+    requirement_ref: Optional[str] = Field(
+        None, description="AC-1, AC-2, … — which acceptance criterion this covers"
+    )
 
 
 class TestPlan(BaseModel):
-    """OUTPUT of the Planner — a structured, prioritised test plan."""
+    """OUTPUT of the Strategist — a structured, risk-prioritised test plan."""
     issue_number: int
     summary: str
     scenarios: list[TestScenario]
     coverage_areas: list[str]
     risk_level: RiskLevel
     risk_rationale: str
+    test_approach: Optional[str] = Field(
+        None, description="strategic stance, e.g. 'risk-first AC-coverage matrix'"
+    )
 
 
 # ─────────────── stage 3 — Generator Agent ───────────────

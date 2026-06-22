@@ -47,20 +47,59 @@ DomProvider = Callable[[str], str]
 
 
 def classify_failure(error: Optional[str]) -> FailureKind:
-    """Rule-based triage — deterministic, no LLM. Cheap and auditable."""
+    """
+    Rule-based triage — deterministic, no LLM. Cheap and auditable.
+
+    ORDERING IS CRITICAL:
+    1. Assertion FIRST — many assertion messages contain the word "locator"
+       (e.g. "expect(locator('x')).toHaveText('hello')"). If locator were
+       checked first, a genuine bug would be silently "healed" by the Healer,
+       hiding the regression from engineers. NEVER reorder assertion below locator.
+    2. Locator — element not found / not visible / selector drifted.
+       "Timeout waiting for selector" belongs here: the selector is the root
+       cause, not a general wait timeout.
+    3. Timeout — pure wait exhaustion (navigation, load, explicit waits).
+    """
     if not error:
         return FailureKind.OTHER
     e = error.lower()
+
+    # 1. Assertion — specific Playwright expect() / assertion patterns.
+    #    Deliberately specific to avoid false-positives on timeout messages
+    #    that happen to contain phrases like "needs to be ready".
+    if any(k in e for k in (
+        "expect(",
+        "assertion failed",
+        "to equal",
+        "received:",
+        "to be checked",
+        "to be enabled",
+        "to be disabled",
+        "to be editable",
+        "to have text",
+        "to have class",
+        "to have value",
+        "to have count",
+        "to have attribute",
+        "to contain text",
+        "to be visible",
+    )):
+        return FailureKind.ASSERTION
+
+    # 2. Locator — selector not found / resolved to 0 elements / not visible.
+    #    "waiting for selector" is a locator issue (the selector is the root
+    #    cause), even though the surface message mentions a timeout.
     if any(k in e for k in (
         "locator", "no element", "not found", "not visible",
         "waiting for selector", "resolved to 0 elements",
         "strict mode violation",
     )):
         return FailureKind.LOCATOR
+
+    # 3. Timeout — pure wait exhaustion not caused by a missing selector.
     if "timeout" in e or "timed out" in e:
         return FailureKind.TIMEOUT
-    if any(k in e for k in ("expect(", "assertion", "to equal", "to be", "received")):
-        return FailureKind.ASSERTION
+
     return FailureKind.OTHER
 
 

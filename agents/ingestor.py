@@ -22,6 +22,7 @@ import time
 import requests
 
 from contracts.schemas import IssueRef, IssuePayload, Priority
+from contracts.exceptions import RateLimitError, InvalidIssueError, IngestorError
 
 GITHUB_API = "https://api.github.com"
 
@@ -86,7 +87,7 @@ class IngestorAgent:
     def run(self, ref: IssueRef) -> IssuePayload:
         # ── GUARD 1: validate repo format ────────────────────────────────────
         if ref.repo.count("/") != 1:
-            raise ValueError(
+            raise InvalidIssueError(
                 f"repo must be 'owner/name' (e.g. facebook/react), got: '{ref.repo}'"
             )
 
@@ -104,17 +105,14 @@ class IngestorAgent:
             resp.headers.get("X-RateLimit-Remaining") == "0"
         ):
             reset = resp.headers.get("X-RateLimit-Reset", "unknown")
-            raise RuntimeError(
-                f"GitHub rate limit reached (resets at Unix time {reset}). "
-                f"Add --token ghp_xxx to raise the limit from 60 to 5,000 requests/hour."
-            )
+            raise RateLimitError(reset_at=reset)
 
         resp.raise_for_status()
         data = resp.json()
 
         # ── GUARD 3: reject Pull Requests passed as issue numbers ─────────────
         if "pull_request" in data:
-            raise ValueError(
+            raise InvalidIssueError(
                 f"#{ref.issue_number} is a Pull Request, not an Issue. "
                 f"Please provide a GitHub Issue number."
             )

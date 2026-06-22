@@ -22,7 +22,7 @@ from contracts.schemas import (
     IssuePayload, TestPlan, TestScenario, GeneratedSuite, GeneratedFile,
     Priority, TestType, RiskLevel,
 )
-from agents.planner import PlannerAgent
+from agents.strategist import StrategistAgent
 from agents.generator import GeneratorAgent
 from agents.reporter import ReporterAgent
 from agents.healer import HealerAgent, _Repair
@@ -155,8 +155,8 @@ def _demo_narrative(prompt: str, schema, max_tokens: int = 800):
 
 def install_demo_stubs(pipeline, offline: bool = False) -> None:
     """Monkey-patch the four LLM agents on a QAPipeline instance to run offline."""
-    # Planner
-    pipeline.planner.run = lambda issue: _demo_plan(issue.issue_number)
+    # Strategist (formerly Planner)
+    pipeline.strategist.run = lambda issue: _demo_plan(issue.issue_number)
     # Generator
     pipeline.generator.run = lambda plan: _demo_suite(plan.issue_number)
     # Healer — stub only the LLM call, keep all the real triage/patch/rerun logic

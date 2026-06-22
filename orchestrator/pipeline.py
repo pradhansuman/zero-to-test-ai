@@ -1,28 +1,31 @@
 """
 orchestrator/pipeline.py
 ────────────────────────
-Chains the six agents into one pipeline and enforces the hand-off contracts.
+Chains the seven agents into one pipeline and enforces the hand-off contracts.
 
     IssueRef
-       │  IngestorAgent          (GitHub API, deterministic)
+       │  IngestorAgent           (GitHub API, deterministic — no LLM)
        ▼
     IssuePayload
-       │  PlannerAgent           (LLM — what to test)
-       ▼
-    TestPlan
-       │  GeneratorAgent         (LLM — how to test)
+       │  StrategistAgent         (LLM — risk assessment + AC mapping → TestPlan)
+       │  ─── OR ───
+       │  TestDesignerAgent       (LLM — formal-technique derivation → SDETTestPlan)
+       │                                └─ .to_test_plan() ──────────────────────┐
+       ▼                                                                          │
+    TestPlan ◀───────────────────────────────────────────────────────────────────┘
+       │  GeneratorAgent          (LLM — Playwright TypeScript)
        ▼
     GeneratedSuite ──────────────────────────────────────────────┐
-       │  ReviewerAgent          (LLM — audit quality, advisory) │
+       │  ReviewerAgent           (LLM — quality audit, advisory)│
        ▼                                                         │
     ReviewReport                                                 │
        │  RunnerAgent  ◀────────────────────────────────────────┘
        ▼               (GeneratedSuite passes straight through)
     RunResults
-       │  HealerAgent            (rule-based triage + LLM selector repair)
+       │  HealerAgent             (rule-based triage + LLM selector repair)
        ▼
     RunResults (patched)
-       │  ReporterAgent          (LLM narrative + rule-based gate)
+       │  ReporterAgent           (LLM narrative + rule-based gate)
        ▼
     ReportArtifact
 
@@ -30,7 +33,7 @@ Each arrow is a Pydantic model. If any stage emits something off-contract,
 validation raises *there* — you always know which agent broke.
 
 The Reviewer is advisory. Its verdict does NOT gate the pipeline — that
-authority stays with ReporterAgent._gate(), which operates on real results.
+authority stays in ReporterAgent._gate(), which is pure rule-based code.
 """
 from __future__ import annotations
 
@@ -44,8 +47,8 @@ from contracts.schemas import (
     HealingAttempt, ReviewReport, SDETTestPlan,
 )
 from agents.ingestor import IngestorAgent
-from agents.planner import PlannerAgent
-from agents.sdet import SDETAgent
+from agents.strategist import StrategistAgent
+from agents.designer import TestDesignerAgent
 from agents.generator import GeneratorAgent
 from agents.reviewer import ReviewerAgent
 from agents.runner import RunnerAgent
@@ -78,8 +81,8 @@ class QAPipeline:
             else:
                 client = Anthropic()
         self.ingestor   = IngestorAgent()
-        self.planner    = PlannerAgent(client=client)
-        self.sdet_agent = SDETAgent(client=client) if sdet else None
+        self.strategist = StrategistAgent(client=client)
+        self.designer   = TestDesignerAgent(client=client) if sdet else None
         self.generator  = GeneratorAgent(client=client)
         self.reviewer   = ReviewerAgent(client=client) if review else None
         self.runner     = RunnerAgent(real=real_run)
@@ -99,13 +102,13 @@ class QAPipeline:
 
         # ── planning stage: SDET agent (formal techniques) or standard Planner ──
         sdet_plan: Optional[SDETTestPlan] = None
-        if self.sdet_agent:
-            sdet_plan = self.sdet_agent.run(payload)
+        if self.designer:
+            sdet_plan = self.designer.run(payload)
             plan      = sdet_plan.to_test_plan()   # downcast for Generator compat
-            emit("sdet",    sdet_plan)
-            emit("planned", plan)
+            emit("designed", sdet_plan)
+            emit("planned",  plan)
         else:
-            plan = self.planner.run(payload);      emit("planned",  plan)
+            plan = self.strategist.run(payload);   emit("planned",  plan)
 
         suite = self.generator.run(plan);          emit("generated", suite)
 
@@ -153,7 +156,7 @@ if __name__ == "__main__":
     ap.add_argument("--no-review", action="store_true",
                     help="skip the ReviewerAgent quality audit (saves one LLM call)")
     ap.add_argument("--sdet", action="store_true",
-                    help="use SDETAgent (formal test-design techniques) instead of Planner")
+                    help="use TestDesignerAgent (formal test-design techniques) instead of StrategistAgent")
     args = ap.parse_args()
 
     def log(stage, art):
@@ -168,17 +171,25 @@ if __name__ == "__main__":
     print(f"\nIssue #{trace.payload.issue_number}: {trace.payload.title}")
     if trace.sdet_plan:
         sp = trace.sdet_plan
-        p0s  = sum(1 for t in sp.test_cases if t.priority == "P0")
+        p0s       = sum(1 for t in sp.test_cases if t.priority == "P0")
         techniques = sorted({t.technique for t in sp.test_cases})
-        types_used = sorted({t.type for t in sp.test_cases})
-        print(f"SDET: {len(sp.test_cases)} cases  P0={p0s}  "
-              f"techniques=[{', '.join(techniques)}]")
-        print(f"      types=[{', '.join(types_used)}]  gaps={len(sp.coverage_gaps)}")
+        types_used = sorted({t.type      for t in sp.test_cases})
+        print(f"Designer : {len(sp.test_cases)} cases  P0={p0s}  gaps={len(sp.coverage_gaps)}")
+        print(f"           techniques: {', '.join(techniques)}")
+        print(f"           types     : {', '.join(types_used)}")
         if sp.coverage_gaps:
             for g in sp.coverage_gaps:
-                print(f"      GAP {g.requirement_ref}: {g.reason}")
+                print(f"           GAP {g.requirement_ref}: {g.reason}")
     else:
-        print(f"Plan: {len(trace.plan.scenarios)} scenarios, risk={trace.plan.risk_level.value}")
+        plan = trace.plan
+        pos = sum(1 for s in plan.scenarios if s.coverage_type == "happy")
+        neg = sum(1 for s in plan.scenarios
+                  if s.coverage_type in ("negative", "boundary", "security"))
+        print(f"Strategist: {len(plan.scenarios)} scenarios  "
+              f"positive={pos}  negative/boundary/security={neg}  "
+              f"risk={plan.risk_level.value}")
+        if plan.test_approach:
+            print(f"            approach: {plan.test_approach}")
 
     if trace.review:
         rv = trace.review

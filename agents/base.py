@@ -1,103 +1,177 @@
 """
-next example
+agents/base.py
 ──────────────
 Shared base class for every LLM-backed agent.
 
-Responsibilities pushed down here so each agent stays a thin prompt + contract:
-  • one place that talks to the Anthropic API
-  • JSON-mode helper that strips markdown fences and validates against a Pydantic model
-  • a security guardrail hook (Suman's standing rule: flag risky output)
+Responsibilities:
+  • One place that talks to the Anthropic API
+  • Structured logging with per-run trace IDs
+  • Token usage accumulation for cost visibility
+  • JSON-mode helper: strip fences → validate Pydantic → retry on truncation
+  • Prompt registry: load SYSTEM from prompts/{name}/{version}.md when present
+  • Typed exceptions: raises LLMError / TruncatedResponseError, never bare RuntimeError
 """
 from __future__ import annotations
 
 import json
+import logging
+import logging.config
 import os
+from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Type, TypeVar
 
 from anthropic import Anthropic
 from pydantic import BaseModel, ValidationError
 
+from contracts.exceptions import LLMError, TruncatedResponseError
+from config.settings import settings
+
 T = TypeVar("T", bound=BaseModel)
 
-MODEL = os.environ.get("QA_AGENT_MODEL", "claude-haiku-4-5-20251001")
+# ── Logging setup ─────────────────────────────────────────────────────────────
+logging.basicConfig(
+    level=getattr(logging, settings.log_level, logging.INFO),
+    format="%(asctime)s [%(levelname)-5s] %(name)s %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
 
-class AgentResponseError(RuntimeError):
-    """Raised when an agent's LLM response can't be parsed into its contract."""
+# ── Token tracking ────────────────────────────────────────────────────────────
+@dataclass
+class TokenUsage:
+    input_tokens:  int = 0
+    output_tokens: int = 0
+
+    @property
+    def total(self) -> int:
+        return self.input_tokens + self.output_tokens
+
+    @property
+    def estimated_cost_usd(self) -> float:
+        # Haiku 4.5: $0.80/M input, $4.00/M output (update if model changes)
+        return (self.input_tokens * 0.80 + self.output_tokens * 4.00) / 1_000_000
+
+    def __add__(self, other: "TokenUsage") -> "TokenUsage":
+        return TokenUsage(
+            self.input_tokens  + other.input_tokens,
+            self.output_tokens + other.output_tokens,
+        )
 
 
+# ── Base agent ────────────────────────────────────────────────────────────────
 class Agent:
     """Base class. Subclasses set NAME + SYSTEM and implement run()."""
 
-    NAME: str = "agent"
-    SYSTEM: str = "You are a helpful agent."
+    NAME:           str = "agent"
+    SYSTEM:         str = "You are a helpful agent."
+    PROMPT_VERSION: str = "v1"
 
-    def __init__(self, client: Anthropic | None = None, model: str = MODEL):
-        self.client = client or Anthropic()  # reads ANTHROPIC_API_KEY from env
-        self.model = model
+    # Class-level cache so we only read each prompt file once per process
+    _prompt_cache: dict[str, str] = {}
 
-    # ── core LLM call ────────────────────────────────────────────
-    def _complete(self, user_prompt: str, max_tokens: int = 1500):
-        """Returns (text, stop_reason). stop_reason='max_tokens' means truncated."""
+    def __init__(
+        self,
+        client:   Anthropic | None = None,
+        model:    str = settings.qa_agent_model,
+        trace_id: str | None = None,
+    ):
+        self.client   = client or Anthropic()
+        self.model    = model
+        self.trace_id = trace_id or "--------"
+        self.usage    = TokenUsage()
+        self.log      = logging.getLogger(self.NAME)
+
+    # ── Prompt registry ───────────────────────────────────────────────────────
+    @classmethod
+    def _get_system(cls) -> str:
+        """
+        Load SYSTEM from prompts/{name}/{version}.md when it exists,
+        fall back to the class SYSTEM attribute otherwise.
+        This allows prompt changes without touching Python code.
+        """
+        cache_key = f"{cls.NAME}/{cls.PROMPT_VERSION}"
+        if cache_key not in cls._prompt_cache:
+            prompt_path = (
+                Path(__file__).parent.parent
+                / "prompts" / cls.NAME / f"{cls.PROMPT_VERSION}.md"
+            )
+            if prompt_path.exists():
+                cls._prompt_cache[cache_key] = prompt_path.read_text(encoding="utf-8").strip()
+                logging.getLogger(cls.NAME).debug(
+                    "prompt loaded from file path=%s", prompt_path
+                )
+            else:
+                cls._prompt_cache[cache_key] = cls.SYSTEM
+        return cls._prompt_cache[cache_key]
+
+    # ── Core LLM call ─────────────────────────────────────────────────────────
+    def _complete(self, user_prompt: str, max_tokens: int = 1500) -> tuple[str, str]:
+        """Returns (text, stop_reason). Accumulates token usage."""
         resp = self.client.messages.create(
             model=self.model,
             max_tokens=max_tokens,
             temperature=0,
-            system=self.SYSTEM,
+            system=self._get_system(),
             messages=[{"role": "user", "content": user_prompt}],
+        )
+        self.usage.input_tokens  += resp.usage.input_tokens
+        self.usage.output_tokens += resp.usage.output_tokens
+        self.log.debug(
+            "trace=%s llm_call in=%d out=%d stop=%s",
+            self.trace_id, resp.usage.input_tokens,
+            resp.usage.output_tokens, resp.stop_reason,
         )
         return resp.content[0].text, resp.stop_reason
 
-    # ── strip markdown fences / leading prose around a JSON blob ──
+    # ── JSON extraction ───────────────────────────────────────────────────────
     @staticmethod
     def _extract_json(raw: str) -> str:
+        """Strip markdown fences and slice to outermost {} braces."""
         s = raw.strip()
         if s.startswith("```"):
             s = s.split("```", 2)[1]
             if s.startswith("json"):
                 s = s[4:]
             s = s.strip().rstrip("`").strip()
-        # if the model added prose before/after, slice to the outermost braces
         first, last = s.find("{"), s.rfind("}")
         if first != -1 and last != -1 and last > first:
-            s = s[first:last + 1]
+            s = s[first : last + 1]
         return s
 
-    # ── JSON mode: call + parse + validate, with a retry on truncation ──
+    # ── JSON mode: call → parse → validate, retry once on truncation ──────────
     def _complete_json(self, user_prompt: str, schema: Type[T], max_tokens: int = 1500) -> T:
-        attempts = [max_tokens, min(max_tokens * 2, 8192)]
-        last_err: Exception | None = None
+        budgets = [max_tokens, min(max_tokens * 2, 8192)]
 
-        for i, budget in enumerate(attempts):
+        for attempt, budget in enumerate(budgets):
             text, stop = self._complete(user_prompt, max_tokens=budget)
 
             if stop == "max_tokens":
-                # response was cut off — JSON is incomplete. Retry with more room.
-                last_err = AgentResponseError(
-                    f"[{self.NAME}] response hit the {budget}-token limit and was "
-                    f"truncated mid-JSON."
-                )
-                if i + 1 < len(attempts):
+                if attempt + 1 < len(budgets):
+                    self.log.warning(
+                        "trace=%s agent=%s truncated at %d tokens, retrying with %d",
+                        self.trace_id, self.NAME, budget, budgets[attempt + 1],
+                    )
                     continue
-                raise AgentResponseError(
-                    f"[{self.NAME}] output exceeded {budget} tokens even after retry. "
-                    f"The plan is likely too large for one response — split the issue "
-                    f"or lower the scenario count."
-                ) from last_err
+                raise TruncatedResponseError(self.NAME, budget)
 
             cleaned = self._extract_json(text)
             try:
                 return schema.model_validate(json.loads(cleaned))
-            except (json.JSONDecodeError, ValidationError) as e:
-                last_err = e
-                if i + 1 < len(attempts):
-                    continue  # one more try with a bigger budget
-                raise AgentResponseError(
-                    f"[{self.NAME}] could not parse a valid {schema.__name__} from the "
-                    f"model response. First 200 chars:\n{cleaned[:200]}"
-                ) from e
+            except (json.JSONDecodeError, ValidationError) as exc:
+                if attempt + 1 < len(budgets):
+                    self.log.warning(
+                        "trace=%s agent=%s parse error (%s), retrying",
+                        self.trace_id, self.NAME, type(exc).__name__,
+                    )
+                    continue
+                raise LLMError(
+                    self.NAME,
+                    f"Could not parse a valid {schema.__name__} from model response. "
+                    f"First 200 chars:\n{cleaned[:200]}",
+                ) from exc
 
-        raise AgentResponseError(f"[{self.NAME}] no response produced.")  # unreachable
+        raise LLMError(self.NAME, "No response produced.")  # unreachable
 
     def run(self, *args, **kwargs):  # pragma: no cover
         raise NotImplementedError
