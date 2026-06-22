@@ -27,6 +27,7 @@ from pathlib import Path
 
 from contracts.schemas import (
     GeneratedSuite, RunResults, TestResult, TestType, Priority,
+    BrowserTarget, BROWSER_DEVICE_MAP,
 )
 
 
@@ -460,16 +461,32 @@ class RunnerAgent:
         target_url   = os.environ.get("QA_TARGET_URL", "https://demoqa.com")
         self._fix_goto_urls(target_url)
 
+        # Resolve browser targets → Playwright project blocks (all free, bundled)
+        targets = suite.browser_targets or [BrowserTarget.CHROMIUM_DESKTOP]
+        projects_ts = "\n".join(
+            f"    {{ name: '{name}', use: {{ ...devices['{device}'] }} }},"
+            for t in targets
+            for name, device in [BROWSER_DEVICE_MAP.get(t, ("Desktop Chrome", "Desktop Chrome"))]
+        )
+        browsers_used = [
+            BROWSER_DEVICE_MAP.get(t, ("Desktop Chrome",))[0]
+            for t in targets
+        ]
+        import_devices = "devices, " if len(targets) > 1 or targets[0] != BrowserTarget.CHROMIUM_DESKTOP else ""
+
         # Write a temp config at project root so Playwright resolves @playwright/test
         tmp_cfg = project_root / "pw-qa-runner.config.ts"
         tmp_cfg.write_text(
-            f"""import {{ defineConfig }} from '@playwright/test';
+            f"""import {{ defineConfig, devices }} from '@playwright/test';
 export default defineConfig({{
   testDir: '{test_dir}',
   timeout: 30_000,
   retries: 1,
   use: {{ headless: true, baseURL: '{target_url}' }},
   reporter: [['json', {{ outputFile: '{results_path}' }}]],
+  projects: [
+{projects_ts}
+  ],
 }});
 """,
             encoding="utf-8",
@@ -532,24 +549,28 @@ export default defineConfig({{
         if errors:
             print(f"[runner] first failures:\n" + "\n".join(errors))
 
+        # Each (spec × project) combination is a separate test entry in the JSON.
+        # We deduplicate by (title, project) so one failure in Mobile Safari doesn't
+        # mask a passing run in Desktop Chrome — each combination is its own TestResult.
         results: list[TestResult] = []
         for top_suite in report.get("suites", []):
             for case in collect_specs(top_suite):
                 if not case.get("tests"):
                     continue
-                t   = case["tests"][0]
-                res = t["results"][0] if t.get("results") else {}
-                results.append(TestResult(
-                    id=case["title"].split(":")[0].strip(),
-                    name=case["title"],
-                    type=TestType.E2E,
-                    priority=Priority.P1,
-                    passed=res.get("status") == "passed",
-                    duration_ms=res.get("duration", 0),
-                    retries=len(t.get("results", [])) - 1,
-                    error=(res.get("error") or {}).get("message"),
-                ))
-        return self._rollup(suite.issue_number, results)
+                for t in case["tests"]:
+                    res = t["results"][0] if t.get("results") else {}
+                    project = t.get("projectName", "Desktop Chrome")
+                    results.append(TestResult(
+                        id=f"{case['title'].split(':')[0].strip()} [{project}]",
+                        name=f"{case['title']} [{project}]",
+                        type=TestType.E2E,
+                        priority=Priority.P1,
+                        passed=res.get("status") == "passed",
+                        duration_ms=res.get("duration", 0),
+                        retries=len(t.get("results", [])) - 1,
+                        error=(res.get("error") or {}).get("message"),
+                    ))
+        return self._rollup(suite.issue_number, results, browsers=browsers_used)
 
     # ── deterministic simulation (demo) ─────────────────────────
     def _run_sim(self, suite: GeneratedSuite) -> RunResults:
@@ -604,8 +625,12 @@ export default defineConfig({{
 
     # ── roll-up ─────────────────────────────────────────────────
     @staticmethod
-    def _rollup(issue_number: int, results: list[TestResult]) -> RunResults:
-        total = len(results)
+    def _rollup(
+        issue_number: int,
+        results: list[TestResult],
+        browsers: list[str] | None = None,
+    ) -> RunResults:
+        total  = len(results)
         passed = sum(1 for r in results if r.passed)
         return RunResults(
             issue_number=issue_number,
@@ -615,6 +640,7 @@ export default defineConfig({{
             failed=total - passed,
             pass_rate=round(passed / total * 100, 1) if total else 0.0,
             total_duration_ms=sum(r.duration_ms for r in results),
+            browsers=browsers or ["chromium"],
         )
 
     def run(self, suite: GeneratedSuite) -> RunResults:

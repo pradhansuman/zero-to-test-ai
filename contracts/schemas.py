@@ -103,6 +103,34 @@ class TestPlan(BaseModel):
 
 
 # ─────────────── stage 3 — Generator Agent ───────────────
+class BrowserTarget(str, Enum):
+    """
+    Which browser environments to run the generated suite against.
+    All options use Playwright's bundled browsers — no paid service required.
+
+    CHROMIUM_DESKTOP  desktop Chrome (1280×720)           — always included
+    CHROMIUM_MOBILE   Chrome on Pixel 7 (412×915, touch)  — free, fast
+    WEBKIT_MOBILE     Safari engine on iPhone 14 (390×844) — catches iOS bugs
+    FIREFOX_DESKTOP   desktop Firefox                     — cross-browser parity
+    TABLET_CHROME     Chrome on iPad Pro 11 (834×1194)    — tablet breakpoint
+    """
+    CHROMIUM_DESKTOP = "chromium-desktop"
+    CHROMIUM_MOBILE  = "chromium-mobile"
+    WEBKIT_MOBILE    = "webkit-mobile"
+    FIREFOX_DESKTOP  = "firefox-desktop"
+    TABLET_CHROME    = "tablet-chrome"
+
+
+# Maps BrowserTarget → (project name, Playwright device key)
+BROWSER_DEVICE_MAP: dict[BrowserTarget, tuple[str, str]] = {
+    BrowserTarget.CHROMIUM_DESKTOP: ("Desktop Chrome",   "Desktop Chrome"),
+    BrowserTarget.CHROMIUM_MOBILE:  ("Mobile Chrome",    "Pixel 7"),
+    BrowserTarget.WEBKIT_MOBILE:    ("Mobile Safari",    "iPhone 14"),
+    BrowserTarget.FIREFOX_DESKTOP:  ("Desktop Firefox",  "Desktop Firefox"),
+    BrowserTarget.TABLET_CHROME:    ("Tablet Chrome",    "iPad Pro 11"),
+}
+
+
 class GeneratedFile(BaseModel):
     path: str = Field(..., description="relative path, e.g. tests/e2e/login.spec.ts")
     language: str = "typescript"
@@ -111,12 +139,16 @@ class GeneratedFile(BaseModel):
 
 
 class GeneratedSuite(BaseModel):
-    """OUTPUT of the Generator — runnable test files + config."""
+    """OUTPUT of the Generator — runnable test files + browser targets."""
     issue_number: int
     files: list[GeneratedFile]
     framework: str = "playwright"
     total_tests: int = 0
     notes: Optional[str] = None
+    browser_targets: list[BrowserTarget] = Field(
+        default_factory=lambda: [BrowserTarget.CHROMIUM_DESKTOP],
+        description="Which browser environments to execute this suite against",
+    )
 
 
 # ─────────────── stage 2 (alt) — SDET Agent ───────────────
@@ -155,7 +187,8 @@ class SDETTestPlan(BaseModel):
             "state": TestType.E2E,    "concurrency": TestType.INTEG,
             "api": TestType.API,      "integ": TestType.INTEG,
             "idempotency": TestType.INTEG, "accessibility": TestType.E2E,
-            "localization": TestType.E2E,  "observability": TestType.INTEG,
+            "responsive": TestType.E2E,    "localization": TestType.E2E,
+            "observability": TestType.INTEG,
         }
         _pri_map = {
             "P0": Priority.P0, "P1": Priority.P1,

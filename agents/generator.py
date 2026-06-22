@@ -21,7 +21,8 @@ import json
 import os
 
 from agents.base import Agent
-from contracts.schemas import TestPlan, GeneratedSuite
+from contracts.schemas import TestPlan, GeneratedSuite, BrowserTarget
+from config.settings import settings
 
 DEMOQA_BASE = "https://demoqa.com"
 
@@ -55,12 +56,34 @@ Rules:
   Do not pad with comments or duplicated boilerplate — a truncated response is
   worse than a terse one.
 
+MOBILE / CROSS-BROWSER RULES (applied when browser_targets includes mobile):
+- All selectors must be device-agnostic: prefer data-testid, role, label.
+  Never use fixed pixel coordinates — they break on mobile viewports.
+- Touch events are emulated automatically for mobile projects; do NOT
+  manually dispatch touchstart/touchend — just use click() and Playwright
+  handles the translation.
+- For responsive layout assertions use page.viewportSize() to branch:
+    const vp = page.viewportSize();
+    if (vp && vp.width < 768) {
+      await expect(page.locator('[data-testid="hamburger"]')).toBeVisible();
+    } else {
+      await expect(page.locator('[data-testid="nav-bar"]')).toBeVisible();
+    }
+- Minimum touch target size: assert buttons/links are >= 44px tall on mobile:
+    const box = await btn.boundingBox();
+    expect(box?.height).toBeGreaterThanOrEqual(44);
+- Text must remain readable: do NOT assert exact font-size px values; use
+  toBeVisible() and toHaveText() instead.
+- Scrolling: use page.evaluate(() => window.scrollTo(0, 0)) not mouse.wheel
+  (wheel events differ across devices).
+
 Return ONLY JSON matching this shape — no markdown:
 {
   "issue_number": <int>,
   "framework": "playwright",
   "total_tests": <int>,
   "notes": "<security flags or null>",
+  "browser_targets": ["chromium-desktop"],
   "files": [
     {
       "path": "tests/e2e/<name>.spec.ts",
@@ -69,7 +92,10 @@ Return ONLY JSON matching this shape — no markdown:
       "content": "<full file source>"
     }
   ]
-}"""
+}
+browser_targets values: "chromium-desktop" | "chromium-mobile" | "webkit-mobile" | "firefox-desktop" | "tablet-chrome"
+Include "chromium-mobile" and "webkit-mobile" whenever any scenario type is
+"responsive", "accessibility", or "e2e" (UI test that should pass on mobile)."""
 
     def run(self, plan: TestPlan) -> GeneratedSuite:
         # Use staging URL from CI env var; fall back to DemoQA when not provided
@@ -363,16 +389,41 @@ Return ONLY JSON matching this shape — no markdown:
                 "    expect(alertTotal).toBeCloseTo(sidebarTotal, 2);\n"
             )
 
+        # Determine whether any scenario is UI / responsive — if so, request mobile targets
+        mobile_types = {"e2e", "responsive", "accessibility", "state", "security"}
+        has_ui       = any(
+            (s.type.value if hasattr(s.type, "value") else s.type) in mobile_types
+            for s in plan.scenarios
+        )
+        mobile_hint = ""
+        if has_ui and settings.mobile_enabled:
+            mobile_hint = (
+                "\nMOBILE: this suite will run on Desktop Chrome, Mobile Chrome (Pixel 7), "
+                "and Mobile Safari (iPhone 14). Set browser_targets to "
+                '["chromium-desktop", "chromium-mobile", "webkit-mobile"] in your JSON output.\n'
+                "All selectors must be device-agnostic. Use page.viewportSize() for "
+                "breakpoint-conditional assertions. Touch events are auto-emulated.\n"
+            )
+
         app_hint = math_hub_hint or store_hint
         prompt = (
             f"Issue #{plan.issue_number}\n"
             f"Plan summary: {plan.summary}\n"
             f"Risk: {plan.risk_level.value} — {plan.risk_rationale}\n"
-            f"{url_note}{app_hint}\n\n"
+            f"{url_note}{app_hint}{mobile_hint}\n\n"
             f"Scenarios to implement:\n{scenarios}\n"
         )
         suite = self._complete_json(prompt, GeneratedSuite, max_tokens=8000)
         suite.issue_number = plan.issue_number
         if not suite.total_tests:
             suite.total_tests = len(plan.scenarios)
+
+        # Guarantee: if the LLM didn't set browser_targets and this is a UI suite,
+        # inject the mobile targets so the Runner always runs cross-browser for UI.
+        if has_ui and settings.mobile_enabled and len(suite.browser_targets) <= 1:
+            suite.browser_targets = [
+                BrowserTarget.CHROMIUM_DESKTOP,
+                BrowserTarget.CHROMIUM_MOBILE,
+                BrowserTarget.WEBKIT_MOBILE,
+            ]
         return suite

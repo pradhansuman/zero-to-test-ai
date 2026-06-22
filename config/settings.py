@@ -35,6 +35,10 @@ class Settings:
     runner_real: bool              = field(default_factory=lambda: os.environ.get("RUNNER_REAL", "").lower() in ("1", "true"))
     runner_workers: int            = field(default_factory=lambda: int(os.environ.get("RUNNER_WORKERS", "4")))
 
+    # ── Mobile / cross-browser (all free — Playwright bundled browsers) ──────
+    mobile_enabled: bool           = field(default_factory=lambda: os.environ.get("MOBILE_ENABLED", "true").lower() != "false")
+    # Set MOBILE_ENABLED=false to restrict to desktop-only (faster local runs)
+
     # ── Observability ────────────────────────────────────────────────────────
     log_level: str                 = field(default_factory=lambda: os.environ.get("LOG_LEVEL", "INFO").upper())
     prompt_version: str            = field(default_factory=lambda: os.environ.get("PROMPT_VERSION", "v1"))
