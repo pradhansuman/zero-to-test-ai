@@ -70,6 +70,23 @@ class RunnerAgent:
                 'page.waitForSelector(\'#cart-sidebar.open, [data-testid="cart-sidebar"].open\')',
             )
 
+            # Fix checkout anti-pattern: LLM may generate page.waitForNavigation() after clicking
+            # checkout-btn, but this store uses window.alert() — there is no navigation.
+            # Replace: Promise.all([page.waitForNavigation(...), checkoutBtn.click()])
+            # With: const _d = page.waitForEvent('dialog'); await checkoutBtn.click(); await (await _d).accept();
+            content = re.sub(
+                r"Promise\.all\(\s*\[\s*page\.waitForNavigation\([^)]*\)\s*,\s*([^]]+)\.click\(\)\s*\]\s*\)",
+                r"(async () => { const _dlg = page.waitForEvent('dialog'); await \1.click(); await (await _dlg).accept(); })()",
+                content,
+                flags=re.MULTILINE | re.DOTALL,
+            )
+            # Also fix standalone waitForNavigation calls
+            content = re.sub(
+                r"await\s+page\.waitForNavigation\([^)]*\)\s*;",
+                "// waitForNavigation removed — checkout uses alert(), not navigation",
+                content,
+            )
+
             # Fix relative page.goto() calls
             content = re.sub(
                 r"""page\.goto\(\s*['"](?:/\.?/?|\./?|)['"]""",

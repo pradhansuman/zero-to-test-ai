@@ -127,6 +127,22 @@ Return ONLY JSON matching this shape — no markdown:
                 "    await page.waitForSelector('[data-testid=\"cart-sidebar\"].open');\n"
                 "  }\n"
                 "Do NOT click cart-button if sidebar is already open — it will toggle it closed and time out.\n"
+                "\nCRITICAL — checkout behavior (NO navigation happens):\n"
+                "  The checkout button triggers a browser window.alert() dialog — there is NO separate\n"
+                "  checkout page and NO page navigation. Do NOT use page.waitForNavigation().\n"
+                "  After the alert is accepted: cart is cleared, sidebar closes.\n"
+                "  To test checkout, capture the alert BEFORE clicking, then compare text:\n"
+                "    // Read sidebar total BEFORE checkout\n"
+                "    const sidebarTotal = parseFloat((await page.locator('[data-testid=\"cart-total\"]').textContent())!.replace('$',''));\n"
+                "    // Set up dialog listener BEFORE clicking (order matters)\n"
+                "    const dialogPromise = page.waitForEvent('dialog');\n"
+                "    await page.locator('[data-testid=\"checkout-btn\"]').click();\n"
+                "    const dialog = await dialogPromise;\n"
+                "    const alertText = dialog.message();\n"
+                "    await dialog.accept();\n"
+                "    // Assert the alert text contains the correct total\n"
+                "    const alertTotal = parseFloat(alertText.match(/Total:\\s*\\$([\\d.]+)/)?.[1] || '0');\n"
+                "    expect(alertTotal).toBeCloseTo(sidebarTotal, 2);\n"
             )
 
         prompt = (
