@@ -56,16 +56,9 @@ class RunnerAgent:
             content = spec.read_text(encoding="utf-8")
             original = content
 
-            # Use addInitScript so localStorage is cleared BEFORE the page's JS runs
-            # (page.evaluate before goto fails with SecurityError on about:blank)
-            init_snippet = "await page.addInitScript(() => { try { localStorage.clear(); } catch(e) {} });\n    "
-            content = content.replace(
-                "await page.goto(APP_URL",
-                init_snippet + "await page.goto(APP_URL",
-            ).replace(
-                f"await page.goto('{target_url}'",
-                init_snippet + f"await page.goto('{target_url}'",
-            )
+            # No localStorage injection needed — Playwright creates a fresh page (new context)
+            # per test so storage never bleeds between tests. addInitScript would fire on
+            # every reload including intentional ones (e.g. TC-006 persistence check).
 
             # Replace waitFor visible on cart-sidebar with a class-based check
             # (sidebar is always in DOM; visibility is determined by .open class, not display)
