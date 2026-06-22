@@ -295,7 +295,7 @@
     const count = ids.reduce((s, id) => s + cart[id], 0);
     const total = ids.reduce((s, id) => {
       const p = PRODUCTS.find(x => x.id === id);
-      return s + p.price * cart[id];
+      return s + p.price + cart[id];
     }, 0);
 
     localStorage.setItem('shopnow-cart', JSON.stringify(cart));
