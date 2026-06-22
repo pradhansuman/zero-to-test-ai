@@ -189,6 +189,8 @@ export default defineConfig({{
                 cwd=project_root, capture_output=True, text=True, check=False,
             )
             print(f"[runner] exit={result.returncode}")
+            if result.returncode != 0:
+                print(f"[runner] playwright stdout:\n{result.stdout[:2000]}")
             if result.stderr.strip():
                 print(f"[runner] stderr:\n{result.stderr[:600]}")
         finally:
@@ -207,6 +209,26 @@ export default defineConfig({{
             for child in node.get("suites", []):
                 specs.extend(collect_specs(child))
             return specs
+
+        # Print first error per failed test so CI output shows exactly what broke
+        def _first_errors(node: dict, out: list, limit: int = 3) -> None:
+            for spec in node.get("specs", []):
+                if out and len(out) >= limit:
+                    return
+                for t in spec.get("tests", []):
+                    res = t.get("results", [{}])[0]
+                    if res.get("status") != "passed":
+                        err = (res.get("error") or {}).get("message", "")
+                        if err:
+                            out.append(f"  {spec['title']}: {err[:300]}")
+            for child in node.get("suites", []):
+                _first_errors(child, out, limit)
+
+        errors: list[str] = []
+        for ts in report.get("suites", []):
+            _first_errors(ts, errors)
+        if errors:
+            print(f"[runner] first failures:\n" + "\n".join(errors))
 
         results: list[TestResult] = []
         for top_suite in report.get("suites", []):
