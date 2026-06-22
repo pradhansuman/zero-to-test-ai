@@ -94,8 +94,22 @@ class RunnerAgent:
                 content,
             )
 
+            # Fix bare window.innerHeight / window.scrollY used outside page.evaluate()
+            # (LLM sometimes references browser globals directly in Node test context)
+            content = re.sub(
+                r'\bwindow\.innerHeight\b',
+                '720',
+                content,
+            )
+            content = re.sub(
+                r'\bwindow\.innerWidth\b',
+                '1280',
+                content,
+            )
+
             # Static alias table — exact testid substitutions only (no regex to avoid corrupt selectors)
             testid_aliases = {
+                # ── store.html aliases ──
                 "add-to-cart-btn":    "add-to-cart",
                 "add-cart":           "add-to-cart",
                 "cart-btn":           "cart-button",
@@ -112,6 +126,63 @@ class RunnerAgent:
                 "cart-total-amount":  "cart-total",
                 "cart-total-price":   "cart-total",
                 "price-total":        "cart-total",
+                # ── math_hub.html CH01 (fraction→decimal) aliases ──
+                "fraction-numerator":    "ch01-numerator",
+                "numerator-input":       "ch01-numerator",
+                "ch1-numerator":         "ch01-numerator",
+                "fraction-denominator":  "ch01-denominator",
+                "denominator-input":     "ch01-denominator",
+                "ch1-denominator":       "ch01-denominator",
+                "fraction-result":       "ch01-result",
+                "decimal-result":        "ch01-result",
+                "conversion-result":     "ch01-result",
+                "ch1-result":            "ch01-result",
+                "convert-btn":           "ch01-convert-btn",
+                "convert-button":        "ch01-convert-btn",
+                "fraction-convert-btn":  "ch01-convert-btn",
+                # ── math_hub.html CH02 (equation solver) aliases ──
+                "equation-a":            "ch02-a",
+                "coefficient-a":         "ch02-a",
+                "input-a":               "ch02-a",
+                "ch2-a":                 "ch02-a",
+                "equation-b":            "ch02-b",
+                "constant-b":            "ch02-b",
+                "input-b":               "ch02-b",
+                "ch2-b":                 "ch02-b",
+                "equation-c":            "ch02-c",
+                "constant-c":            "ch02-c",
+                "input-c":               "ch02-c",
+                "ch2-c":                 "ch02-c",
+                "solve-btn":             "ch02-solve-btn",
+                "solve-button":          "ch02-solve-btn",
+                "equation-solve-btn":    "ch02-solve-btn",
+                "ch2-solve-btn":         "ch02-solve-btn",
+                "equation-result":       "ch02-result",
+                "solution-result":       "ch02-result",
+                "solver-result":         "ch02-result",
+                "ch2-result":            "ch02-result",
+                # ── math_hub.html CH03 (quadrilateral viewer) aliases ──
+                "properties-display":    "ch03-properties",
+                "property-panel":        "ch03-properties",
+                "shape-properties":      "ch03-properties",
+                "quadrilateral-properties": "ch03-properties",
+                "ch3-properties":        "ch03-properties",
+                "shape-card-square":     "ch03-card-square",
+                "square-card":           "ch03-card-square",
+                "shape-card-rectangle":  "ch03-card-rectangle",
+                "rectangle-card":        "ch03-card-rectangle",
+                "shape-card-rhombus":    "ch03-card-rhombus",
+                "rhombus-card":          "ch03-card-rhombus",
+                "shape-card-parallelogram": "ch03-card-parallelogram",
+                "parallelogram-card":    "ch03-card-parallelogram",
+                "shape-card-trapezium":  "ch03-card-trapezium",
+                "trapezium-card":        "ch03-card-trapezium",
+                # ── math_hub.html CH05 (canvas) aliases ──
+                "data-canvas":           "ch05-canvas",
+                "chart-canvas":          "ch05-canvas",
+                "histogram-canvas":      "ch05-canvas",
+                "graph-canvas":          "ch05-canvas",
+                "ch5-canvas":            "ch05-canvas",
             }
             for wrong, right in testid_aliases.items():
                 for q in ('"', "'"):
