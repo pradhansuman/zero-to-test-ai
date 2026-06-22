@@ -50,19 +50,31 @@ class RunnerAgent:
             if dest.suffix == ".ts" and "spec" in dest.name:
                 print(f"[runner] spec ({f.path}):\n{f.content[:1000]}\n---")
 
-    # ── patch relative page.goto() calls to use the absolute target URL ────────
+    # ── patch spec files: fix goto URLs and allure imports ──────────────────────
     def _fix_goto_urls(self, target_url: str) -> None:
         for spec in self.workspace.rglob("*.spec.ts"):
             content = spec.read_text(encoding="utf-8")
-            # Replace goto('/'), goto(''), goto('.'), goto('./') with the full URL
-            fixed = re.sub(
+            original = content
+
+            # Fix relative page.goto() calls
+            content = re.sub(
                 r"""page\.goto\(\s*['"](?:/\.?/?|\./?|)['"]""",
                 f"page.goto('{target_url}'",
                 content,
             )
-            if fixed != content:
-                print(f"[runner] patched goto URL in {spec.name}")
-                spec.write_text(fixed, encoding="utf-8")
+
+            # Fix wrong allure import — allure-js-commons API differs from allure-playwright
+            content = content.replace(
+                "from 'allure-js-commons'",
+                "from 'allure-playwright'",
+            ).replace(
+                'from "allure-js-commons"',
+                'from "allure-playwright"',
+            )
+
+            if content != original:
+                print(f"[runner] patched {spec.name}")
+                spec.write_text(content, encoding="utf-8")
 
     # ── real Playwright run ─────────────────────────────────────
     def _run_real(self, suite: GeneratedSuite) -> RunResults:

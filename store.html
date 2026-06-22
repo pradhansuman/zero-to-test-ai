@@ -263,7 +263,7 @@
           <div class="card-desc">${p.desc}</div>
           <div class="card-price" data-testid="product-price">$${p.price.toFixed(2)}</div>
         </div>
-        <button class="add-btn" id="btn-${p.id}" data-testid="add-to-cart-${p.id}" onclick="addToCart(${p.id})">Add to Cart</button>
+        <button class="add-btn" id="btn-${p.id}" data-testid="add-to-cart" data-product-id="${p.id}" onclick="addToCart(${p.id})">Add to Cart</button>
       </div>
     `).join("");
   }
