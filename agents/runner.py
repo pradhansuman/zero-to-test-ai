@@ -48,7 +48,7 @@ class RunnerAgent:
             dest.write_text(f.content, encoding="utf-8")
             # Print first spec so we can see selectors + navigation in CI output
             if dest.suffix == ".ts" and "spec" in dest.name:
-                print(f"[runner] spec ({f.path}):\n{f.content[:1000]}\n---")
+                print(f"[runner] spec ({f.path}):\n{f.content[:8000]}\n---")
 
     # ── patch spec files: fix goto URLs and allure imports ──────────────────────
     def _fix_goto_urls(self, target_url: str) -> None:
@@ -104,6 +104,18 @@ class RunnerAgent:
             content = re.sub(
                 r'\bwindow\.innerWidth\b',
                 '1280',
+                content,
+            )
+
+            # Fix: combined locator used to fill a display div by mistake.
+            # '[data-testid="ch02-result"], input[placeholder*="result" i]'
+            # → when .fill() follows, the ch02-c input (earlier in DOM) is the
+            #   right target. Strip any `, input[placeholder*=...result...]` suffix
+            #   from ch0X-result locators so the testid is unambiguous.
+            content = re.sub(
+                r'(\[data-testid=["\']ch\d\d-(?:result|display|output)["\']\])'
+                r',\s*input\[[^\]]*result[^\]]*\]',
+                r'\1',
                 content,
             )
 
