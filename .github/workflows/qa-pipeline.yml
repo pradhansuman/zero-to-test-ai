@@ -53,7 +53,7 @@ jobs:
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.44.0-jammy
+      image: mcr.microsoft.com/playwright:v1.61.0-jammy
     permissions:
       issues: write
       contents: read
@@ -67,7 +67,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip3 install -r requirements.txt --quiet
-          npm i -D @playwright/test allure-playwright --silent
+          npm i -D @playwright/test@1.61.0 allure-playwright --silent
 
       - name: Extract app URL from issue body
         id: extract_url
@@ -196,7 +196,7 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.44.0-jammy
+      image: mcr.microsoft.com/playwright:v1.61.0-jammy
     permissions:
       pull-requests: write
       contents: read
@@ -210,7 +210,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip3 install -r requirements.txt --quiet
-          npm i -D @playwright/test allure-playwright --silent
+          npm i -D @playwright/test@1.61.0 allure-playwright --silent
 
       - name: Extract linked issue number and test URL from PR body
         id: extract
@@ -302,7 +302,7 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.44.0-jammy
+      image: mcr.microsoft.com/playwright:v1.61.0-jammy
     permissions:
       issues: write
       contents: read
@@ -316,7 +316,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip3 install -r requirements.txt --quiet
-          npm i -D @playwright/test allure-playwright --silent
+          npm i -D @playwright/test@1.61.0 allure-playwright --silent
 
       - name: Run demo pipeline to verify agent code still works
         env:
@@ -341,7 +341,7 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.44.0-jammy
+      image: mcr.microsoft.com/playwright:v1.61.0-jammy
     permissions:
       issues: write
       contents: read
@@ -355,7 +355,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip3 install -r requirements.txt --quiet
-          npm i -D @playwright/test allure-playwright --silent
+          npm i -D @playwright/test@1.61.0 allure-playwright --silent
 
       - name: Find open qa-ready issues without qa-passed/qa-failed label
         id: find
