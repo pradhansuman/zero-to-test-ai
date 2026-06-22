@@ -41,6 +41,10 @@ Rules:
 - NAVIGATION: ALWAYS call page.goto() with the FULL absolute URL from "Target app URL".
   Never use relative paths like '/', './', or '' in page.goto(). The baseURL in the
   config is a fallback only — rely on the explicit URL instead.
+- ALLURE: import as `import { allure } from 'allure-playwright'` — never use
+  `import * as allure` or import from `allure-js-commons`.
+- CART/SIDEBAR APPS: if a sidebar or modal contains the element you need to read,
+  always click the trigger button to open it first, then read the element.
 - Add Allure annotations (allure.severity, allure.story) per test.
 - Use Promise.all when racing a network request with a UI action.
 - NEVER weaken security: no rejectUnauthorized:false, no hardcoded secrets,

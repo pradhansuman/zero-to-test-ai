@@ -63,13 +63,17 @@ class RunnerAgent:
                 content,
             )
 
-            # Fix wrong allure import — allure-js-commons API differs from allure-playwright
+            # Fix allure import — must be named import { allure }, not namespace import
+            content = re.sub(
+                r"import\s+\*\s+as\s+allure\s+from\s+['\"]allure-(?:js-commons|playwright)['\"]",
+                "import { allure } from 'allure-playwright'",
+                content,
+            )
+            # Also fix plain allure-js-commons named imports
             content = content.replace(
-                "from 'allure-js-commons'",
-                "from 'allure-playwright'",
+                "from 'allure-js-commons'", "from 'allure-playwright'",
             ).replace(
-                'from "allure-js-commons"',
-                'from "allure-playwright"',
+                'from "allure-js-commons"', 'from "allure-playwright"',
             )
 
             if content != original:
