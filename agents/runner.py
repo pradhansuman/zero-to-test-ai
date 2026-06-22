@@ -107,6 +107,41 @@ class RunnerAgent:
                 content,
             )
 
+            # ── math_hub semantic-infix stripping ───────────────────────────────────
+            # The LLM sometimes inserts domain words between the ch-prefix and the
+            # actual identifier, e.g.:
+            #   ch01-fraction-numerator  → ch01-numerator
+            #   ch02-equation-a          → ch02-a
+            #   ch02-linear-solve-btn    → ch02-solve-btn
+            MATH_INFIXES = (
+                r'fraction|equation|linear|coefficient|eq|linear-eq'
+                r'|quadrilateral|rational|decimal'
+            )
+            content = re.sub(
+                rf'\b(ch\d\d)-(?:{MATH_INFIXES})-',
+                r'\1-',
+                content,
+            )
+            # ch03-shape-X → ch03-card-X  (shape cards use "card-" prefix, not "shape-")
+            content = re.sub(r'\b(ch03)-(?:shape|quad)-', r'\1-card-', content)
+
+            # ── MCQ testid normalisation ─────────────────────────────────────────────
+            # Valid pattern: ch01-q1-a through ch16-q3-d
+            # LLM drift patterns:
+            #   ch01-mcq-q1-a    → ch01-q1-a   (extra 'mcq-' prefix)
+            #   ch01-quiz-q1-a   → ch01-q1-a   (uses 'quiz-' instead of nothing)
+            #   ch01-question-1-a → ch01-q1-a  (uses 'question-N' instead of 'qN')
+            content = re.sub(
+                r'\b(ch\d\d)-(?:mcq|quiz)-q(\d)-([abcd])\b',
+                r'\1-q\2-\3',
+                content,
+            )
+            content = re.sub(
+                r'\b(ch\d\d)-question-(\d)-([abcd])\b',
+                r'\1-q\2-\3',
+                content,
+            )
+
             # Static alias table — exact testid substitutions only (no regex to avoid corrupt selectors)
             testid_aliases = {
                 # ── store.html aliases ──
