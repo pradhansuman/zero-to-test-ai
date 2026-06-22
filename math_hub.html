@@ -1090,7 +1090,7 @@
     const c = parseFloat(document.getElementById('ec').value);
     const el = document.getElementById('ch02-result');
     if (isNaN(a) || isNaN(b) || isNaN(c)) { el.textContent = 'Enter all three values.'; el.className = 'result-box error'; return; }
-    if (a === 0) { el.textContent = 'Error: a cannot be 0 (not a linear equation).'; el.className = 'result-box error'; return; }
+    if (a === 0) { el.textContent = 'error: a cannot be 0 (no solution to linear equation).'; el.className = 'result-box error'; return; }
     const x = (c - b) / a;
     el.textContent = 'x = ' + parseFloat(x.toFixed(6));
     el.className = 'result-box';

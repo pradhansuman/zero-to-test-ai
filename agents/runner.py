@@ -160,6 +160,25 @@ class RunnerAgent:
                 r'ch01-q\1-\2',
                 content,
             )
+            # Bare q(\d)-option-Z with no chapter or mcq prefix → ch01
+            # Run 9: LLM generates 'q1-option-a', 'q1-option-c' (no chapter prefix)
+            content = re.sub(
+                r'\bq(\d)-option-([abcd])\b',
+                r'ch01-q\1-\2',
+                content,
+            )
+            # equation-{descriptor}-{letter} → ch02-{letter}
+            # Run 9: LLM generates 'equation-coefficient-a', 'equation-constant-b', 'equation-result-c'
+            content = re.sub(
+                r'\[data-testid=["\']equation-(?:coefficient|constant|result)-([abc])["\']\]',
+                lambda m: f'[data-testid="ch02-{m.group(1)}"]',
+                content,
+            )
+            content = re.sub(
+                r"getByTestId\([\"']equation-(?:coefficient|constant|result)-([abc])[\"']\)",
+                lambda m: f'getByTestId("ch02-{m.group(1)}")',
+                content,
+            )
 
             # Static alias table — exact testid substitutions only (no regex to avoid corrupt selectors)
             testid_aliases = {
@@ -263,6 +282,27 @@ class RunnerAgent:
                 "mcq-q3-option-b":   "ch01-q3-b",
                 "mcq-q3-option-c":   "ch01-q3-c",
                 "mcq-q3-option-d":   "ch01-q3-d",
+                # Run 9: bare q(\d)-option-Z without any prefix
+                "q1-option-a":   "ch01-q1-a",
+                "q1-option-b":   "ch01-q1-b",
+                "q1-option-c":   "ch01-q1-c",
+                "q1-option-d":   "ch01-q1-d",
+                "q2-option-a":   "ch01-q2-a",
+                "q2-option-b":   "ch01-q2-b",
+                "q2-option-c":   "ch01-q2-c",
+                "q2-option-d":   "ch01-q2-d",
+                "q3-option-a":   "ch01-q3-a",
+                "q3-option-b":   "ch01-q3-b",
+                "q3-option-c":   "ch01-q3-c",
+                "q3-option-d":   "ch01-q3-d",
+                # Run 9: equation-coefficient-a/b/c (also handled by regex, but static covers fill())
+                "equation-coefficient-a":  "ch02-a",
+                "equation-constant-b":     "ch02-b",
+                "equation-result-c":       "ch02-c",
+                # MCQ section containers
+                "chapter-1-mcq":   "ch01-mcq",  # run 9: used for scrollIntoViewIfNeeded
+                "mcq-section":     "ch01-mcq",  # run 9: TC-009 scrollIntoViewIfNeeded
+                "chapter-1-quiz":  "ch01-mcq",
             }
             for wrong, right in testid_aliases.items():
                 for q in ('"', "'"):
