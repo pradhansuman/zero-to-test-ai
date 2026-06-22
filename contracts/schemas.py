@@ -8,11 +8,12 @@ are the *only* thing agents share — no agent reaches into another's internals.
 This is what makes the pipeline composable: any stage can be swapped, mocked,
 or re-run in isolation as long as it honours the contract.
 
-    IssueRef ─▶ [Ingestor] ─▶ IssuePayload
-    IssuePayload ─▶ [Planner] ─▶ TestPlan
+    IssueRef ─▶ [Ingestor]  ─▶ IssuePayload
+    IssuePayload ─▶ [Planner]   ─▶ TestPlan
     TestPlan ─▶ [Generator] ─▶ GeneratedSuite
-    GeneratedSuite ─▶ [Runner] ─▶ RunResults
-    RunResults ─▶ [Reporter] ─▶ ReportArtifact
+    (TestPlan + GeneratedSuite) ─▶ [Reviewer] ─▶ ReviewReport (advisory)
+    GeneratedSuite ─▶ [Runner]   ─▶ RunResults
+    RunResults ─▶ [Reporter]  ─▶ ReportArtifact
 """
 from __future__ import annotations
 
@@ -106,6 +107,33 @@ class GeneratedSuite(BaseModel):
     framework: str = "playwright"
     total_tests: int = 0
     notes: Optional[str] = None
+
+
+# ─────────────── stage 3.5 — Reviewer Agent ───────────────
+class DimensionScores(BaseModel):
+    """Per-dimension quality scores, each 1 (poor) – 5 (excellent)."""
+    coverage:        int = Field(..., ge=1, le=5, description="Every AC + key risk area exercised")
+    correctness:     int = Field(..., ge=1, le=5, description="Expected results actually match stated input")
+    edge_negative:   int = Field(..., ge=1, le=5, description="Boundaries, invalid input, error paths present")
+    atomicity:       int = Field(..., ge=1, le=5, description="One behaviour per case, no hidden ordering")
+    reproducibility: int = Field(..., ge=1, le=5, description="Concrete data + steps; runnable cold")
+    traceability:    int = Field(..., ge=1, le=5, description="Each case maps to a requirement/AC")
+    non_redundancy:  int = Field(..., ge=1, le=5, description="No duplicated conditions inflating the count")
+    prioritization:  int = Field(..., ge=1, le=5, description="Risk-aligned and justified")
+
+
+class ReviewReport(BaseModel):
+    """OUTPUT of the Reviewer — advisory quality audit of the generated test suite."""
+    issue_number: int
+    scores: DimensionScores
+    weighted_total: float = Field(
+        ...,
+        description="(coverage*2 + correctness*2 + rest*1) / 10 — max 5.0",
+    )
+    critical_gaps:    list[str] = Field(default_factory=list)
+    redundant_cases:  list[str] = Field(default_factory=list)
+    verdict: str = Field(..., description="ship | revise | reject")
+    top_3_fixes: list[str] = Field(default_factory=list)
 
 
 # ─────────────── stage 4 — Test Runner (Layers) ───────────────
