@@ -7,16 +7,19 @@ test.describe('Page Structure', () => {
 
   test('TC-S01: page title matches app name', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await expect(page).toHaveTitle(/CBSE Class 8 Mathematics/i);
   });
 
   test('TC-S02: exactly 16 chapter sections rendered', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     expect(await page.locator('[data-testid^="chapter-"]').count()).toBe(16);
   });
 
   test('TC-S03: app header is visible and contains expected text', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     const hdr = page.locator('[data-testid="app-header"]');
     await expect(hdr).toBeVisible();
     await expect(hdr).toContainText('CBSE Class 8 Mathematics');
@@ -24,6 +27,7 @@ test.describe('Page Structure', () => {
 
   test('TC-S04: nav bar contains all 16 chapter links', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await expect(page.locator('[data-testid="nav-bar"]')).toBeVisible();
     for (let i = 1; i <= 16; i++) {
       await expect(page.locator(`[data-testid="nav-ch${String(i).padStart(2,'0')}"]`)).toBeVisible();
@@ -32,6 +36,7 @@ test.describe('Page Structure', () => {
 
   test('TC-S05: score bar starts at 0 / 0', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await expect(page.locator('[data-testid="score-bar"]')).toContainText('0 / 0');
   });
 
@@ -39,11 +44,13 @@ test.describe('Page Structure', () => {
     const errors: string[] = [];
     page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     expect(errors).toHaveLength(0);
   });
 
   test('TC-S07: all 16 chapter sections have unique data-testid attributes', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     for (let i = 1; i <= 16; i++) {
       await expect(page.locator(`[data-testid="chapter-${i}"]`)).toBeVisible();
     }
@@ -55,6 +62,7 @@ test.describe('Navigation', () => {
 
   test('TC-N01: nav-ch01 scrolls to chapter 1', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch01"]').click();
     await page.waitForTimeout(400);
     await expect(page.locator('[data-testid="chapter-1"]')).toBeVisible();
@@ -62,6 +70,7 @@ test.describe('Navigation', () => {
 
   test('TC-N02: nav-ch05 scrolls to chapter 5', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch05"]').click();
     await page.waitForTimeout(400);
     await expect(page.locator('[data-testid="chapter-5"]')).toBeVisible();
@@ -69,6 +78,7 @@ test.describe('Navigation', () => {
 
   test('TC-N03: nav-ch08 scrolls to chapter 8', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch08"]').click();
     await page.waitForTimeout(400);
     await expect(page.locator('[data-testid="chapter-8"]')).toBeVisible();
@@ -76,6 +86,7 @@ test.describe('Navigation', () => {
 
   test('TC-N04: nav-ch16 scrolls to chapter 16', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch16"]').click();
     await page.waitForTimeout(400);
     await expect(page.locator('[data-testid="chapter-16"]')).toBeVisible();
@@ -86,6 +97,7 @@ test.describe('Navigation', () => {
 test.describe('CH01 Rational Numbers', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch01"]').click();
   });
 
@@ -162,6 +174,7 @@ test.describe('CH01 Rational Numbers', () => {
 test.describe('CH02 Linear Equations', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch02"]').click();
   });
 
@@ -221,6 +234,7 @@ test.describe('CH02 Linear Equations', () => {
 test.describe('CH03 Quadrilaterals', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch03"]').click();
   });
 
@@ -279,6 +293,7 @@ test.describe('CH03 Quadrilaterals', () => {
 test.describe('CH04 Practical Geometry', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch04"]').click();
   });
 
@@ -296,6 +311,7 @@ test.describe('CH04 Practical Geometry', () => {
 test.describe('CH05 Data Handling', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch05"]').click();
   });
 
@@ -337,6 +353,7 @@ test.describe('CH05 Data Handling', () => {
 test.describe('CH06 Square Roots', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch06"]').click();
   });
 
@@ -376,6 +393,7 @@ test.describe('CH06 Square Roots', () => {
 test.describe('CH07 Cube Roots', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch07"]').click();
   });
 
@@ -407,6 +425,7 @@ test.describe('CH07 Cube Roots', () => {
 test.describe('CH08 Comparing Quantities', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch08"]').click();
   });
 
@@ -444,6 +463,7 @@ test.describe('CH08 Comparing Quantities', () => {
 test.describe('CH09 Algebraic Identities', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch09"]').click();
   });
 
@@ -481,6 +501,7 @@ test.describe('CH09 Algebraic Identities', () => {
 test.describe('CH10 Solid Shapes', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch10"]').click();
   });
 
@@ -525,6 +546,7 @@ test.describe('CH10 Solid Shapes', () => {
 test.describe('CH11 Mensuration', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch11"]').click();
   });
 
@@ -561,6 +583,7 @@ test.describe('CH11 Mensuration', () => {
 test.describe('CH12 Exponents', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch12"]').click();
   });
 
@@ -601,6 +624,7 @@ test.describe('CH12 Exponents', () => {
 test.describe('CH13 Proportions', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch13"]').click();
   });
 
@@ -637,6 +661,7 @@ test.describe('CH13 Proportions', () => {
 test.describe('CH14 Factorisation', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch14"]').click();
   });
 
@@ -668,6 +693,7 @@ test.describe('CH14 Factorisation', () => {
 test.describe('CH15 Introduction to Graphs', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch15"]').click();
   });
 
@@ -692,6 +718,7 @@ test.describe('CH15 Introduction to Graphs', () => {
 test.describe('CH16 Playing with Numbers', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch16"]').click();
   });
 
@@ -733,6 +760,7 @@ test.describe('MCQ Engine & Score Tracker', () => {
 
   test('TC-MCQ-01: correct answer increments score to 1/1', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch01"]').click();
     await page.locator('[data-testid="ch01-q1-c"]').click();
     await expect(page.locator('[data-testid="score-bar"]')).toContainText('1 / 1');
@@ -740,6 +768,7 @@ test.describe('MCQ Engine & Score Tracker', () => {
 
   test('TC-MCQ-02: wrong answer shows 0/1 (attempted not correct)', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch01"]').click();
     await page.locator('[data-testid="ch01-q1-a"]').click();
     await expect(page.locator('[data-testid="score-bar"]')).toContainText('0 / 1');
@@ -747,6 +776,7 @@ test.describe('MCQ Engine & Score Tracker', () => {
 
   test('TC-MCQ-03: second click on same question is blocked (idempotent)', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch01"]').click();
     await page.locator('[data-testid="ch01-q1-c"]').click();
     await page.locator('[data-testid="ch01-q1-a"]').click(); // blocked
@@ -756,6 +786,7 @@ test.describe('MCQ Engine & Score Tracker', () => {
 
   test('TC-MCQ-04: score accumulates across chapters', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch01"]').click();
     await page.locator('[data-testid="ch01-q1-c"]').click();
     await page.locator('[data-testid="nav-ch02"]').click();
@@ -765,6 +796,7 @@ test.describe('MCQ Engine & Score Tracker', () => {
 
   test('TC-MCQ-05: data-score attribute matches correct count', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch01"]').click();
     await page.locator('[data-testid="ch01-q2-b"]').click();
     await page.locator('[data-testid="ch01-q3-a"]').click();
@@ -775,6 +807,7 @@ test.describe('MCQ Engine & Score Tracker', () => {
 
   test('TC-MCQ-06: wrong answer reveals correct option in same question', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch02"]').click();
     await page.locator('[data-testid="ch02-q1-a"]').click(); // wrong
     await expect(page.locator('[data-testid="ch02-q1-a"]')).toHaveClass(/incorrect/);
@@ -783,6 +816,7 @@ test.describe('MCQ Engine & Score Tracker', () => {
 
   test('TC-MCQ-07: mix correct+wrong gives right score ratio', async ({ page }) => {
     await page.goto(URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { (document.documentElement as HTMLElement).style.scrollBehavior = 'auto'; });
     await page.locator('[data-testid="nav-ch01"]').click();
     await page.locator('[data-testid="ch01-q1-a"]').click(); // wrong Q1
     await page.locator('[data-testid="ch01-q2-b"]').click(); // correct Q2
