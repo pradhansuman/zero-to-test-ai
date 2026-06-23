@@ -16,7 +16,7 @@ import path from 'path';
 const URL = `file://${path.resolve(__dirname, '../../store.html')}`;
 
 // ── CWV-STORE-01 ──────────────────────────────────────────────────────────────
-test('CWV-STORE-01: First Contentful Paint is under 1800ms', async ({ page }) => {
+test('CWV-STORE-01 @smoke: First Contentful Paint is under 1800ms', async ({ page }) => {
   const fcp = await page.evaluate(async () => {
     return new Promise<number>(resolve => {
       new PerformanceObserver(list => {

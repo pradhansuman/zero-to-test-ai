@@ -11,7 +11,7 @@ import path from 'path';
 const URL = `file://${path.resolve(__dirname, '../../store.html')}`;
 
 // ── NET-STORE-01 ──────────────────────────────────────────────────────────────
-test('NET-STORE-01: cart state persists across a full page reload', async ({ page }) => {
+test('NET-STORE-01 @smoke: cart state persists across a full page reload', async ({ page }) => {
   await page.goto(URL);
   await page.waitForSelector('.card');
 

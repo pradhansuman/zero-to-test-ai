@@ -47,7 +47,7 @@ Switch `--sdet` on and the `TestDesignerAgent` applies Boundary Value Analysis, 
 When the UI changes and a selector breaks, the `HealerAgent` detects it (locator failure, not assertion), consults the live DOM, asks Claude for a repaired selector, patches the file, and re-runs. The old→new selector and confidence score are logged for human audit. Broken builds due to CSS class renames or `data-testid` changes become automatic fixes.
 
 ### 4. Production-Grade Test Pyramid on a Live App
-The math hub proves the framework works against a real deployed SPA — 196 E2E tests across 3 browsers, 19 HTTP/API contract tests, 16 performance tests (TTFB, in-browser widget timing), 17 security tests (no eval, XSS guards, storage leakage), 12 endurance loop tests (30-iteration accuracy drift, 50-click idempotency), 14 visual regression tests with pixel diff baselines, and a full k6 load test suite with 5 scenarios up to 200 VUs. The ShopNow store adds a second complete pyramid: 286 tests across 9 suites (API, CWV, performance, security, accessibility, endurance, state/resilience, error/edge-cases, visual) with 3 browser targets — including 12 negative-path tests that catch real bugs like unguarded unknown product IDs causing NaN totals.
+The math hub proves the framework works against a real deployed SPA — 196 golden E2E tests across 2 browsers (Desktop Chrome + Mobile Chrome), 19 HTTP/API contract tests, 16 performance tests (TTFB, in-browser widget timing), 17 security tests (no eval, XSS guards, storage leakage), 12 endurance loop tests (30-iteration accuracy drift, 50-click idempotency), 14 visual regression tests with pixel diff baselines, and a full k6 load test suite with 5 scenarios up to 200 VUs. The ShopNow store adds a second complete pyramid: 286 tests across 9 suites (API, CWV, performance, security, accessibility, endurance, state/resilience, error/edge-cases, visual) with 3 browser targets — including 12 negative-path tests that catch real bugs like unguarded unknown product IDs causing NaN totals.
 
 ### 5. CI That Gets Smarter on Each PR
 The prioritization script reads the git diff and tells CI exactly which test groups are at risk — if you only touched `math-hub-perf.spec.ts`, only the performance suite runs. A full 600+ test run becomes a targeted 30-test run on minor changes, without ever skipping something that could actually break.
@@ -180,7 +180,7 @@ npx playwright test --config playwright.math-hub.config.ts --headed
 
 | Suite | File | Tests | What it validates |
 |---|---|---|---|
-| **Golden E2E** | `math-hub.spec.golden.ts` | 98 × 3 browsers | All 16 chapters, MCQ engine, widgets, navigation |
+| **Golden E2E** | `math-hub.spec.golden.ts` | 98 × 2 browsers | All 16 chapters, MCQ engine, widgets, navigation (Desktop Chrome + Mobile Chrome) |
 | **API / HTTP** | `math-hub-api.spec.ts` | 19 | Status codes, HTTPS/HSTS, ETag caching, self-containment |
 | **Performance** | `math-hub-perf.spec.ts` | 16 | TTFB < 3s, widget latency < 50ms (in-browser), DOM complexity |
 | **Security** | `math-hub-security.spec.ts` | 17 | No eval(), textContent vs innerHTML, no storage leakage |

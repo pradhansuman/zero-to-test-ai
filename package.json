@@ -1,0 +1,23 @@
+{
+  "name": "zero-to-test-ai",
+  "version": "1.0.0",
+  "description": "AI-powered QA pipeline — 7 agents from GitHub issue to executed, self-healing Playwright test suite",
+  "private": true,
+  "scripts": {
+    "test": "playwright test --config playwright.store.config.ts",
+    "test:smoke": "playwright test --config playwright.store.config.ts --grep @smoke",
+    "test:store": "playwright test --config playwright.store.config.ts",
+    "test:math-hub": "playwright test --config playwright.math-hub.config.ts",
+    "test:unit": "python -m pytest tests/unit/ -v",
+    "report": "playwright show-report playwright-report-store",
+    "council": "python3 council.py",
+    "council:demo": "python3 council.py --demo",
+    "pipeline:demo": "python -m orchestrator.pipeline --demo --offline"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.9.0",
+    "@playwright/test": "^1.61.0",
+    "allure-playwright": "^3.0.0",
+    "typescript": "^5.4.0"
+  }
+}
