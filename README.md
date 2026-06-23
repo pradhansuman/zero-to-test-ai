@@ -117,6 +117,48 @@ python -m orchestrator.pipeline myorg/app 1042 --real
 
 ---
 
+## What You Can Do Right Now
+
+```bash
+# Run the full store test suite (generates HTML report + auto-commits results)
+./run-tests.sh
+
+# Run only smoke tests (fast, ~11s — @smoke-tagged tests across all suites)
+./run-tests.sh --smoke
+
+# Run one specific suite
+npx playwright test tests/e2e/store-a11y.spec.ts --config playwright.store.config.ts
+
+# Run Python unit tests only
+python -m pytest tests/unit/ -v
+
+# Ask 5 AI agents to debate any question (no API key needed)
+python3 council.py --demo
+
+# Run the AI pipeline on a real GitHub issue (needs API key)
+python -m orchestrator.pipeline facebook/react 28000
+```
+
+---
+
+## CI/CD — What Runs Automatically (GitHub Actions)
+
+| Trigger | Job | What it does |
+|---|---|---|
+| Every push | `playwright` | Full Playwright suite → publishes Allure report to GitHub Pages |
+| Every push | `pipeline-smoke` | AI pipeline smoke run (offline demo mode, no API key) |
+| Every push | `summary` | Gate decision (`PASS`/`FAIL`) surfaced as job output; `exit 1` on FAIL |
+| `issues: [labeled]` with `qa-ready` | `qa-pipeline` | Full 7-agent pipeline against the labeled issue |
+| Weekly (Mon 6am UTC) | `mutation` | `mutmut run` — mutation testing score |
+| Every push | `security` | `npm audit` + `pip-audit` — dependency vulnerability scan |
+
+The gate decision is **always rule-based code**, never an LLM call:
+- Any P0 failure → `FAIL`
+- Pass rate < 90% → `FAIL`
+- Otherwise → `PASS`
+
+---
+
 ## Math Hub Test Suite (CBSE Class 8)
 
 A complete test pyramid against a live GitHub Pages SPA — all suites run in CI.
