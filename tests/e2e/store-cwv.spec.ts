@@ -78,9 +78,9 @@ test('CWV-STORE-03: Cumulative Layout Shift is under 0.1 during normal shopping 
     for (let id = 1; id <= 5; id++) (window as any).addToCart(id);
     (window as any).toggleCart();
   });
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(600);
   await page.evaluate(() => (window as any).toggleCart());
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(600);
 
   const cls = await page.evaluate(() => (window as any).__clsValue ?? 0);
   expect(cls).toBeLessThan(0.1);
