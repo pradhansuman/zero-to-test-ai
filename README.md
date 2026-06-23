@@ -618,7 +618,7 @@ zero-to-test-ai/
 │   ├── types.d.ts                       ← Global TS type declarations
 │   ├── rerun.sh                         ← Helper: trigger CI on a GitHub issue via gh CLI
 │   ├── Dockerfile                       ← Playwright container image for CI
-│   ├── playwright.config.ts             ← Default config (targets store.html demo)
+│   ├── playwright.config.ts             ← Default config (delegates to playwright.store.config.ts)
 │   └── playwright.math-hub.config.ts    ← Math hub config (6 suites, multi-browser)
 │
 ├── 🤖 CORE AI PIPELINE
@@ -720,11 +720,8 @@ zero-to-test-ai/
 │       │   ├── test_gate.py                 ← ReporterAgent gate rule tests
 │       │   ├── test_mobile.py               ← BrowserTarget enum + config tests
 │       │   └── test_triage.py               ← classify_failure() tests
-│       ├── data/
-│       │   └── products.json                ← Test data for store tests
-│       ├── store.spec.ts                    ← Store demo E2E (basic flows)
-│       ├── store-pom.spec.ts                ← Store demo with Page Object Model
-│       └── store-extended.spec.ts           ← Store demo extended edge cases
+│       └── data/
+│           └── products.json                ← Test data for store tests
 │
 ├── 🛠️ SCRIPTS
 │   └── scripts/

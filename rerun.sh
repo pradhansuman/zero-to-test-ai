@@ -3,7 +3,7 @@
 # Re-triggers the QA pipeline on the given issue number without touching labels.
 
 ISSUE=${1:-4}
-REPO="pradhansuman/qa-agent-pipeline"
+REPO="pradhansuman/zero-to-test-ai"
 
 echo "Triggering QA pipeline on issue #$ISSUE ..."
 gh workflow run qa-pipeline.yml \
