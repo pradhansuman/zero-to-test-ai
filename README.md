@@ -23,8 +23,8 @@ GitHub Issue ──▶ Ingestor ──▶ Test Designer ──▶ Generator ─�
 | **Self-healing locators** | Detects selector drift, repairs via LLM grounded in live DOM, re-runs patched test. Never heals assertion failures |
 | **Richer failure classification** | `LOCATOR` · `ASSERTION` · `ENVIRONMENT` · `FLAKY` · `TIMEOUT` · `OTHER` — rule-based, auditable, no LLM |
 | **Visual regression** | 14 `toHaveScreenshot()` tests with 2% pixel tolerance + committed PNG baselines |
-| **Multi-browser** | Desktop Chrome · Mobile Chrome (Pixel 7) · Mobile Safari (iPhone 14 via CI) |
-| **Full test pyramid** | 7 suites: golden E2E, API/HTTP, performance, security, endurance loops, visual, load (k6) |
+| **Multi-browser** | Desktop Chrome · Desktop Firefox · Mobile Chrome (Pixel 7) · Mobile Safari (iPhone 14, CI only — requires macOS 14+ or Docker) |
+| **Full test pyramid** | 9 suites: API, performance, CWV, security, accessibility, endurance, state/resilience, error/edge-cases, visual + k6 load |
 | **Dynamic test prioritization** | `git diff` → grep pattern; cuts CI from ~8 min to < 2 min on minor changes |
 | **MCP server** | Real stdio JSON-RPC server — register in Claude desktop to control the pipeline via natural language |
 | **Rule-based gate** | `ReporterAgent._gate()`: any P0 fail or pass rate < 90% → FAIL. LLM writes the narrative, never makes the decision |
@@ -47,7 +47,7 @@ Switch `--sdet` on and the `TestDesignerAgent` applies Boundary Value Analysis, 
 When the UI changes and a selector breaks, the `HealerAgent` detects it (locator failure, not assertion), consults the live DOM, asks Claude for a repaired selector, patches the file, and re-runs. The old→new selector and confidence score are logged for human audit. Broken builds due to CSS class renames or `data-testid` changes become automatic fixes.
 
 ### 4. Production-Grade Test Pyramid on a Live App
-The math hub proves the framework works against a real deployed SPA — 196 E2E tests across 3 browsers, 19 HTTP/API contract tests, 16 performance tests (TTFB, in-browser widget timing), 17 security tests (no eval, XSS guards, storage leakage), 12 endurance loop tests (30-iteration accuracy drift, 50-click idempotency), 14 visual regression tests with pixel diff baselines, and a full k6 load test suite with 5 scenarios up to 200 VUs.
+The math hub proves the framework works against a real deployed SPA — 196 E2E tests across 3 browsers, 19 HTTP/API contract tests, 16 performance tests (TTFB, in-browser widget timing), 17 security tests (no eval, XSS guards, storage leakage), 12 endurance loop tests (30-iteration accuracy drift, 50-click idempotency), 14 visual regression tests with pixel diff baselines, and a full k6 load test suite with 5 scenarios up to 200 VUs. The ShopNow store adds a second complete pyramid: 286 tests across 9 suites (API, CWV, performance, security, accessibility, endurance, state/resilience, error/edge-cases, visual) with 3 browser targets — including 12 negative-path tests that catch real bugs like unguarded unknown product IDs causing NaN totals.
 
 ### 5. CI That Gets Smarter on Each PR
 The prioritization script reads the git diff and tells CI exactly which test groups are at risk — if you only touched `math-hub-perf.spec.ts`, only the performance suite runs. A full 600+ test run becomes a targeted 30-test run on minor changes, without ever skipping something that could actually break.
@@ -187,11 +187,17 @@ A full test pyramid for the dark-mode e-commerce SPA (`store.html`) — applies 
 ### Run all store suites
 
 ```bash
-# Full pyramid — Desktop Chrome + Mobile Chrome
+# Recommended: full pipeline — runs all tests, generates HTML report, auto-commits results
+./run-tests.sh
+
+# Smoke tests only (fast, ~11s — @smoke-tagged tests across all suites)
+./run-tests.sh --smoke
+
+# Raw Playwright — full pyramid, Desktop Chrome + Desktop Firefox + Mobile Chrome
 npx playwright test --config playwright.store.config.ts
 
 # Single suite
-npx playwright test --config playwright.store.config.ts tests/e2e/store-loop.spec.ts
+npx playwright test --config playwright.store.config.ts tests/e2e/store-error.spec.ts
 
 # Headed (browser window visible)
 npx playwright test --config playwright.store.config.ts --headed
@@ -199,14 +205,19 @@ npx playwright test --config playwright.store.config.ts --headed
 
 ### Store test pyramid
 
+286 tests across 9 suites, 3 browser targets (Desktop Chrome · Desktop Firefox · Mobile Chrome).
+Mobile Safari (iPhone 14) runs in CI only — Playwright WebKit requires macOS 14+ or the CI Playwright Docker image.
+
 | Suite | File | Tests | What it validates |
 |---|---|---|---|
-| **Golden E2E** | `store.spec.ts` + `store-extended.spec.ts` | 110 | Products, cart, qty, remove, checkout, toast — all happy paths |
-| **Page Object Model** | `store-pom.spec.ts` | — | Same flows via POM abstraction |
 | **Contract / API** | `store-api.spec.ts` | 12 | PRODUCTS schema, testid completeness, localStorage interface, self-containment |
-| **Performance** | `store-perf.spec.ts` | 10 | renderProducts < 50ms, addToCart < 5ms, DOM size, Navigation Timing |
+| **Performance** | `store-perf.spec.ts` | 10 | renderProducts < 50ms, addToCart < 25ms, DOM size, Navigation Timing |
+| **Core Web Vitals** | `store-cwv.spec.ts` | 8 | FCP, DCL, CLS (interaction-only, no buffered replay), TBT, load event timing |
 | **Security** | `store-security.spec.ts` | 12 | No eval(), localStorage hygiene, XSS guards, no external requests |
+| **Accessibility** | `store-a11y.spec.ts` | 12 | WCAG 2.1 AA via axe-core, keyboard nav, ARIA states, live regions |
 | **Endurance loops** | `store-loop.spec.ts` | 12 | 30-cycle add, 50-toggle CSS, full lifecycle × 3, total accuracy drift |
+| **State & Resilience** | `store-network.spec.ts` | 8 | localStorage persistence across reloads, isolation between contexts, corrupted-data recovery |
+| **Error / Edge Cases** | `store-error.spec.ts` | 12 | Invalid product IDs, boundary qty operations, double-checkout, cart reuse after purchase |
 | **Visual regression** | `store-visual.spec.ts` | 14 | Header, product card, cart states, qty controls, mobile layout |
 | **Load (k6)** | `tests/load/store.k6.js` | — | 4 scenarios (smoke/steady/spike/stress), p95 < 500ms, TTFB < 200ms |
 
