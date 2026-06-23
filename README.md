@@ -180,6 +180,63 @@ python scripts/prioritize_tests.py --json
 
 ---
 
+## ShopNow Store Test Suite
+
+A full test pyramid for the dark-mode e-commerce SPA (`store.html`) — applies all advanced QA techniques to a real interactive application with localStorage persistence, cart sidebar, quantity controls, checkout, and toast notifications.
+
+### Run all store suites
+
+```bash
+# Full pyramid — Desktop Chrome + Mobile Chrome
+npx playwright test --config playwright.store.config.ts
+
+# Single suite
+npx playwright test --config playwright.store.config.ts tests/e2e/store-loop.spec.ts
+
+# Headed (browser window visible)
+npx playwright test --config playwright.store.config.ts --headed
+```
+
+### Store test pyramid
+
+| Suite | File | Tests | What it validates |
+|---|---|---|---|
+| **Golden E2E** | `store.spec.ts` + `store-extended.spec.ts` | 110 | Products, cart, qty, remove, checkout, toast — all happy paths |
+| **Page Object Model** | `store-pom.spec.ts` | — | Same flows via POM abstraction |
+| **Contract / API** | `store-api.spec.ts` | 12 | PRODUCTS schema, testid completeness, localStorage interface, self-containment |
+| **Performance** | `store-perf.spec.ts` | 10 | renderProducts < 50ms, addToCart < 5ms, DOM size, Navigation Timing |
+| **Security** | `store-security.spec.ts` | 12 | No eval(), localStorage hygiene, XSS guards, no external requests |
+| **Endurance loops** | `store-loop.spec.ts` | 12 | 30-cycle add, 50-toggle CSS, full lifecycle × 3, total accuracy drift |
+| **Visual regression** | `store-visual.spec.ts` | 14 | Header, product card, cart states, qty controls, mobile layout |
+| **Load (k6)** | `tests/load/store.k6.js` | — | 4 scenarios (smoke/steady/spike/stress), p95 < 500ms, TTFB < 200ms |
+
+### Visual regression baselines
+
+Generate baselines on first run (requires `--update-snapshots`):
+
+```bash
+npx playwright test --config playwright.store.config.ts \
+  tests/e2e/store-visual.spec.ts --update-snapshots
+```
+
+Subsequent runs diff against committed PNGs in `tests/e2e/__snapshots__/store-visual.spec.ts/`.
+
+### Load testing the store with k6
+
+Requires store.html to be served over HTTP — start a local server first:
+
+```bash
+npx serve . -l 3000        # or: python3 -m http.server 3000
+
+k6 run tests/load/store.k6.js                             # smoke:  2 VUs / 20s
+k6 run --env SCENARIO=steady tests/load/store.k6.js       # steady: 20 VUs / 60s hold
+k6 run --env SCENARIO=spike  tests/load/store.k6.js       # spike:  burst to 50 VUs
+k6 run --env SCENARIO=stress tests/load/store.k6.js       # stress: ramp to 100 VUs
+k6 run --env BASE_URL=http://myserver tests/load/store.k6.js
+```
+
+---
+
 ## Agent Architecture
 
 Every agent hand-off is a typed **Pydantic model** in `contracts/schemas.py` — the single source of truth. Agents never import each other's internals.

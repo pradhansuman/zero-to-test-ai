@@ -20,7 +20,9 @@ node_modules/
 generated/*/node_modules/
 playwright-report/
 playwright-report-math-hub/
+playwright-report-store/
 test-results/
+test-results-store/
 allure-results/
 allure-report/
 blob-report/
