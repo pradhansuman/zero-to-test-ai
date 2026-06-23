@@ -159,6 +159,183 @@ The gate decision is **always rule-based code**, never an LLM call:
 
 ---
 
+## 🚀 Getting Started — Run It Yourself
+
+There are three ways to use this framework depending on what you want to do.
+
+---
+
+### ▶ Option A — Run the existing test suite (no API key needed)
+
+The fastest way to see everything working. Runs 286 tests against the ShopNow demo store.
+
+**Step 1 — Install dependencies**
+```bash
+git clone https://github.com/pradhansuman/zero-to-test-ai.git
+cd zero-to-test-ai
+
+pip install -r requirements.txt
+npm install
+npx playwright install chromium firefox
+```
+
+**Step 2 — Run the full suite**
+```bash
+./run-tests.sh
+```
+
+**What you'll see:**
+```
+🧪 ShopNow QA Pipeline
+▶  Running full suite (playwright.store.config.ts)…
+   Running 286 tests using 4 workers
+   ...
+▶  Running Python unit tests…
+   88 passed in 2.77s
+▶  Generating HTML report…
+   Gate: PASS  |  285/286 passed  |  3.0m 23.0s
+✓  Report written → store-qa-report.html
+```
+
+**Step 3 — Open the report**
+```bash
+open store-qa-report.html                        # custom dashboard
+npx playwright show-report playwright-report-store  # playwright's built-in report
+```
+
+**Other useful commands:**
+```bash
+./run-tests.sh --smoke                           # fast smoke gate (~11s, 13 tests)
+npx playwright test tests/e2e/store-security.spec.ts --config playwright.store.config.ts  # single suite
+python -m pytest tests/unit/ -v                  # unit tests only
+```
+
+---
+
+### ▶ Option B — Run the AI pipeline on a GitHub issue
+
+The pipeline reads a real GitHub issue, designs tests, generates Playwright code, runs it, self-heals broken selectors, and delivers a PASS/FAIL report — zero manual test writing.
+
+**Step 1 — Install dependencies** (same as Option A above)
+
+**Step 2 — Try it offline first (no API key, no internet)**
+```bash
+python -m orchestrator.pipeline --demo --offline
+```
+
+Expected output:
+```
+[ ingested] ok   [ planned] ok   [generated] ok
+[  tested] ok   [  healed] ok   [ reported] ok
+
+Issue #1042: Login form allows empty email submission
+Run:  5/5 passed (100.0%)
+Heal: 1 recovered  TC-002: [data-testid="submit-btn"] → [data-testid="login-submit"] (conf 0.93)
+Gate: PASS
+```
+
+**Step 3 — Run against a real GitHub issue**
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...          # get from console.anthropic.com
+export GITHUB_TOKEN=ghp_xxx                  # optional — avoids rate limits
+
+python -m orchestrator.pipeline facebook/react 28000 --token ghp_xxx
+```
+
+**Step 4 — Run with real Playwright browser execution**
+```bash
+python -m orchestrator.pipeline myorg/myapp 42 --token ghp_xxx --real
+```
+
+**Optional flags:**
+```bash
+--sdet        # use formal test design (BVA, Equivalence Partitioning, Pairwise)
+--no-review   # skip the Reviewer audit (saves one LLM call)
+--demo        # use canned LLM responses (still hits GitHub, no API credits)
+```
+
+---
+
+### ▶ Option C — Test your own application
+
+Use this framework to build a full test pyramid for any web app you own.
+
+**Step 1 — Install dependencies** (same as Option A above)
+
+**Step 2 — Create a Playwright config for your app**
+```bash
+cp playwright.store.config.ts playwright.myapp.config.ts
+```
+
+Edit `playwright.myapp.config.ts`:
+```typescript
+// Change the testMatch to target your new spec files
+testMatch: ['myapp-*.spec.ts'],
+
+// Change baseURL to your app
+use: {
+  baseURL: 'https://myapp.com',   // or file:// for a local HTML file
+}
+```
+
+**Step 3 — Create test suites in `tests/e2e/`**
+
+Copy a store suite as your starting template and adapt the selectors:
+```bash
+cp tests/e2e/store-api.spec.ts      tests/e2e/myapp-api.spec.ts
+cp tests/e2e/store-security.spec.ts tests/e2e/myapp-security.spec.ts
+cp tests/e2e/store-a11y.spec.ts     tests/e2e/myapp-a11y.spec.ts
+cp tests/e2e/store-cwv.spec.ts      tests/e2e/myapp-cwv.spec.ts
+cp tests/e2e/store-perf.spec.ts     tests/e2e/myapp-perf.spec.ts
+cp tests/e2e/store-error.spec.ts    tests/e2e/myapp-error.spec.ts
+cp tests/e2e/store-loop.spec.ts     tests/e2e/myapp-loop.spec.ts
+cp tests/e2e/store-visual.spec.ts   tests/e2e/myapp-visual.spec.ts
+```
+
+Then edit each file — update the `URL`, selectors, product data, and assertions to match your app.
+
+**Step 4 — Register your suites in the HTML report**
+
+In `scripts/generate_html_report.py`, add your suites to `SUITE_META`:
+```python
+SUITE_META = {
+    ...
+    'myapp-api':      {'label': 'Contract / API',  'icon': '📋', 'color': '#6366f1'},
+    'myapp-security': {'label': 'Security',        'icon': '🔒', 'color': '#f59e0b'},
+    'myapp-a11y':     {'label': 'Accessibility',   'icon': '♿', 'color': '#8b5cf6'},
+    'myapp-perf':     {'label': 'Performance',     'icon': '⚡', 'color': '#0ea5e9'},
+    'myapp-cwv':      {'label': 'Core Web Vitals', 'icon': '📊', 'color': '#10b981'},
+    'myapp-error':    {'label': 'Error / Edge',    'icon': '⚠️', 'color': '#e11d48'},
+    'myapp-loop':     {'label': 'Endurance',       'icon': '🔁', 'color': '#f97316'},
+    'myapp-visual':   {'label': 'Visual',          'icon': '👁', 'color': '#a855f7'},
+}
+```
+
+**Step 5 — Generate visual baselines on first run**
+```bash
+npx playwright test tests/e2e/myapp-visual.spec.ts \
+  --config playwright.myapp.config.ts --update-snapshots
+```
+
+**Step 6 — Run and check**
+```bash
+npx playwright test --config playwright.myapp.config.ts
+```
+
+---
+
+### Which option should I pick?
+
+| Your situation | Option |
+|---|---|
+| Just want to see the framework in action | **A** — run the store suite |
+| Have a GitHub issue and want auto-generated tests | **B** — AI pipeline |
+| Want to test your own web app | **C** — manual suites |
+| No API key, no internet, just exploring | **A** or **B** with `--demo --offline` |
+| Want AI to generate a starting point, then refine manually | **B** first, then adapt the output as **C** |
+
+---
+
 ## Math Hub Test Suite (CBSE Class 8)
 
 A complete test pyramid against a live GitHub Pages SPA — all suites run in CI.
