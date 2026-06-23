@@ -300,7 +300,9 @@ class ReportArtifact(BaseModel):
 class FailureKind(str, Enum):
     LOCATOR = "locator"        # element not found / not visible — healable
     ASSERTION = "assertion"    # logic wrong — NOT healable, this is a real bug
-    TIMEOUT = "timeout"        # may be flaky — heal via wait, retry once
+    ENVIRONMENT = "environment" # infra/browser launch/network reset — NOT healable, re-run pipeline
+    FLAKY = "flaky"            # passed on Playwright retry — quarantine candidate
+    TIMEOUT = "timeout"        # pure wait exhaustion — may be flaky, retry once
     OTHER = "other"
 
 

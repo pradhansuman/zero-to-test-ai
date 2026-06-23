@@ -39,6 +39,7 @@ from contracts.schemas import (
     RunResults, TestResult, GeneratedSuite,
     HealingAttempt, FailureKind,
 )
+from typing import TYPE_CHECKING
 
 # A DomProvider returns the current DOM/snapshot for a given test id.
 # In CI this is the Playwright trace / page.content(); in the simulator it's
@@ -51,22 +52,23 @@ def classify_failure(error: Optional[str]) -> FailureKind:
     Rule-based triage — deterministic, no LLM. Cheap and auditable.
 
     ORDERING IS CRITICAL:
-    1. Assertion FIRST — many assertion messages contain the word "locator"
-       (e.g. "expect(locator('x')).toHaveText('hello')"). If locator were
-       checked first, a genuine bug would be silently "healed" by the Healer,
-       hiding the regression from engineers. NEVER reorder assertion below locator.
-    2. Locator — element not found / not visible / selector drifted.
-       "Timeout waiting for selector" belongs here: the selector is the root
-       cause, not a general wait timeout.
-    3. Timeout — pure wait exhaustion (navigation, load, explicit waits).
+    1. Assertion FIRST — many assertion messages contain "locator". If locator
+       were checked first, a real bug would be silently "healed", hiding the
+       regression. NEVER reorder assertion below locator.
+    2. Environment — infra failures (browser crash, OOM, network reset, Docker).
+       Must come before Timeout because environment errors often surface with
+       "timeout" in the message but the root cause is infra, not test logic.
+    3. Locator — selector drifted / element not found / 0 elements matched.
+       "Timeout waiting for selector" belongs here: selector is the root cause.
+    4. Flaky — test passed on a Playwright retry (retries > 0 in the result).
+       Detected separately in the runner by checking retry count, not from error.
+    5. Timeout — pure wait exhaustion not caused by a missing selector or infra.
     """
     if not error:
         return FailureKind.OTHER
     e = error.lower()
 
     # 1. Assertion — specific Playwright expect() / assertion patterns.
-    #    Deliberately specific to avoid false-positives on timeout messages
-    #    that happen to contain phrases like "needs to be ready".
     if any(k in e for k in (
         "expect(",
         "assertion failed",
@@ -86,9 +88,29 @@ def classify_failure(error: Optional[str]) -> FailureKind:
     )):
         return FailureKind.ASSERTION
 
-    # 2. Locator — selector not found / resolved to 0 elements / not visible.
-    #    "waiting for selector" is a locator issue (the selector is the root
-    #    cause), even though the surface message mentions a timeout.
+    # 2. Environment — infra, browser launch, or network-level failures.
+    #    Checked before Timeout: these often contain "timeout" but are infra,
+    #    not test logic (e.g. Docker OOM, Playwright browser process crash).
+    if any(k in e for k in (
+        "econnrefused",
+        "econnreset",
+        "epipe",
+        "enotfound",
+        "network error",
+        "net::err_",
+        "failed to launch",
+        "browser has been closed",
+        "target closed",
+        "context has been closed",
+        "page has been closed",
+        "out of memory",
+        "killed process",
+        "exit code 1",
+        "spawn error",
+    )):
+        return FailureKind.ENVIRONMENT
+
+    # 3. Locator — selector not found / resolved to 0 elements / not visible.
     if any(k in e for k in (
         "locator", "no element", "not found", "not visible",
         "waiting for selector", "resolved to 0 elements",
@@ -96,11 +118,19 @@ def classify_failure(error: Optional[str]) -> FailureKind:
     )):
         return FailureKind.LOCATOR
 
-    # 3. Timeout — pure wait exhaustion not caused by a missing selector.
+    # 4. Timeout — pure wait exhaustion (navigation, load, explicit waits).
     if "timeout" in e or "timed out" in e:
         return FailureKind.TIMEOUT
 
     return FailureKind.OTHER
+
+
+def classify_flaky(passed: bool, retries: int) -> bool:
+    """
+    Returns True if a test is considered flaky: it ultimately passed but only
+    after one or more Playwright retries. These are quarantine candidates.
+    """
+    return passed and retries > 0
 
 
 def extract_selector(error: Optional[str]) -> Optional[str]:
@@ -162,13 +192,16 @@ Return ONLY JSON:
 
         # only locator failures are healable
         if kind is not FailureKind.LOCATOR:
+            _rationale_map = {
+                FailureKind.ASSERTION:   "assertion failure — real bug, not a selector issue; left red for human review",
+                FailureKind.ENVIRONMENT: "environment/infra failure — browser crash, network reset, or Docker OOM; re-run the pipeline",
+                FailureKind.TIMEOUT:     "timeout — pure wait exhaustion; consider increasing timeout or investigating slow CI",
+                FailureKind.FLAKY:       "flaky — passed on retry; quarantine candidate for investigation",
+                FailureKind.OTHER:       "unclassified failure — inspect full error log",
+            }
             return HealingAttempt(
                 test_id=tr.id, failure_kind=kind, healable=False,
-                rationale=(
-                    "assertion failure — real bug, not a selector issue; left red"
-                    if kind is FailureKind.ASSERTION
-                    else f"{kind.value} failure — not a selector repair"
-                ),
+                rationale=_rationale_map.get(kind, f"{kind.value} failure — not a selector repair"),
             )
 
         old_sel = extract_selector(tr.error)
@@ -222,7 +255,14 @@ Return ONLY JSON:
         log: list[HealingAttempt] = []
 
         for tr in results.results:
+            # Tag flaky tests (passed but only after retries) before skipping
             if tr.passed:
+                if classify_flaky(tr.passed, tr.retries):
+                    log.append(HealingAttempt(
+                        test_id=tr.id, failure_kind=FailureKind.FLAKY,
+                        healable=False,
+                        rationale="passed on retry — flaky; quarantine candidate",
+                    ))
                 continue
             attempt = self._heal_one(tr, suite, dom_provider)
             log.append(attempt)

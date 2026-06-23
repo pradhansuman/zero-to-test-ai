@@ -67,6 +67,7 @@ class PipelineTrace:
     results:    RunResults
     report:     ReportArtifact
     healing_log: list[HealingAttempt] = field(default_factory=list)
+    generation_passes: int = 1      # 1 = first pass only; 2 = reviewer triggered revision
 
 
 class QAPipeline:
@@ -112,12 +113,22 @@ class QAPipeline:
 
         suite = self.generator.run(plan);          emit("generated", suite)
 
-        # ── quality review (uses richer sdet_plan when available) ──
+        # ── quality review → iterative refinement (max 1 revision pass) ──
         review: Optional[ReviewReport] = None
+        generation_passes = 1
         if self.reviewer:
             review_plan = sdet_plan.to_test_plan() if sdet_plan else plan
             review = self.reviewer.run(review_plan, suite)
             emit("reviewed", review)
+
+            # If the reviewer flags gaps, give the generator one refinement pass.
+            # The verdict never gates execution — that authority stays in ReporterAgent.
+            if review.verdict in ("revise", "reject") and review.top_3_fixes:
+                suite = self.generator.run(plan, reviewer_feedback=review.top_3_fixes)
+                generation_passes = 2
+                emit("generated", suite)   # emit revised suite so on_stage sees it
+                review = self.reviewer.run(review_plan, suite)
+                emit("reviewed", review)   # emit revised review for audit trail
 
         results = self.runner.run(suite);          emit("tested",   results)
 
@@ -134,7 +145,8 @@ class QAPipeline:
         emit("reported", report)
 
         return PipelineTrace(
-            payload, plan, sdet_plan, suite, review, results, report, healing_log
+            payload, plan, sdet_plan, suite, review, results, report,
+            healing_log, generation_passes,
         )
 
 
@@ -194,7 +206,8 @@ if __name__ == "__main__":
     if trace.review:
         rv = trace.review
         scores = rv.scores
-        print(f"Review: verdict={rv.verdict}  weighted={rv.weighted_total}/5.0")
+        passes_note = f"  [generation_passes={trace.generation_passes}]" if trace.generation_passes > 1 else ""
+        print(f"Review: verdict={rv.verdict}  weighted={rv.weighted_total}/5.0{passes_note}")
         print(f"  Scores  cov={scores.coverage} corr={scores.correctness} "
               f"edge={scores.edge_negative} atom={scores.atomicity} "
               f"repr={scores.reproducibility} trace={scores.traceability} "

@@ -97,7 +97,7 @@ browser_targets values: "chromium-desktop" | "chromium-mobile" | "webkit-mobile"
 Include "chromium-mobile" and "webkit-mobile" whenever any scenario type is
 "responsive", "accessibility", or "e2e" (UI test that should pass on mobile)."""
 
-    def run(self, plan: TestPlan) -> GeneratedSuite:
+    def run(self, plan: TestPlan, reviewer_feedback: list[str] | None = None) -> GeneratedSuite:
         # Use staging URL from CI env var; fall back to DemoQA when not provided
         target_url = os.environ.get("QA_TARGET_URL", "").strip() or DEMOQA_BASE
         url_note = (
@@ -405,12 +405,22 @@ Include "chromium-mobile" and "webkit-mobile" whenever any scenario type is
                 "breakpoint-conditional assertions. Touch events are auto-emulated.\n"
             )
 
+        # Reviewer feedback from a previous pass — injected as a revision note
+        feedback_note = ""
+        if reviewer_feedback:
+            fixes = "\n".join(f"  - {f}" for f in reviewer_feedback[:3])
+            feedback_note = (
+                f"\nREVISION REQUIRED — a QA reviewer found these gaps in the previous draft:\n"
+                f"{fixes}\n"
+                f"Fix ALL of the above in this revised output. Do not repeat the previous mistakes.\n"
+            )
+
         app_hint = math_hub_hint or store_hint
         prompt = (
             f"Issue #{plan.issue_number}\n"
             f"Plan summary: {plan.summary}\n"
             f"Risk: {plan.risk_level.value} — {plan.risk_rationale}\n"
-            f"{url_note}{app_hint}{mobile_hint}\n\n"
+            f"{url_note}{app_hint}{mobile_hint}{feedback_note}\n\n"
             f"Scenarios to implement:\n{scenarios}\n"
         )
         suite = self._complete_json(prompt, GeneratedSuite, max_tokens=8000)

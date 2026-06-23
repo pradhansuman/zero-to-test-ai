@@ -11,6 +11,13 @@ export default defineConfig({
     ['list'],
     ['html', { outputFolder: 'playwright-report-math-hub', open: 'never' }],
   ],
+  // Visual regression baseline storage — committed alongside spec files
+  snapshotDir: './tests/e2e/__snapshots__',
+  snapshotPathTemplate: '{snapshotDir}/{testFilePath}/{projectName}/{arg}{ext}',
+  expect: {
+    // 2% pixel tolerance — absorbs sub-pixel font rendering across OS versions
+    toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
+  },
   use: {
     baseURL: 'https://pradhansuman.github.io/qa-agent-pipeline/math_hub.html',
     headless: true,
