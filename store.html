@@ -281,10 +281,12 @@
   }
 
   function addToCart(id) {
+    const p = PRODUCTS.find(x => x.id === id);
+    if (!p) return;                              // guard: unknown product ID
+    const btn = document.getElementById(`btn-${id}`);
+    if (!btn) return;                            // guard: button not in DOM
     cart[id] = (cart[id] || 0) + 1;
     updateCartUI();
-    const p = PRODUCTS.find(x => x.id === id);
-    const btn = document.getElementById(`btn-${id}`);
     btn.textContent = "Added!";
     btn.classList.add("added");
     setTimeout(() => { btn.textContent = "Add to Cart"; btn.classList.remove("added"); }, 1000);
@@ -292,6 +294,7 @@
   }
 
   function changeQty(id, delta) {
+    if (!PRODUCTS.find(x => x.id === id)) return; // guard: unknown product ID
     cart[id] = (cart[id] || 0) + delta;
     if (cart[id] <= 0) delete cart[id];
     updateCartUI();

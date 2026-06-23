@@ -23,6 +23,7 @@ SUITE_META = {
     'store-a11y':     {'label': 'Accessibility',     'icon': '♿', 'color': '#06b6d4'},
     'store-cwv':      {'label': 'Core Web Vitals',   'icon': '📊', 'color': '#a78bfa'},
     'store-network':  {'label': 'State Resilience',  'icon': '🔁', 'color': '#f97316'},
+    'store-error':    {'label': 'Error / Edge Cases', 'icon': '⚠️',  'color': '#e11d48'},
 }
 
 DEFAULT_RESULTS      = Path('test-results-store/results.json')
