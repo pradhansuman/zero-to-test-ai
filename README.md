@@ -8,7 +8,7 @@
 A production-grade, multi-agent QA framework that takes a GitHub issue and delivers a complete, executed, self-healing Playwright test suite — with zero human intervention in between.
 
 ```
-GitHub Issue ──▶ Ingestor ──▶ SDET Designer ──▶ Generator ──▶ Reviewer ──▶ Runner ──▶ Healer ──▶ Reporter
+GitHub Issue ──▶ Ingestor ──▶ Test Designer ──▶ Generator ──▶ Reviewer ──▶ Runner ──▶ Healer ──▶ Reporter
                   (API)        (formal BVA/EP)    (LLM)       (LLM critic)  (PW CLI)   (LLM)      (rule gate)
 ```
 
@@ -18,7 +18,7 @@ GitHub Issue ──▶ Ingestor ──▶ SDET Designer ──▶ Generator ─�
 
 | Capability | Details |
 |---|---|
-| **7-agent pipeline** | Ingestor → SDET Designer → Generator → Reviewer → Runner → Healer → Reporter |
+| **7-agent pipeline** | Ingestor → Test Designer → Generator → Reviewer → Runner → Healer → Reporter |
 | **Iterative critic loop** | Reviewer audits generated suite; if verdict is "revise/reject", Generator gets one refinement pass with `top_3_fixes` injected |
 | **Self-healing locators** | Detects selector drift, repairs via LLM grounded in live DOM, re-runs patched test. Never heals assertion failures |
 | **Richer failure classification** | `LOCATOR` · `ASSERTION` · `ENVIRONMENT` · `FLAKY` · `TIMEOUT` · `OTHER` — rule-based, auditable, no LLM |
@@ -40,8 +40,8 @@ Point it at any public repo and issue number — the pipeline ingests, plans, ge
 python -m orchestrator.pipeline facebook/react 28000 --token ghp_xxx --real
 ```
 
-### 2. Formal SDET Test Design at Scale
-Switch `--sdet` on and the `TestDesignerAgent` applies Boundary Value Analysis, Equivalence Partitioning, Decision Tables, Pairwise, and Error Guessing — the same techniques a senior SDET would use, derived automatically from acceptance criteria in seconds.
+### 2. Formal Test Design at Scale
+Switch `--sdet` on and the `TestDesignerAgent` applies Boundary Value Analysis, Equivalence Partitioning, Decision Tables, Pairwise, and Error Guessing — derived automatically from acceptance criteria in seconds.
 
 ### 3. Self-Healing Test Maintenance
 When the UI changes and a selector breaks, the `HealerAgent` detects it (locator failure, not assertion), consults the live DOM, asks Claude for a repaired selector, patches the file, and re-runs. The old→new selector and confidence score are logged for human audit. Broken builds due to CSS class renames or `data-testid` changes become automatic fixes.
@@ -348,7 +348,7 @@ zero-to-test-ai/
 │   │   │                                  _complete_json() with retry + JSON parsing
 │   │   ├── ingestor.py                  ← Stage 1: GitHub REST API → IssuePayload
 │   │   │                                  (no LLM; label→priority rules)
-│   │   ├── designer.py                  ← Stage 2a: Formal SDET test design
+│   │   ├── designer.py                  ← Stage 2a: Formal test design
 │   │   │                                  (EP, BVA, Decision Table, Pairwise,
 │   │   │                                   Error Guessing, State Transition)
 │   │   ├── strategist.py                ← Stage 2b: Risk-based planner (default path)
