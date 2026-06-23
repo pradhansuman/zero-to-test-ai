@@ -82,10 +82,10 @@ class TestClassifyOther:
         assert classify_failure("") == FailureKind.OTHER
 
     def test_unknown_error(self):
-        assert classify_failure("JavaScript heap out of memory") == FailureKind.OTHER
+        assert classify_failure("JavaScript heap out of memory") == FailureKind.ENVIRONMENT
 
     def test_network_error(self):
-        assert classify_failure("net::ERR_CONNECTION_REFUSED") == FailureKind.OTHER
+        assert classify_failure("net::ERR_CONNECTION_REFUSED") == FailureKind.ENVIRONMENT
 
 
 class TestExtractSelector:
