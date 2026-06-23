@@ -150,7 +150,7 @@ test('TC-STORE-LOOP-09: cart count badge is accurate through 25 sequential adds'
 });
 
 // ── TC-STORE-LOOP-10 ──────────────────────────────────────────────────────────
-test('TC-STORE-LOOP-10: all 10 products added once — total equals $545.85', async ({ page }) => {
+test('TC-STORE-LOOP-10 @smoke: all 10 products added once — total equals $545.85', async ({ page }) => {
   // 79.99+119.00+39.95+34.99+89.00+24.99+49.99+59.99+29.95+18.00 = 545.85
   const total = await page.evaluate(() => {
     for (let id = 1; id <= 10; id++) (window as any).addToCart(id);

@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 // ── TC-STORE-SEC-01 ───────────────────────────────────────────────────────────
-test('TC-STORE-SEC-01: no eval() call in page JavaScript source', async ({ page }) => {
+test('TC-STORE-SEC-01 @smoke: no eval() call in page JavaScript source', async ({ page }) => {
   const source = await page.evaluate(() => document.documentElement.outerHTML);
   // match the dangerous call form, not substrings like "evaluate"
   expect(source).not.toMatch(/\beval\s*\(/);
@@ -108,7 +108,7 @@ test('TC-STORE-SEC-06: no console errors during normal add/remove/checkout flow'
 });
 
 // ── TC-STORE-SEC-07 ───────────────────────────────────────────────────────────
-test('TC-STORE-SEC-07: no external network requests are made by the page', async ({ page }) => {
+test('TC-STORE-SEC-07 @smoke: no external network requests are made by the page', async ({ page }) => {
   const external: string[] = [];
   page.on('request', req => {
     const url = req.url();

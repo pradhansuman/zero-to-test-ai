@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 // ── VR-STORE-01 ───────────────────────────────────────────────────────────────
-test('VR-STORE-01: full page — product grid', async ({ page }) => {
+test('VR-STORE-01 @smoke: full page — product grid', async ({ page }) => {
   await expect(page).toHaveScreenshot('store-full-page.png', {
     ...SNAP,
     fullPage: true,

@@ -3,7 +3,8 @@
 # One command: run ShopNow tests → generate HTML report → commit → push
 #
 # Usage:
-#   ./run-tests.sh                    # run all tests
+#   ./run-tests.sh                    # run full suite (all projects)
+#   ./run-tests.sh --smoke            # run only @smoke tests on Desktop Chrome
 #   ./run-tests.sh --no-push          # run + report + commit, but skip push
 #   ./run-tests.sh --report-only      # regenerate report from last results.json
 
@@ -22,16 +23,21 @@ hr()    { echo -e "${C_DIM}─────────────────�
 # ── Parse args ─────────────────────────────────────────────────────────────────
 NO_PUSH=false
 REPORT_ONLY=false
+SMOKE=false
 for arg in "${@:-}"; do
   case "$arg" in
     --no-push)     NO_PUSH=true ;;
     --report-only) REPORT_ONLY=true ;;
+    --smoke)       SMOKE=true ;;
   esac
 done
 
 hr
 echo -e "${C_BOLD}  🧪 ShopNow QA Pipeline${NC}"
 echo -e "  ${C_DIM}$(date '+%Y-%m-%d %H:%M')${NC}"
+if [ "$SMOKE" = true ]; then
+  echo -e "  ${C_YELLOW}Mode: SMOKE  (@smoke tests only, Desktop Chrome)${NC}"
+fi
 hr
 
 PW_EXIT=0
@@ -39,8 +45,17 @@ STATS=""
 
 # ── 1. Run Playwright ──────────────────────────────────────────────────────────
 if [ "$REPORT_ONLY" = false ]; then
-  log "Running test suite  (playwright.store.config.ts)…"
-  npx playwright test --config playwright.store.config.ts
+  if [ "$SMOKE" = true ]; then
+    log "Running @smoke tests only (Desktop Chrome)…"
+    npx playwright test \
+      --config playwright.store.config.ts \
+      --project "Desktop Chrome" \
+      --grep "@smoke" \
+      --retries 0
+  else
+    log "Running full suite  (playwright.store.config.ts)…"
+    npx playwright test --config playwright.store.config.ts
+  fi
   PW_EXIT=$?
   echo ""
   if [ $PW_EXIT -eq 0 ]; then

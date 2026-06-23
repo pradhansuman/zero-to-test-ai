@@ -20,10 +20,42 @@ SUITE_META = {
     'store-security': {'label': 'Security',          'icon': '🔐', 'color': '#ef4444'},
     'store-perf':     {'label': 'Performance',       'icon': '⚡', 'color': '#f59e0b'},
     'store-loop':     {'label': 'Endurance Loops',   'icon': '🔄', 'color': '#8b5cf6'},
+    'store-a11y':     {'label': 'Accessibility',     'icon': '♿', 'color': '#06b6d4'},
+    'store-cwv':      {'label': 'Core Web Vitals',   'icon': '📊', 'color': '#a78bfa'},
+    'store-network':  {'label': 'State Resilience',  'icon': '🔁', 'color': '#f97316'},
 }
 
 DEFAULT_RESULTS = Path('test-results-store/results.json')
 DEFAULT_OUTPUT  = Path('store-qa-report.html')
+HISTORY_FILE    = Path('store-qa-history.json')
+HISTORY_MAX     = 30  # keep last 30 runs in the trend chart
+
+
+def _load_history() -> list:
+    if HISTORY_FILE.exists():
+        try:
+            return json.loads(HISTORY_FILE.read_text(encoding='utf-8'))
+        except Exception:
+            return []
+    return []
+
+
+def _append_history(data: dict) -> list:
+    """Append current run to history file, capped at HISTORY_MAX entries."""
+    runs = _load_history()
+    runs.append({
+        'ts':     data['start_str'],
+        'total':  data['total'],
+        'passed': data['passed'] + data['flaky'],
+        'failed': data['failed'],
+        'pct':    data['pass_pct'],
+        'gate':   data['gate'],
+        'dur':    data['dur_str'],
+    })
+    runs = runs[-HISTORY_MAX:]
+    HISTORY_FILE.write_text(json.dumps(runs, indent=2), encoding='utf-8')
+    return runs
+
 
 # ── CSS ────────────────────────────────────────────────────────────────────────
 CSS = """
@@ -407,6 +439,53 @@ new Chart(document.getElementById('browserChart'), {
   }
 });
 
+// ── Trend chart (pass rate over time) ────────────────────────────────────────
+if (document.getElementById('trendChart') && DATA.trend.labels.length >= 2) {
+  new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: {
+      labels: DATA.trend.labels,
+      datasets: [
+        {
+          label: 'Pass Rate %',
+          data: DATA.trend.pct,
+          borderColor: '#3fb950',
+          backgroundColor: 'rgba(63,185,80,0.12)',
+          pointBackgroundColor: '#3fb950',
+          pointRadius: 4,
+          tension: 0.3,
+          fill: true,
+          yAxisID: 'y',
+        },
+        {
+          label: 'Failures',
+          data: DATA.trend.failed,
+          borderColor: '#f85149',
+          backgroundColor: 'rgba(248,81,73,0.10)',
+          pointBackgroundColor: '#f85149',
+          pointRadius: 4,
+          tension: 0.3,
+          fill: true,
+          yAxisID: 'y2',
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#8b949e', boxWidth: 12, padding: 12 } },
+        tooltip: { backgroundColor: '#161b22', borderColor: '#30363d', borderWidth: 1 }
+      },
+      scales: {
+        x:  { ticks: { color: '#8b949e', maxRotation: 45 }, grid: { color: '#21262d' } },
+        y:  { ticks: { color: '#3fb950', callback: v => v + '%' }, grid: { color: '#21262d' }, min: 0, max: 100, position: 'left' },
+        y2: { ticks: { color: '#f85149' }, grid: { drawOnChartArea: false }, min: 0, position: 'right' },
+      }
+    }
+  });
+}
+
 // ── Table filter ─────────────────────────────────────────────────────────────
 function filterTable() {
   const q     = document.getElementById('srch').value.toLowerCase();
@@ -625,6 +704,9 @@ def generate(data: dict) -> str:
     bd = data['browser_data']
     bl = list(bd.keys())
 
+    # Load run history (used in trend chart) — data['history'] injected by main()
+    history = data.get('history', [])
+
     # Chart data object injected as JSON
     chart_data = {
         'kpi': {
@@ -647,6 +729,11 @@ def generate(data: dict) -> str:
         'browsers': {
             'labels': bl,
             'passed': [bd[b]['passed'] for b in bl],
+        },
+        'trend': {
+            'labels': [r['ts'][-16:] for r in history],  # "Dec 23, 2025 at 04:30 UTC" → last 16 chars
+            'pct':    [r['pct'] for r in history],
+            'failed': [r['failed'] for r in history],
         },
     }
     chart_json = json.dumps(chart_data, indent=2)
@@ -783,6 +870,17 @@ def generate(data: dict) -> str:
         '</div>\n'
         '</section>\n'
 
+        # ─── Trend chart (only shown when ≥ 2 runs in history) ──────────
+        + (
+        '<section id="trend-section">\n'
+        '<div class="stitle">Pass Rate Trend</div>\n'
+        '<div class="chart-box" style="max-width:900px;margin:0 auto">\n'
+        '  <canvas id="trendChart"></canvas>\n'
+        '</div>\n'
+        '</section>\n'
+        if len(history) >= 2 else ''
+        ) +
+
         # ─── Test table ─────────────────────────────────────────────────
         '<section>\n'
         '<div class="tc-header">\n'
@@ -866,6 +964,11 @@ def main() -> None:
 
     print(f'Parsing {args.results} …')
     data = parse_results(args.results)
+
+    # Persist this run to the rolling history file, then embed it in the report
+    history = _append_history(data)
+    data['history'] = history
+    print(f'History: {len(history)} run(s) tracked in {HISTORY_FILE}')
 
     print(f'Building report ({data["total"]} tests, {data["pass_pct"]}% pass rate) …')
     html = generate(data)

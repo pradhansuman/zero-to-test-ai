@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 // ── TC-STORE-API-01 ───────────────────────────────────────────────────────────
-test('TC-STORE-API-01: page loads and product grid is visible', async ({ page }) => {
+test('TC-STORE-API-01 @smoke: page loads and product grid is visible', async ({ page }) => {
   await expect(page.locator('[data-testid="product-grid"]')).toBeVisible();
 });
 
@@ -37,7 +37,7 @@ test('TC-STORE-API-03: all required data-testid attributes are present exactly o
 });
 
 // ── TC-STORE-API-04 ───────────────────────────────────────────────────────────
-test('TC-STORE-API-04: product grid renders exactly 10 product cards', async ({ page }) => {
+test('TC-STORE-API-04 @smoke: product grid renders exactly 10 product cards', async ({ page }) => {
   await expect(page.locator('[data-testid="product-card"]')).toHaveCount(10);
 });
 
@@ -85,7 +85,7 @@ test('TC-STORE-API-07: all product data-product-id values are unique', async ({ 
 });
 
 // ── TC-STORE-API-08 ───────────────────────────────────────────────────────────
-test('TC-STORE-API-08: cart initialises as empty in a fresh browser context', async ({ page }) => {
+test('TC-STORE-API-08 @smoke: cart initialises as empty in a fresh browser context', async ({ page }) => {
   // updateCartUI() always writes to localStorage (even on load), so the key
   // will exist but must parse to an empty object — never pre-populated items
   const stored = await page.evaluate(() =>

@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 // ── TC-STORE-PERF-01 ──────────────────────────────────────────────────────────
-test('TC-STORE-PERF-01: renderProducts() completes in under 50ms', async ({ page }) => {
+test('TC-STORE-PERF-01 @smoke: renderProducts() completes in under 50ms', async ({ page }) => {
   const ms = await page.evaluate(() => {
     const grid = document.getElementById('product-grid')!;
     grid.innerHTML = '';
@@ -53,7 +53,7 @@ test('TC-STORE-PERF-03: updateCartUI() with 10-item cart executes in under 20ms'
 });
 
 // ── TC-STORE-PERF-04 ──────────────────────────────────────────────────────────
-test('TC-STORE-PERF-04: adding all 10 products completes in under 100ms total', async ({ page }) => {
+test('TC-STORE-PERF-04 @smoke: adding all 10 products completes in under 100ms total', async ({ page }) => {
   const ms = await page.evaluate(() => {
     const t0 = performance.now();
     for (let id = 1; id <= 10; id++) (window as any).addToCart(id);

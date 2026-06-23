@@ -26,6 +26,7 @@ export default defineConfig({
     toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
   },
   projects: [
+    // ── Primary browsers (full suite) ────────────────────────────────────────
     {
       name: 'Desktop Chrome',
       use: { ...devices['Desktop Chrome'] },
@@ -33,6 +34,17 @@ export default defineConfig({
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 7'] },
+    },
+    // ── Cross-browser (no visual snapshots — baselines are Chrome-only) ──────
+    {
+      name: 'Desktop Firefox',
+      use: { ...devices['Desktop Firefox'] },
+      testIgnore: ['**/store-visual.spec.ts'],
+    },
+    {
+      name: 'Mobile Safari',
+      use: { ...devices['iPhone 14'] },
+      testIgnore: ['**/store-visual.spec.ts'],
     },
   ],
 });
