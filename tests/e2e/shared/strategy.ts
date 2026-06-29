@@ -172,3 +172,33 @@ export const CoverageMap: Record<string, string> = {
   '6.7-chaos':           '<prefix>-error.spec.ts (ERR-CHAOS)',
   'visual-regression':   '<prefix>-visual.spec.ts',
 };
+
+// ── TEST DATA GENERATION (Faker patterns) ──────────────────────────────────
+export const TestData = {
+  user: () => ({
+    email: `user${Math.random().toString(36).slice(2)}@test.com`,
+    password: 'Test123!@#secure',
+    name: `User${Math.floor(Math.random() * 10000)}`,
+  }),
+  
+  product: (id?: number) => ({
+    id: id || Math.floor(Math.random() * 1000),
+    name: `Product ${['Alpha', 'Beta', 'Gamma'][Math.floor(Math.random() * 3)]}`,
+    price: +(Math.random() * 100).toFixed(2),
+    sku: `SKU-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+  }),
+  
+  cart: (items: number = 1) => 
+    Array.from({ length: items }, (_, i) => ({
+      id: i + 1,
+      qty: Math.floor(Math.random() * 5) + 1,
+      price: +(Math.random() * 50).toFixed(2),
+    })),
+  
+  order: () => ({
+    id: `ORD-${Date.now()}`,
+    email: `order${Math.random().toString(36).slice(2)}@test.com`,
+    total: +(Math.random() * 500).toFixed(2),
+    items: Math.floor(Math.random() * 10) + 1,
+  }),
+};
