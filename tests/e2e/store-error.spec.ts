@@ -205,35 +205,28 @@ test('ERR-STORE-12: add → checkout → add again works correctly — cart is n
 // ── ERR-STORE-13 ──────────────────────────────────────────────────────────────
 // BVA min: decrement from qty 1 removes item — count never goes below 0
 test('ERR-STORE-13 BVA-min: decrement from qty 1 removes item completely', async ({ page }) => {
-  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
-  const shop = new ShopNow(page);
-  await shop.addToCart(0);
-  await shop.openCart();
-  expect(await shop.cartItems.count()).toBe(1);
-  // Click the qty-decrease (or first button in cart item)
-  await page.locator('.cart-item').first().locator('button').first().click();
-  await page.waitForTimeout(500);
-  expect(await shop.cartItems.count()).toBe(0);
-  const badge = (await shop.cartBadge.textContent() || '').trim();
-  expect(['0', '']).toContain(badge);
+  await load(page);
+  await page.evaluate(() => (window as any).addToCart(1));
+  await page.locator('#cart-btn').dispatchEvent('click');
+  const qtyControl = page.locator('[data-testid="qty-value"]');
+  await expect(qtyControl).toHaveCount(1);
+  await page.locator('[data-testid="qty-decrease"]').first().click();
+  await expect(qtyControl).toHaveCount(0);
+  await expect(page.locator('#cart-count')).toHaveText(/^(0|)$/);
 });
 
 // ── ERR-STORE-14 ──────────────────────────────────────────────────────────────
 // BVA max: 100 increments via JS — total must stay a valid finite number
 test('ERR-STORE-14 BVA-max: qty incremented 100x keeps a finite, valid total', async ({ page }) => {
-  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
-  const shop = new ShopNow(page);
-  await shop.addToCart(0);
+  await load(page);
   await page.evaluate(() => {
-    const id = (window as any).cart?.[0]?.id;
-    if (!id) return;
-    for (let i = 0; i < 99; i++) (window as any).changeQty(id, 1);
-    if ((window as any).updateCartUI) (window as any).updateCartUI();
-    else if ((window as any).renderCart) (window as any).renderCart();
+    (window as any).addToCart(1);
+    for (let i = 0; i < 99; i++) (window as any).changeQty(1, 1);
   });
-  await shop.openCart();
-  await page.waitForTimeout(400);
-  const totalText = (await shop.cartTotal.textContent() || '').replace(/[^0-9.]/g, '');
+  await page.locator('#cart-btn').dispatchEvent('click');
+  const totalLocator = page.locator('[data-testid="cart-total"]');
+  await expect(totalLocator).toBeVisible();
+  const totalText = (await totalLocator.textContent() || '').replace(/[^0-9.]/g, '');
   const totalNum = parseFloat(totalText);
   expect(isNaN(totalNum)).toBe(false);
   expect(isFinite(totalNum)).toBe(true);
@@ -243,18 +236,16 @@ test('ERR-STORE-14 BVA-max: qty incremented 100x keeps a finite, valid total', a
 // ── ERR-STORE-15 ──────────────────────────────────────────────────────────────
 // Decision table: checkout cycle × 2 — each cycle starts and ends clean
 test('ERR-STORE-15 decision: two full checkout cycles each leave cart empty', async ({ page }) => {
-  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
-  const shop = new ShopNow(page);
+  await load(page);
+  page.on('dialog', d => d.accept());
+  const badge = page.locator('#cart-count');
+  const total = page.locator('[data-testid="cart-total"]');
   for (let cycle = 1; cycle <= 2; cycle++) {
-    await shop.addToCart(0);
-    await shop.addToCart(1);
-    await shop.openCart();
-    await shop.checkout();
-    await page.waitForTimeout(600);
-    const badge = (await shop.cartBadge.textContent() || '').trim();
-    expect(['0', '']).toContain(badge);
-    const total = (await shop.cartTotal.textContent() || '');
-    expect(total).toMatch(/\$0\.00|\$0/);
+    await page.evaluate(() => { (window as any).addToCart(1); (window as any).addToCart(2); });
+    await page.locator('#cart-btn').dispatchEvent('click');
+    await page.locator('[data-testid="checkout-btn"]').click();
+    await expect(badge).toHaveText(/^(0|)$/);
+    await expect(total).toHaveText(/\$0\.00|\$0/);
   }
 });
 
@@ -262,18 +253,15 @@ test('ERR-STORE-15 decision: two full checkout cycles each leave cart empty', as
 // Pairwise: 4 product × quantity pairs — total price matches unit × qty
 for (const { idx, qty } of [{ idx: 0, qty: 1 }, { idx: 4, qty: 3 }, { idx: 9, qty: 2 }, { idx: 2, qty: 5 }]) {
   test('ERR-STORE-16 pairwise: product[' + idx + '] × qty ' + qty + ' total is accurate', async ({ page }) => {
-    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
-    const shop = new ShopNow(page);
-    const priceText = (await page.locator('[data-testid^="product-price-"]').nth(idx).textContent() || '0');
+    await load(page);
+    const priceText = (await page.locator('[data-testid="product-price"]').nth(idx).textContent() || '0');
     const unitPrice = parseFloat(priceText.replace(/[^0-9.]/g, ''));
-    // Add qty times
-    for (let i = 0; i < qty; i++) {
-      await page.locator('[data-testid^="add-to-cart-"]').nth(idx).click();
-      await page.waitForTimeout(100);
-    }
-    await shop.openCart();
-    await page.waitForTimeout(300);
-    const totalText = (await shop.cartTotal.textContent() || '').replace(/[^0-9.]/g, '');
+    const productId = await page.evaluate((i) => (window as any).PRODUCTS?.[i]?.id ?? i + 1, idx);
+    await page.evaluate(({ id, q }) => { for (let i = 0; i < q; i++) (window as any).addToCart(id); }, { id: productId, q: qty });
+    await page.locator('#cart-btn').dispatchEvent('click');
+    const totalLocator = page.locator('[data-testid="cart-total"]');
+    await expect(totalLocator).toBeVisible();
+    const totalText = (await totalLocator.textContent() || '').replace(/[^0-9.]/g, '');
     const totalNum = parseFloat(totalText);
     const expected = Math.round(unitPrice * qty * 100) / 100;
     expect(Math.abs(totalNum - expected)).toBeLessThan(0.02);

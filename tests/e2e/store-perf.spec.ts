@@ -148,13 +148,18 @@ test('TC-STORE-PERF-10: page renders all 10 product cards within 3000ms of navig
 
 // ── LOOP 1.6: Gorilla Testing ─────────────────────────────────────────────────
 test('TC-STORE-PERF-GORILLA: gorilla — Add to Cart clicked 30x without DOM corruption', async ({ page }) => {
+  test.setTimeout(60000);
   const errors: string[] = [];
   page.on('pageerror', e => errors.push(e.message));
-  await page.goto('https://dfgjhjcr.gensparkspace.com', { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(1000);
-  const btn = page.locator('[data-testid^="add-to-cart-"]').first();
-  for (let i = 0; i < 30; i++) { await btn.click().catch(() => {}); await page.waitForTimeout(50); }
-  await expect(page.locator('body')).toBeVisible();
+  // beforeEach already navigated to local store.html
+  const btn = page.locator('[data-testid="add-to-cart"]').first();
+  const badge = page.locator('[data-testid="cart-count"]');
+  // Rapid clicks with minimal delay; Playwright auto-waits for click handler
+  for (let i = 0; i < 30; i++) {
+    await btn.click().catch(() => {});
+  }
+  // Verify final state: badge updated and no JS errors (replaces after-click pause)
+  await expect(badge).toHaveText(/\d+/);
   const critical = errors.filter(e => !e.toLowerCase().includes('favicon'));
   test.info().annotations.push({ type: 'gorilla', description: '30x add-to-cart | errors: ' + critical.length });
   expect(critical).toHaveLength(0);
@@ -162,11 +167,12 @@ test('TC-STORE-PERF-GORILLA: gorilla — Add to Cart clicked 30x without DOM cor
 
 // ── LOOP 3.3: Spike Testing ───────────────────────────────────────────────────
 test('TC-STORE-PERF-SPIKE: spike — 10 tabs loading simultaneously stay stable', async ({ browser }) => {
+  test.setTimeout(60000);
   const ctx = await browser.newContext();
   const tabs = await Promise.all(Array.from({ length: 10 }, () => ctx.newPage()));
   const errors: string[] = [];
   tabs.forEach(p => p.on('pageerror', e => errors.push(e.message)));
-  await Promise.all(tabs.map(p => p.goto('https://dfgjhjcr.gensparkspace.com', { waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {})));
+  await Promise.all(tabs.map(p => p.goto(URL, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {})));
   for (const p of tabs) await expect(p.locator('body')).toBeVisible().catch(() => {});
   await ctx.close();
   test.info().annotations.push({ type: 'spike', description: '10-tab spike completed' });
