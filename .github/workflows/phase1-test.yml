@@ -30,6 +30,8 @@ jobs:
 
       - name: Run tests
         working-directory: ./engines/api
+        env:
+          PYTHONPATH: /home/runner/work/zero-to-test-ai/zero-to-test-ai
         run: pytest tests/ -v --cov=src --cov-report=xml --cov-report=term
 
       - name: Upload coverage
@@ -75,6 +77,7 @@ jobs:
       - name: Run tests
         working-directory: ./engines/database
         env:
+          PYTHONPATH: /home/runner/work/zero-to-test-ai/zero-to-test-ai
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USER: testuser

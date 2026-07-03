@@ -91,6 +91,7 @@ class Assertion(BaseModel):
     def validate_target(cls, v: Any) -> str:
         if not v or not isinstance(v, str):
             raise ValueError("target must be a non-empty string")
+        assert isinstance(v, str)
         return v
 
 
