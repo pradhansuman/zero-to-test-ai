@@ -88,7 +88,7 @@ class Assertion(BaseModel):
     error_message: Optional[str] = Field(None, description="Custom error message on failure")
 
     @validator("target")
-    def validate_target(cls, v):
+    def validate_target(cls, v: Any) -> str:
         if not v or not isinstance(v, str):
             raise ValueError("target must be a non-empty string")
         return v
@@ -131,7 +131,7 @@ class APITestCase(BaseModel):
     skip: bool = False
 
     @validator("endpoint")
-    def validate_endpoint(cls, v):
+    def validate_endpoint(cls, v: Any) -> str:
         if not v:
             raise ValueError("endpoint cannot be empty")
         return v
@@ -239,7 +239,7 @@ class SQLTestCase(BaseModel):
     skip: bool = False
 
     @validator("sql")
-    def validate_sql(cls, v):
+    def validate_sql(cls, v: Any) -> str:
         if not v or not isinstance(v, str):
             raise ValueError("sql must be a non-empty string")
         return v
