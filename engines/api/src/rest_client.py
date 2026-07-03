@@ -47,7 +47,7 @@ class RestClient:
         self._client = httpx.AsyncClient(
             timeout=self.timeout,
             verify=self.ssl_verify,
-            proxies=self.proxy,
+            proxy=self.proxy,
         )
         return self
 
