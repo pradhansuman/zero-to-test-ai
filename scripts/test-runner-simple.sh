@@ -70,6 +70,18 @@ if [ "$ENV" = "local" ]; then
   echo ""
   echo "📊 Results available at:"
   echo "   HTML Report: ./playwright-report/index.html"
+  echo ""
+
+  # Display test report summary
+  if [ -f ./playwright-report/index.html ]; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📋 TEST REPORT SUMMARY (from HTML)"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "To view interactive report, run:"
+    echo "  open ./playwright-report/index.html"
+    echo ""
+  fi
 
 elif [ "$ENV" = "docker" ]; then
   echo -e "${YELLOW}🐳 Running tests in Docker...${NC}"
