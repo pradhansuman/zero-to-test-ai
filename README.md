@@ -63,6 +63,49 @@ The `mcp_framework/` extends the core pipeline: ingest a PRD, generate and scaff
 
 ---
 
+---
+
+## ⚡ NEW: Multi-Environment Test Execution with Interactive Wizard
+
+Run tests anywhere with a **user-friendly guided interface**:
+
+```bash
+# Run the interactive wizard (recommended for first-time users)
+./scripts/interactive-test-wizard.sh
+```
+
+The wizard guides you through:
+1. **Use Case** — Development? CI/CD? Load Testing? (7 options)
+2. **Environment** — Local, Docker, AWS, Google Cloud, or Azure
+3. **Report Format** — HTML, JSON, JUnit, or all
+4. **Settings** — Browser, workers, smoke tests
+5. **Confirmation** — Review and execute
+
+**Smart features:**
+- ✅ Auto-recommends best environment for your use case
+- ✅ Shows estimated cost & duration upfront
+- ✅ No CLI flags to remember
+- ✅ Works across all 5 environments
+- ✅ Automatic results display
+
+### 5 Execution Environments
+
+| Environment | Setup | Cost | Speed | Best For |
+|---|---|---|---|---|
+| **Local** | 5 min | $0 | ⭐⭐⭐⭐⭐ | Development, debugging |
+| **Docker** | 2 min | $0 | ⭐⭐⭐⭐ | CI/CD, consistency |
+| **AWS** | 20 min | $0.10/run | ⭐⭐⭐ | Enterprise, scaling |
+| **Google Cloud** | 15 min | $0.08/run | ⭐⭐⭐ | Google ecosystem |
+| **Azure** | 15 min | $0.13/run | ⭐⭐ | Microsoft ecosystem |
+
+**Documentation:**
+- 📖 [INTERACTIVE_WIZARD_GUIDE.md](INTERACTIVE_WIZARD_GUIDE.md) — Step-by-step wizard walkthrough
+- 📖 [QUICK_START.md](QUICK_START.md) — One-liner commands & setup timelines
+- 📖 [MULTI_ENV_DEPLOYMENT.md](MULTI_ENV_DEPLOYMENT.md) — Complete setup for all 5 environments
+- 📖 [GUARDRAILS.md](GUARDRAILS.md) — Quality checks & anti-hallucination measures
+
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -81,10 +124,49 @@ cd zero-to-test-ai
 
 pip install -r requirements.txt
 npm install
-npx playwright install chromium
+npx playwright install chromium firefox
 ```
 
-### Try it instantly — no API key needed
+### Option 1: Use the Interactive Wizard (Recommended)
+
+```bash
+# Make it executable
+chmod +x scripts/interactive-test-wizard.sh
+
+# Run the wizard
+./scripts/interactive-test-wizard.sh
+```
+
+Then simply answer 5 questions and tests execute automatically! ✨
+
+### Option 2: Run Tests Directly
+
+**Local (fastest):**
+```bash
+./scripts/test-runner.sh --env local
+```
+
+**Docker (consistent):**
+```bash
+./scripts/test-runner.sh --env docker
+```
+
+**AWS (scalable):**
+```bash
+./scripts/test-runner.sh --env aws --aws-region us-east-1
+```
+
+**Google Cloud:**
+```bash
+./scripts/test-runner.sh --env gcp --gcp-zone us-central1-a
+```
+
+**Azure:**
+```bash
+./scripts/test-runner.sh --env azure
+```
+
+### Option 3: Try the AI Pipeline (no API key needed)
 
 ```bash
 python -m orchestrator.pipeline --demo --offline
@@ -787,6 +869,11 @@ zero-to-test-ai/
 │
 ├── 📋 ROOT CONFIG & DOCS
 │   ├── README.md                        ← Full project docs, badges, usage guide
+│   ├── QUICK_START.md                   ← ⭐ One-liner commands & setup (START HERE!)
+│   ├── INTERACTIVE_WIZARD_GUIDE.md      ← ⭐ Step-by-step wizard walkthrough
+│   ├── MULTI_ENV_DEPLOYMENT.md          ← ⭐ Complete setup for all 5 environments
+│   ├── MULTI_ENV_SUMMARY.md             ← ⭐ System architecture overview
+│   ├── GUARDRAILS.md                    ← Quality checks & anti-hallucination measures
 │   ├── CLAUDE.md                        ← Claude Code instructions for this repo
 │   ├── LICENSE                          ← MIT License
 │   ├── requirements.txt                 ← Python deps (anthropic, pydantic, mcp, pytest…)
@@ -795,6 +882,7 @@ zero-to-test-ai/
 │   ├── types.d.ts                       ← Global TS type declarations
 │   ├── rerun.sh                         ← Helper: trigger CI on a GitHub issue via gh CLI
 │   ├── Dockerfile                       ← Playwright container image for CI
+│   ├── Dockerfile.test                  ← ⭐ Docker image for test execution
 │   ├── playwright.config.ts             ← Default config (delegates to playwright.store.config.ts)
 │   └── playwright.math-hub.config.ts    ← Math hub config (6 suites, multi-browser)
 │
@@ -902,6 +990,13 @@ zero-to-test-ai/
 │
 ├── 🛠️ SCRIPTS
 │   └── scripts/
+│       ├── interactive-test-wizard.sh       ← ⭐ Interactive guided test execution
+│       ├── test-runner.sh                   ← ⭐ Universal test orchestrator (5 envs)
+│       ├── aws-user-data.sh                 ← ⭐ AWS EC2 instance auto-setup
+│       ├── gcp-startup-script.sh            ← ⭐ Google Cloud VM initialization
+│       ├── azure-user-data.sh               ← ⭐ Azure VM custom script
+│       ├── guardrails.sh                    ← Pre-commit validation checks
+│       ├── validate-test-results.py         ← Test metrics verification
 │       └── prioritize_tests.py              ← git diff → --grep pattern
 │                                              8 risk rules, P0/P1 priority
 │                                              Cuts CI from ~8 min to < 2 min on minor PRs
