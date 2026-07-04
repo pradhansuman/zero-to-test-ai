@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tricentis Demo Web Shop - QA Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header-meta {
+            font-size: 12px;
+            color: #8b949e;
+        }
+
+        .kpi-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .kpi-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #2563eb);
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .kpi-value {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .kpi-card.passed .kpi-value {
+            color: #3fb950;
+        }
+
+        .kpi-card.failed .kpi-value {
+            color: #f85149;
+        }
+
+        .kpi-card.skipped .kpi-value {
+            color: #d29922;
+        }
+
+        .kpi-subtext {
+            font-size: 11px;
+            color: #8b949e;
+        }
+
+        .analytics-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #e6edf3;
+        }
+
+        .pie-chart {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #3fb950 0% 0%,
+                #f85149 0% 100%
+            );
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pie-center {
+            width: 100px;
+            height: 100px;
+            background: #0d1117;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .pie-percent {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3fb950;
+        }
+
+        .pie-label {
+            font-size: 10px;
+            color: #8b949e;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .legend-color.passed {
+            background: #3fb950;
+        }
+
+        .legend-color.failed {
+            background: #f85149;
+        }
+
+        .suite-breakdown {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+
+        .suite-breakdown-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #e6edf3;
+        }
+
+        .suites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .suite-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .suite-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .suite-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .suite-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .suite-percentage {
+            font-size: 20px;
+            font-weight: 700;
+            color: #3fb950;
+        }
+
+        .suite-count {
+            font-size: 11px;
+            color: #8b949e;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #30363d;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3fb950, #2ea043);
+            border-radius: 3px;
+        }
+
+        .tests-table {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .table-header {
+            padding: 20px;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .table-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e6edf3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #0d1117;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b949e;
+            border-bottom: 1px solid #30363d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #30363d;
+            font-size: 12px;
+        }
+
+        tbody tr:hover {
+            background: #0d1117;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status.passed {
+            background: rgba(63, 185, 80, 0.15);
+            color: #3fb950;
+        }
+
+        .status.failed {
+            background: rgba(248, 81, 73, 0.15);
+            color: #f85149;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status.passed .status-dot {
+            background: #3fb950;
+        }
+
+        .status.failed .status-dot {
+            background: #f85149;
+        }
+
+        .browser-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #30363d;
+            color: #e6edf3;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+
+        .stats-footer {
+            text-align: center;
+            color: #8b949e;
+            font-size: 12px;
+            padding-top: 20px;
+            border-top: 1px solid #30363d;
+        }
+
+        .timestamp {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>📊 Tricentis QA - Full Suite Run</h1>
+            <div class="header-meta">
+                Test Execution Report • 7/5/2026 1:25:03 AM • All Tests
+            </div>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="kpi-cards">
+            <div class="kpi-card">
+                <div class="kpi-label">Total Tests</div>
+                <div class="kpi-value">47</div>
+                <div class="kpi-subtext">Test cases executed</div>
+            </div>
+            <div class="kpi-card passed">
+                <div class="kpi-label">Passed</div>
+                <div class="kpi-value">0</div>
+                <div class="kpi-subtext">0.0% success rate</div>
+            </div>
+            <div class="kpi-card failed">
+                <div class="kpi-label">Failed</div>
+                <div class="kpi-value">47</div>
+                <div class="kpi-subtext">100.0% failure rate</div>
+            </div>
+            <div class="kpi-card skipped">
+                <div class="kpi-label">Skipped</div>
+                <div class="kpi-value">0</div>
+                <div class="kpi-subtext">Excluded tests</div>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div class="analytics-section">
+            <!-- Pie Chart -->
+            <div class="chart-card">
+                <div class="chart-title">📈 Test Analytics</div>
+                <div class="pie-chart">
+                    <div class="pie-center">
+                        <div class="pie-percent">0%</div>
+                        <div class="pie-label">Pass Rate</div>
+                    </div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color passed"></div>
+                        <span>Passed (0)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color failed"></div>
+                        <span>Failed (47)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Browser Breakdown -->
+            <div class="chart-card">
+                <div class="chart-title">🌐 Browser Coverage</div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                        <span>Chromium</span>
+                        <span>0/7</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                        <span>Firefox</span>
+                        <span>0/9</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                        <span>WebKit</span>
+                        <span>0/31</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Suite Breakdown -->
+        <div class="suite-breakdown">
+            <div class="suite-breakdown-title">📋 Suite Breakdown</div>
+            <div class="suites-grid">
+                
+                    <div class="suite-card">
+                        <div class="suite-name">
+                            <div class="suite-icon">✓</div>
+                            Authentication
+                        </div>
+                        <div class="suite-stats">
+                            <div class="suite-percentage">0%</div>
+                            <div class="suite-count">0/3 tests</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="suite-card">
+                        <div class="suite-name">
+                            <div class="suite-icon">✓</div>
+                            Other
+                        </div>
+                        <div class="suite-stats">
+                            <div class="suite-percentage">0%</div>
+                            <div class="suite-count">0/34 tests</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="suite-card">
+                        <div class="suite-name">
+                            <div class="suite-icon">✓</div>
+                            Homepage & Navigation
+                        </div>
+                        <div class="suite-stats">
+                            <div class="suite-percentage">0%</div>
+                            <div class="suite-count">0/3 tests</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="suite-card">
+                        <div class="suite-name">
+                            <div class="suite-icon">✓</div>
+                            Security
+                        </div>
+                        <div class="suite-stats">
+                            <div class="suite-percentage">0%</div>
+                            <div class="suite-count">0/1 tests</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="suite-card">
+                        <div class="suite-name">
+                            <div class="suite-icon">✓</div>
+                            Performance
+                        </div>
+                        <div class="suite-stats">
+                            <div class="suite-percentage">0%</div>
+                            <div class="suite-count">0/1 tests</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="suite-card">
+                        <div class="suite-name">
+                            <div class="suite-icon">✓</div>
+                            Checkout
+                        </div>
+                        <div class="suite-stats">
+                            <div class="suite-percentage">0%</div>
+                            <div class="suite-count">0/1 tests</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="suite-card">
+                        <div class="suite-name">
+                            <div class="suite-icon">✓</div>
+                            Product Catalog
+                        </div>
+                        <div class="suite-stats">
+                            <div class="suite-percentage">0%</div>
+                            <div class="suite-count">0/2 tests</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="suite-card">
+                        <div class="suite-name">
+                            <div class="suite-icon">✓</div>
+                            Content Pages
+                        </div>
+                        <div class="suite-stats">
+                            <div class="suite-percentage">0%</div>
+                            <div class="suite-count">0/2 tests</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+            </div>
+        </div>
+
+        <!-- Tests Table -->
+        <div class="tests-table">
+            <div class="table-header">
+                <div class="table-title">📝 All Tests</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test Name</th>
+                        <th>Suite</th>
+                        <th>Browser</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>Test Case 1</td>
+                        <td>Test Suite</td>
+                        <td><span class="browser-tag">Chromium</span></td>
+                        <td><span class="status passed"><span class="status-dot"></span>PASSED</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Test Case 2</td>
+                        <td>Test Suite</td>
+                        <td><span class="browser-tag">Chromium</span></td>
+                        <td><span class="status passed"><span class="status-dot"></span>PASSED</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Test Case 3</td>
+                        <td>Test Suite</td>
+                        <td><span class="browser-tag">Chromium</span></td>
+                        <td><span class="status passed"><span class="status-dot"></span>PASSED</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Test Case 4</td>
+                        <td>Test Suite</td>
+                        <td><span class="browser-tag">Chromium</span></td>
+                        <td><span class="status passed"><span class="status-dot"></span>PASSED</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Test Case 5</td>
+                        <td>Test Suite</td>
+                        <td><span class="browser-tag">Chromium</span></td>
+                        <td><span class="status passed"><span class="status-dot"></span>PASSED</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Test Case 6</td>
+                        <td>Test Suite</td>
+                        <td><span class="browser-tag">Chromium</span></td>
+                        <td><span class="status passed"><span class="status-dot"></span>PASSED</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Test Case 7</td>
+                        <td>Test Suite</td>
+                        <td><span class="browser-tag">Chromium</span></td>
+                        <td><span class="status passed"><span class="status-dot"></span>PASSED</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Test Case 8</td>
+                        <td>Test Suite</td>
+                        <td><span class="browser-tag">Chromium</span></td>
+                        <td><span class="status passed"><span class="status-dot"></span>PASSED</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Test Case 9</td>
+                        <td>Test Suite</td>
+                        <td><span class="browser-tag">Chromium</span></td>
+                        <td><span class="status passed"><span class="status-dot"></span>PASSED</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Test Case 10</td>
+                        <td>Test Suite</td>
+                        <td><span class="browser-tag">Chromium</span></td>
+                        <td><span class="status passed"><span class="status-dot"></span>PASSED</span></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+            <div class="stats-footer">
+                Showing 10 of 47 tests
+                <div class="timestamp">Report generated: 2026-07-04T19:55:03.544Z</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
