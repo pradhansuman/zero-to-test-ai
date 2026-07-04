@@ -179,13 +179,13 @@ ask_environment() {
   read -p "Select environment (1-5) or press Enter for recommended ($RECOMMENDED_ENV): " env_choice
 
   if [ -z "$env_choice" ]; then
-    env_choice=$(case $RECOMMENDED_ENV in
-      local) echo "1" ;;
-      docker) echo "2" ;;
-      aws) echo "3" ;;
-      gcp) echo "4" ;;
-      azure) echo "5" ;;
-    esac)
+    case $RECOMMENDED_ENV in
+      local) env_choice="1" ;;
+      docker) env_choice="2" ;;
+      aws) env_choice="3" ;;
+      gcp) env_choice="4" ;;
+      azure) env_choice="5" ;;
+    esac
   fi
 
   case $env_choice in
