@@ -67,6 +67,16 @@ if [ ! -f ./playwright-report/index.html ]; then
   exit 1
 fi
 
+# Generate mandatory professional QA dashboard (REQUIRED FORMAT - NO EXCEPTIONS)
+echo -e "${YELLOW}📊 Generating Mandatory Professional QA Dashboard...${NC}"
+node scripts/generate-mandatory-dashboard.js
+if [ ! -f ./tricentis-qa-dashboard.html ]; then
+  echo -e "${RED}❌ CRITICAL: Mandatory QA Dashboard was NOT generated!${NC}"
+  exit 1
+fi
+echo -e "${GREEN}✅ Mandatory QA Dashboard generated successfully${NC}"
+echo ""
+
 # Display HTML report information
 echo -e "${GREEN}✅ HTML REPORT GENERATED SUCCESSFULLY${NC}"
 echo ""
@@ -89,14 +99,15 @@ echo ""
 
 # List all artifacts
 echo "📁 Artifacts Generated:"
-echo "  ✅ HTML Report:   ./playwright-report/index.html"
+echo "  ✅ HTML Report:              ./playwright-report/index.html"
+echo "  ✅ MANDATORY QA Dashboard:   ./tricentis-qa-dashboard.html (PROFESSIONAL FORMAT - REQUIRED)"
 if [ -f ./test-results-store/results.json ]; then
   JSON_SIZE=$(du -h ./test-results-store/results.json | cut -f1)
-  echo "  ✅ JSON Results:  ./test-results-store/results.json ($JSON_SIZE)"
+  echo "  ✅ JSON Results:            ./test-results-store/results.json ($JSON_SIZE)"
 fi
 if [ -f ./test-results-store/results.xml ]; then
   XML_SIZE=$(du -h ./test-results-store/results.xml | cut -f1)
-  echo "  ✅ JUnit XML:     ./test-results-store/results.xml ($XML_SIZE)"
+  echo "  ✅ JUnit XML:               ./test-results-store/results.xml ($XML_SIZE)"
 fi
 
 # Count test results
@@ -107,7 +118,11 @@ echo ""
 # Display viewing instructions
 echo "═══════════════════════════════════════════════════════════════════════════════════════"
 echo ""
-echo -e "${GREEN}🎯 HOW TO VIEW THE HTML REPORT:${NC}"
+echo -e "${GREEN}🎯 VIEW MANDATORY PROFESSIONAL QA DASHBOARD:${NC}"
+echo ""
+echo -e "     ${YELLOW}open ./tricentis-qa-dashboard.html${NC}"
+echo ""
+echo -e "${GREEN}🎯 VIEW DETAILED PLAYWRIGHT HTML REPORT:${NC}"
 echo ""
 echo "  1. Open in Browser:"
 echo -e "     ${YELLOW}open ./playwright-report/index.html${NC}"
