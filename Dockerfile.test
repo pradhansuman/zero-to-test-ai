@@ -1,0 +1,30 @@
+# Dockerfile for running Playwright tests
+# Multi-browser support: Chromium, Firefox, WebKit
+
+FROM mcr.microsoft.com/playwright:v1.44.0-jammy
+
+WORKDIR /app
+
+# Copy project files
+COPY package*.json ./
+COPY playwright.config.ts ./
+COPY tsconfig.json ./
+COPY tests/ ./tests/
+COPY store.html ./
+COPY scripts/ ./scripts/
+
+# Install dependencies
+RUN npm ci --omit=optional
+
+# Install Playwright browsers
+RUN npx playwright install --with-deps
+
+# Create results directories
+RUN mkdir -p playwright-report test-results-store
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD node -e "console.log('healthy')" || exit 1
+
+# Default command
+CMD ["npm", "test"]
