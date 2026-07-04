@@ -12,7 +12,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # Configuration
-BROWSER="${1:-Desktop Chrome}"
+BROWSER="${1:-chromium}"
 WORKERS="${2:-4}"
 REPORTER="html,json,junit"  # MANDATORY: Always include HTML
 
