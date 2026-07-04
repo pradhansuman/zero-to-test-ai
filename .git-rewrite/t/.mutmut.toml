@@ -1,0 +1,14 @@
+[settings]
+# Directories to mutate (agents + contracts — no tests, no stubs)
+paths_to_mutate = "agents/,contracts/"
+
+# Exclude demo stubs (canned responses) and vendored code
+exclude = "agents/demo_stubs.py,**/test_*"
+
+# Run the unit test suite to detect surviving mutants
+tests_dir  = "tests/unit/"
+test_command = "python -m pytest tests/unit/ -x -q"
+
+# Stop mutmut from running the tests for each mutant in parallel to keep
+# results deterministic (the pipeline stubs are module-level singletons)
+use_coverage = true

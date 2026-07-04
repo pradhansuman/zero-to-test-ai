@@ -1,0 +1,21 @@
+<idea-plugin>
+  <id>com.qa-automation.jetbrains</id>
+  <name>QA Automation Assistant</name>
+  <vendor>QA Team</vendor>
+  <description>AI-powered test generation, locator healing, and failure analysis</description>
+
+  <depends>com.intellij.modules.platform</depends>
+
+  <actions>
+    <action id="QAAutomation.GenerateTest" class="com.qa.GenerateTestAction" text="Generate Test" description="Generate test using AI">
+      <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt t"/>
+    </action>
+    <action id="QAAutomation.AnalyzeFailure" class="com.qa.AnalyzeFailureAction" text="Analyze Failure" description="Analyze test failure"/>
+    <action id="QAAutomation.HealLocator" class="com.qa.HealLocatorAction" text="Heal Locator" description="Suggest locator fixes"/>
+  </actions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <toolWindow id="QA Automation" secondary="true" anchor="bottom" class="com.qa.QAAutomationToolWindow" factoryClass="com.qa.QAAutomationToolWindowFactory"/>
+    <projectService serviceImplementation="com.qa.QAAutomationService"/>
+  </extensions>
+</idea-plugin>
