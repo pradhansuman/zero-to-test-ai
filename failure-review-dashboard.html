@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Failure Review Dashboard - Headed Mode</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #c9d1d9; --muted: #8b949e; --hi: #e6edf3;
+  --fail: #f85149; --accent: #7c3aed; --blue: #2563eb;
+}
+body {
+  background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 14px; line-height: 1.6; min-height: 100vh;
+}
+
+header {
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 40%, #1a1a3e 70%, #0f1a3d 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 40px;
+  sticky: top 0; z-index: 100;
+}
+h1 { font-size: 22px; font-weight: 700; color: var(--hi); margin-bottom: 8px; }
+.meta { font-size: 12px; color: var(--muted); }
+
+main { max-width: 1200px; margin: 0 auto; padding: 36px 40px; }
+
+.failure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(540px, 1fr)); gap: 20px; }
+@media (max-width: 768px) { .failure-grid { grid-template-columns: 1fr; } }
+
+.failure-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; transition: transform .2s, box-shadow .2s;
+}
+.failure-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+
+.fc-header {
+  background: linear-gradient(135deg, rgba(248,81,73,.1) 0%, rgba(248,81,73,.05) 100%);
+  border-bottom: 2px solid var(--fail);
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.fc-num {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--fail); color: #fff; font-weight: 700; font-size: 14px;
+  flex-shrink: 0;
+}
+.fc-title { font-weight: 600; color: var(--hi); }
+.fc-body { padding: 16px 20px; }
+
+.fc-section { margin-bottom: 16px; }
+.fc-section-title {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .8px; color: var(--muted); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.fc-section-title::before {
+  content: ''; width: 3px; height: 14px; background: var(--fail); border-radius: 2px;
+}
+
+.fc-img {
+  width: 100%; height: 200px; object-fit: cover; border-radius: 6px;
+  background: #0d1117; border: 1px solid var(--border);
+}
+
+.fc-error {
+  background: rgba(248,81,73,.08); border: 1px solid rgba(248,81,73,.2);
+  border-radius: 6px; padding: 12px; font-family: monospace; font-size: 12px;
+  color: var(--muted); overflow-x: auto; line-height: 1.4;
+  max-height: 150px; overflow-y: auto;
+}
+
+.fc-actions {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.fc-btn {
+  padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border);
+  background: transparent; color: var(--text); font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all .2s;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+}
+.fc-btn:hover { background: rgba(255,255,255,.08); border-color: var(--blue); }
+.fc-btn-video { color: var(--blue); }
+
+footer {
+  text-align: center; padding: 24px 40px; color: var(--muted);
+  border-top: 1px solid var(--border); font-size: 12px;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>❌ Failure Review Dashboard</h1>
+  <div class="meta">7 failed tests from headed mode execution · Click screenshots to expand · Review videos for root causes</div>
+</header>
+
+<main>
+<div class="failure-grid" id="failures"></div>
+</main>
+
+<footer>
+<p>All 7 failures have error context, screenshot, and video available in test-results/</p>
+</footer>
+
+<script>
+const failures = [
+  {
+    num: 1,
+    name: "Price displays on product card",
+    phase: "Phase 1 - UI & Navigation",
+    path: "demowebshop-Tricentis-Demo-f6cb6-ce-displays-on-product-card-chromium",
+    error: "expect(locator).toBeVisible() failed\nLocator: locator('[class*=price]').first()\nExpected: visible\nReceived: hidden",
+    rootCause: "CSS attribute selector '[class*=price]' found element but it's marked hidden in DOM"
+  },
+  {
+    num: 2,
+    name: "Product filtering works",
+    phase: "Phase 2 - Functional",
+    path: "demowebshop-Tricentis-Demo-27b8f-res-Product-filtering-works-chromium",
+    error: "expect(locator).toHaveCount(n) failed\nLocator: locator('[class*=filter]')\nExpected: 1+\nReceived: 0",
+    rootCause: "Filter controls not found with current CSS selector pattern"
+  },
+  {
+    num: 3,
+    name: "Checkout page loads",
+    phase: "Phase 3 - Checkout & Payment",
+    path: "demowebshop-Tricentis-Demo-c1396-Payment-Checkout-page-loads-chromium",
+    error: "expect(page).toHaveURL(/checkout/) failed\nExpected: URL matching /checkout/\nReceived: https://demowebshop.tricentis.com/cart",
+    rootCause: "Checkout page not reached after cart click; possible navigation timing issue"
+  },
+  {
+    num: 4,
+    name: "Order total displays",
+    phase: "Phase 3 - Checkout & Payment",
+    path: "demowebshop-Tricentis-Demo-0d90a-ayment-Order-total-displays-chromium",
+    error: "expect(locator).toBeVisible() failed\nLocator: locator('text=/total/i').first()\nExpected: visible\nReceived: hidden",
+    rootCause: "Order total element exists in DOM but visibility check fails (display:none or visibility:hidden)"
+  },
+  {
+    num: 5,
+    name: "Inventory system operational",
+    phase: "Phase 4 - Integration",
+    path: "demowebshop-Tricentis-Demo-92a6d-nventory-system-operational-chromium",
+    error: "expect(page).toHaveURL(/order-confirmation/) failed\nExpected: URL matching /order-confirmation/\nReceived: https://demowebshop.tricentis.com/checkout",
+    rootCause: "Order submission failed; checkout page not completing"
+  },
+  {
+    num: 6,
+    name: "Invalid product ID handled",
+    phase: "Phase 5 - Error Handling",
+    path: "demowebshop-Tricentis-Demo-52e99--Invalid-product-ID-handled-chromium",
+    error: "expect(locator).toBeVisible() failed\nLocator: locator('text=/error|not found/i').first()\nExpected: visible\nReceived: hidden",
+    rootCause: "Error message not displayed or uses different text pattern"
+  },
+  {
+    num: 7,
+    name: "Empty cart message displays",
+    phase: "Phase 5 - Error Handling",
+    path: "demowebshop-Tricentis-Demo-0d633-Empty-cart-message-displays-chromium",
+    error: "expect(locator).toBeVisible() failed\nLocator: locator('text=/empty|no items/i').first()\nExpected: visible\nReceived: hidden",
+    rootCause: "Empty cart message found (div.count) but fails visibility check"
+  }
+];
+
+const container = document.getElementById('failures');
+
+failures.forEach(f => {
+  const screenshotPath = `/Users/skp/Downloads/QA_AGents/test-results/${f.path}/test-failed-1.png`;
+  const videoPath = `/Users/skp/Downloads/QA_AGents/test-results/${f.path}/video.webm`;
+  
+  const card = document.createElement('div');
+  card.className = 'failure-card';
+  card.innerHTML = `
+    <div class="fc-header">
+      <div class="fc-num">${f.num}</div>
+      <div>
+        <div class="fc-title">${f.name}</div>
+        <div style="font-size:11px; color:var(--muted)">${f.phase}</div>
+      </div>
+    </div>
+    <div class="fc-body">
+      <div class="fc-section">
+        <div class="fc-section-title">Screenshot at Failure</div>
+        <img src="file://${screenshotPath}" alt="${f.name}" class="fc-img">
+      </div>
+      
+      <div class="fc-section">
+        <div class="fc-section-title">Error Message</div>
+        <div class="fc-error">${f.error}</div>
+      </div>
+      
+      <div class="fc-section">
+        <div class="fc-section-title">Root Cause</div>
+        <div style="padding:10px; background:rgba(255,255,255,.04); border-radius:6px; border-left:3px solid var(--fail); font-size:13px">
+          ${f.rootCause}
+        </div>
+      </div>
+      
+      <div class="fc-section">
+        <div class="fc-section-title">Artifacts</div>
+        <div class="fc-actions">
+          <a href="file://${videoPath}" target="_blank" class="fc-btn fc-btn-video">🎬 Watch Video</a>
+          <a href="file://${screenshotPath}" target="_blank" class="fc-btn">📸 Full Screenshot</a>
+        </div>
+      </div>
+    </div>
+  `;
+  container.appendChild(card);
+});
+</script>
+</body>
+</html>

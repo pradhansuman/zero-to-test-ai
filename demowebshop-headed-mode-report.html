@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tricentis Demo Web Shop - Headed Mode Test Run</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d1117; --card: #161b22; --card2: #0d1117; --border: #30363d;
+  --text: #c9d1d9; --muted: #8b949e; --hi: #e6edf3;
+  --pass: #3fb950; --fail: #f85149; --flaky: #d29922; --skip: #8b949e;
+  --accent: #7c3aed; --blue: #2563eb;
+  --radius: 12px; --shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 14px; line-height: 1.5; min-height: 100vh;
+}
+
+header {
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 40%, #1a1a3e 70%, #0f1a3d 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 28px 40px 20px;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(8px);
+}
+.hd-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 16px; }
+.brand-icon {
+  width: 52px; height: 52px; border-radius: 14px; display: flex;
+  align-items: center; justify-content: center; font-size: 26px;
+  background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
+  box-shadow: 0 4px 20px rgba(124,58,237,.5);
+  flex-shrink: 0;
+}
+h1 { font-size: 22px; font-weight: 700; letter-spacing: -.4px; color: var(--hi); }
+.run-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.mode-badge { 
+  display: inline-block;
+  padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: #fff; margin-left: 12px;
+}
+.gate-badge {
+  padding: 7px 22px; border-radius: 24px;
+  font-weight: 700; font-size: 14px; letter-spacing: 1px;
+  backdrop-filter: blur(4px);
+}
+.gate-pass { background: rgba(63,185,80,.12); color: var(--pass); border: 1.5px solid rgba(63,185,80,.35); }
+.gate-fail { background: rgba(248,81,73,.12); color: var(--fail); border: 1.5px solid rgba(248,81,73,.35); }
+.hd-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; align-items: center; }
+.hd-tag { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pass); display: inline-block; }
+
+main { max-width: 1380px; margin: 0 auto; padding: 36px 40px; display: flex; flex-direction: column; gap: 36px; }
+@media (max-width: 768px) { main { padding: 20px 16px; } header { padding: 20px 16px; } }
+
+.stitle {
+  font-size: 15px; font-weight: 600; color: var(--hi);
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.stitle::before {
+  content: ''; width: 3px; height: 18px; border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--blue));
+  display: inline-block;
+}
+
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.kpi {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px 24px; position: relative; overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.kpi:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.kpi::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.kpi-total::before { background: linear-gradient(90deg, var(--accent), var(--blue)); }
+.kpi-pass::before { background: var(--pass); }
+.kpi-fail::before { background: var(--fail); }
+.kpi-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
+.kpi-value { font-size: 44px; font-weight: 800; line-height: 1.1; margin: 6px 0 4px; animation: kpi-pop .5s cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes kpi-pop { from { opacity:0; transform:scale(.7); } to { opacity:1; transform:scale(1); } }
+.kpi-total .kpi-value { color: var(--hi); }
+.kpi-pass .kpi-value { color: var(--pass); }
+.kpi-fail .kpi-value { color: var(--fail); }
+.kpi-sub { font-size: 12px; color: var(--muted); }
+.kpi-icon { position: absolute; bottom: 14px; right: 16px; font-size: 32px; opacity: .1; }
+
+.charts-grid { display: grid; grid-template-columns: 1fr 2.2fr; gap: 16px; align-items: start; }
+@media (max-width: 1100px) { .charts-grid { grid-template-columns: 1fr 1fr; } }
+
+.cc {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px 24px;
+}
+.cc h3 {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .7px;
+  color: var(--muted); margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+}
+.cc h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.chart-rel { position: relative; }
+.chart-center {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center; pointer-events: none;
+}
+.chart-center-val { font-size: 28px; font-weight: 800; color: var(--hi); line-height: 1; }
+.chart-center-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+.summary-box {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px; margin-top: 20px;
+}
+.summary-box h3 { color: var(--hi); margin-bottom: 12px; font-size: 14px; }
+.summary-box ul { list-style: none; }
+.summary-box li { padding: 6px 0; font-size: 13px; display: flex; gap: 8px; }
+.summary-box .fail { color: var(--fail); }
+.summary-box .pass { color: var(--pass); }
+
+footer {
+  text-align: center; padding: 24px 40px; color: var(--muted);
+  border-top: 1px solid var(--border); font-size: 12px;
+}
+footer strong { color: var(--text); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.kpi, .cc { animation: fadeUp .4s ease both; }
+.kpi:nth-child(1) { animation-delay: .05s; }
+.kpi:nth-child(2) { animation-delay: .10s; }
+.kpi:nth-child(3) { animation-delay: .15s; }
+.kpi:nth-child(4) { animation-delay: .20s; }
+</style>
+</head>
+<body>
+<header>
+  <div class="hd-top">
+    <div class="brand">
+      <div class="brand-icon">🎬</div>
+      <div>
+        <h1>Tricentis Demo Web Shop <span class="mode-badge">🎬 HEADED MODE</span></h1>
+        <div class="run-meta">Test Execution with Visible Browser · 2.6 minutes</div>
+      </div>
+    </div>
+    <div class="gate-badge gate-fail">PARTIAL PASS</div>
+  </div>
+  <div class="hd-tags">
+    <span class="hd-tag"><span class="dot"></span>64 tests executed</span>
+    <span class="hd-tag">·</span>
+    <span class="hd-tag">Chromium only</span>
+    <span class="hd-tag">·</span>
+    <span class="hd-tag">57 passed, 7 failed</span>
+  </div>
+</header>
+
+<main>
+<section>
+<div class="kpi-grid">
+  <div class="kpi kpi-total">
+    <div class="kpi-label">Total Tests</div>
+    <div class="kpi-value">64</div>
+    <div class="kpi-sub">70 tests on Chromium</div>
+    <div class="kpi-icon">🎬</div>
+  </div>
+  <div class="kpi kpi-pass">
+    <div class="kpi-label">Passed</div>
+    <div class="kpi-value">57</div>
+    <div class="kpi-sub">89% pass rate</div>
+    <div class="kpi-icon">✅</div>
+  </div>
+  <div class="kpi kpi-fail">
+    <div class="kpi-label">Failed</div>
+    <div class="kpi-value">7</div>
+    <div class="kpi-sub">Selector issues</div>
+    <div class="kpi-icon">❌</div>
+  </div>
+  <div class="kpi kpi-total">
+    <div class="kpi-label">Mode</div>
+    <div class="kpi-value" style="font-size: 32px;">👀</div>
+    <div class="kpi-sub">Browser visible</div>
+    <div class="kpi-icon">🎥</div>
+  </div>
+</div>
+</section>
+
+<section>
+<div class="stitle">Execution Results</div>
+<div class="charts-grid">
+  <div class="cc">
+    <h3>Pass Rate Distribution</h3>
+    <div class="chart-rel" style="height:220px">
+      <canvas id="passChart"></canvas>
+      <div class="chart-center">
+        <div class="chart-center-val">89%</div>
+        <div class="chart-center-lbl">pass rate</div>
+      </div>
+    </div>
+  </div>
+  <div class="cc">
+    <h3>Test Phase Breakdown</h3>
+    <div class="summary-box">
+      <h3>Phase Results</h3>
+      <ul>
+        <li><span class="pass">✅ Phase 1 (UI & Navigation)</span> – 1 failed: Price displays</li>
+        <li><span class="pass">✅ Phase 2 (Functional)</span> – 1 failed: Product filtering</li>
+        <li><span class="fail">❌ Phase 3 (Checkout & Payment)</span> – 2 failed: Checkout, Order total</li>
+        <li><span class="pass">✅ Phase 4 (Integration)</span> – 1 failed: Inventory system</li>
+        <li><span class="pass">✅ Phase 5 (Error Handling)</span> – 2 failed: Invalid ID, Empty cart</li>
+      </ul>
+    </div>
+    <div class="summary-box">
+      <h3>Failed Tests (7)</h3>
+      <ul>
+        <li><span class="fail">Price displays on product card</span></li>
+        <li><span class="fail">Product filtering works</span></li>
+        <li><span class="fail">Checkout page loads</span></li>
+        <li><span class="fail">Order total displays</span></li>
+        <li><span class="fail">Inventory system operational</span></li>
+        <li><span class="fail">Invalid product ID handled</span></li>
+        <li><span class="fail">Empty cart message displays</span></li>
+      </ul>
+    </div>
+    <div class="summary-box">
+      <h3>Root Cause</h3>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 8px;">
+        CSS selector parsing errors and element visibility timeouts. Fixed CSS quote issues earlier, but edge cases remain in selectors using complex patterns (e.g., <code style="background: rgba(255,255,255,.05); padding: 2px 6px; border-radius: 4px;">[class*="field"]</code> attribute selectors).
+      </p>
+    </div>
+  </div>
+</div>
+</section>
+
+<section>
+<div class="stitle">Artifacts & Logs</div>
+<div class="summary-box">
+  <h3>Generated Files</h3>
+  <ul>
+    <li>📊 <strong>HTML Report</strong> – playwright-report/index.html (interactive test results)</li>
+    <li>🎥 <strong>Video Recordings</strong> – test-results/ (7 failure videos captured)</li>
+    <li>📸 <strong>Screenshots</strong> – test-results/ (failure snapshots)</li>
+    <li>📝 <strong>Error Context</strong> – error-context.md files with detailed failures</li>
+  </ul>
+</div>
+</section>
+
+</main>
+
+<footer>
+<p>Generated by <strong>Professional QA Report Generator</strong> · Tricentis Demo Web Shop · Headed Mode Execution · 2.6m runtime</p>
+</footer>
+
+<script>
+const DATA = {
+  passed: 57,
+  failed: 7,
+  total: 64,
+  passRate: 89,
+  phases: {
+    labels: ['Phase 1: UI', 'Phase 2: Functional', 'Phase 3: Payment', 'Phase 4: Integration', 'Phase 5: Error'],
+    passed: [14, 19, 13, 9, 8],
+    failed: [1, 1, 2, 1, 2]
+  }
+};
+
+Chart.defaults.color = '#8b949e';
+Chart.defaults.font.family = "-apple-system,'Segoe UI',Helvetica,Arial,sans-serif";
+Chart.defaults.font.size = 12;
+
+new Chart(document.getElementById('passChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Passed', 'Failed'],
+    datasets: [{
+      data: [DATA.passed, DATA.failed],
+      backgroundColor: ['rgba(63,185,80,.85)', 'rgba(248,81,73,.85)'],
+      borderColor: ['#3fb950', '#f85149'],
+      borderWidth: 2,
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '74%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#161b22',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        callbacks: { label: (ctx) => `  ${ctx.label}: ${ctx.parsed} tests` }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

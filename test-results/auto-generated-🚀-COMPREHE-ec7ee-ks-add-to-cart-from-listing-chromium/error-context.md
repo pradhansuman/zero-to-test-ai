@@ -1,0 +1,504 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: auto-generated.spec.ts >> 🚀 COMPREHENSIVE TEST SUITE - AUTO-GENERATED >> Category: Books >> books add to cart from listing
+- Location: tests/e2e/auto-generated.spec.ts:78:9
+
+# Error details
+
+```
+Error: locator.count: Unexpected token "/" while parsing css selector "button:has-text(/add|cart/i), a:has-text(/add|cart/i)". Did you mean to CSS.escape it?
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - link "Tricentis Demo Web Shop" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - img "Tricentis Demo Web Shop" [ref=e7]
+      - list [ref=e10]:
+        - listitem [ref=e11]:
+          - link "Register" [ref=e12] [cursor=pointer]:
+            - /url: /register
+        - listitem [ref=e13]:
+          - link "Log in" [ref=e14] [cursor=pointer]:
+            - /url: /login
+        - listitem [ref=e15]:
+          - link "Shopping cart (0)" [ref=e16] [cursor=pointer]:
+            - /url: /cart
+            - generic [ref=e17]: Shopping cart
+            - generic [ref=e18]: (0)
+        - listitem [ref=e19]:
+          - link "Wishlist (0)" [ref=e20] [cursor=pointer]:
+            - /url: /wishlist
+            - generic [ref=e21]: Wishlist
+            - generic [ref=e22]: (0)
+      - generic [ref=e24]:
+        - status [ref=e25]
+        - textbox [ref=e26]: Search store
+        - button "Search" [ref=e27] [cursor=pointer]
+    - list [ref=e29]:
+      - listitem [ref=e30]:
+        - link "Books" [ref=e31] [cursor=pointer]:
+          - /url: /books
+      - listitem [ref=e32]:
+        - link "Computers" [ref=e33] [cursor=pointer]:
+          - /url: /computers
+      - listitem [ref=e34]:
+        - link "Electronics" [ref=e35] [cursor=pointer]:
+          - /url: /electronics
+      - listitem [ref=e36]:
+        - link "Apparel & Shoes" [ref=e37] [cursor=pointer]:
+          - /url: /apparel-shoes
+      - listitem [ref=e38]:
+        - link "Digital downloads" [ref=e39] [cursor=pointer]:
+          - /url: /digital-downloads
+      - listitem [ref=e40]:
+        - link "Jewelry" [ref=e41] [cursor=pointer]:
+          - /url: /jewelry
+      - listitem [ref=e42]:
+        - link "Gift Cards" [ref=e43] [cursor=pointer]:
+          - /url: /gift-cards
+    - generic:
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - strong [ref=e47]: Categories
+          - list [ref=e49]:
+            - listitem [ref=e50]:
+              - link "Books" [ref=e51] [cursor=pointer]:
+                - /url: /books
+            - listitem [ref=e52]:
+              - link "Computers" [ref=e53] [cursor=pointer]:
+                - /url: /computers
+            - listitem [ref=e54]:
+              - link "Electronics" [ref=e55] [cursor=pointer]:
+                - /url: /electronics
+            - listitem [ref=e56]:
+              - link "Apparel & Shoes" [ref=e57] [cursor=pointer]:
+                - /url: /apparel-shoes
+            - listitem [ref=e58]:
+              - link "Digital downloads" [ref=e59] [cursor=pointer]:
+                - /url: /digital-downloads
+            - listitem [ref=e60]:
+              - link "Jewelry" [ref=e61] [cursor=pointer]:
+                - /url: /jewelry
+            - listitem [ref=e62]:
+              - link "Gift Cards" [ref=e63] [cursor=pointer]:
+                - /url: /gift-cards
+        - generic [ref=e64]:
+          - strong [ref=e66]: Manufacturers
+          - list [ref=e68]:
+            - listitem [ref=e69]:
+              - link "Tricentis" [ref=e70] [cursor=pointer]:
+                - /url: /tricentis
+        - generic [ref=e71]:
+          - strong [ref=e73]: Newsletter
+          - generic [ref=e75]:
+            - text: "Sign up for our newsletter:"
+            - textbox [ref=e77]
+            - button "Subscribe" [ref=e79] [cursor=pointer]
+      - generic [ref=e80]:
+        - list [ref=e82]:
+          - listitem [ref=e83]:
+            - link "Home" [ref=e84] [cursor=pointer]:
+              - /url: /
+            - text: /
+          - listitem [ref=e85]:
+            - strong [ref=e86]: Books
+        - generic [ref=e87]:
+          - heading "Books" [level=1] [ref=e89]
+          - generic [ref=e90]:
+            - generic [ref=e91]:
+              - generic [ref=e92]:
+                - text: View as
+                - combobox [ref=e93]:
+                  - option "Grid" [selected]
+                  - option "List"
+              - generic [ref=e94]:
+                - text: Sort by
+                - combobox [ref=e95]:
+                  - option "Position" [selected]
+                  - 'option "Name: A to Z"'
+                  - 'option "Name: Z to A"'
+                  - 'option "Price: Low to High"'
+                  - 'option "Price: High to Low"'
+                  - option "Created on"
+              - generic [ref=e96]:
+                - text: Display
+                - combobox [ref=e97]:
+                  - option "4"
+                  - option "8" [selected]
+                  - option "12"
+                - text: per page
+            - generic [ref=e99]:
+              - strong [ref=e101]: Filter by price
+              - list [ref=e103]:
+                - listitem [ref=e104]:
+                  - link "Under 25.00" [ref=e105] [cursor=pointer]:
+                    - /url: https://demowebshop.tricentis.com/books?price=-25
+                - listitem [ref=e106]:
+                  - link "25.00 - 50.00" [ref=e107] [cursor=pointer]:
+                    - /url: https://demowebshop.tricentis.com/books?price=25-50
+                - listitem [ref=e108]:
+                  - link "Over 50.00" [ref=e109] [cursor=pointer]:
+                    - /url: https://demowebshop.tricentis.com/books?price=50-
+            - generic [ref=e110]:
+              - generic [ref=e112]:
+                - link "Picture of Computing and Internet" [ref=e114] [cursor=pointer]:
+                  - /url: /computing-and-internet
+                  - img "Picture of Computing and Internet" [ref=e115]
+                - generic [ref=e116]:
+                  - heading "Computing and Internet" [level=2] [ref=e117]:
+                    - link "Computing and Internet" [ref=e118] [cursor=pointer]:
+                      - /url: /computing-and-internet
+                  - generic "2660 review(s)" [ref=e119]
+                  - generic [ref=e122]:
+                    - generic [ref=e123]:
+                      - generic [ref=e124]: "30.00"
+                      - generic [ref=e125]: "10.00"
+                    - button "Add to cart" [ref=e127] [cursor=pointer]
+              - generic [ref=e129]:
+                - link "Picture of Copy of Computing and Internet EX" [ref=e131] [cursor=pointer]:
+                  - /url: /copy-of-computing-and-internet
+                  - img "Picture of Copy of Computing and Internet EX" [ref=e132]
+                - generic [ref=e133]:
+                  - heading "Copy of Computing and Internet EX" [level=2] [ref=e134]:
+                    - link "Copy of Computing and Internet EX" [ref=e135] [cursor=pointer]:
+                      - /url: /copy-of-computing-and-internet
+                  - generic "382 review(s)" [ref=e136]
+                  - generic [ref=e140]:
+                    - generic [ref=e141]: "30.00"
+                    - generic [ref=e142]: "10.00"
+              - generic [ref=e144]:
+                - link "Picture of Fiction" [ref=e146] [cursor=pointer]:
+                  - /url: /fiction
+                  - img "Picture of Fiction" [ref=e147]
+                - generic [ref=e148]:
+                  - heading "Fiction" [level=2] [ref=e149]:
+                    - link "Fiction" [ref=e150] [cursor=pointer]:
+                      - /url: /fiction
+                  - generic "789 review(s)" [ref=e151]
+                  - generic [ref=e154]:
+                    - generic [ref=e155]:
+                      - generic [ref=e156]: "35.00"
+                      - generic [ref=e157]: "24.00"
+                    - button "Add to cart" [ref=e159] [cursor=pointer]
+              - generic [ref=e161]:
+                - link "Picture of Fiction EX" [ref=e163] [cursor=pointer]:
+                  - /url: /fiction-ex
+                  - img "Picture of Fiction EX" [ref=e164]
+                - generic [ref=e165]:
+                  - heading "Fiction EX" [level=2] [ref=e166]:
+                    - link "Fiction EX" [ref=e167] [cursor=pointer]:
+                      - /url: /fiction-ex
+                  - generic "420 review(s)" [ref=e168]
+                  - generic [ref=e172]:
+                    - generic [ref=e173]: "35.00"
+                    - generic [ref=e174]: "24.00"
+              - generic [ref=e176]:
+                - link "Picture of Health Book" [ref=e178] [cursor=pointer]:
+                  - /url: /health
+                  - img "Picture of Health Book" [ref=e179]
+                - generic [ref=e180]:
+                  - heading "Health Book" [level=2] [ref=e181]:
+                    - link "Health Book" [ref=e182] [cursor=pointer]:
+                      - /url: /health
+                  - generic "526 review(s)" [ref=e183]
+                  - generic [ref=e186]:
+                    - generic [ref=e187]:
+                      - generic [ref=e188]: "27.00"
+                      - generic [ref=e189]: "10.00"
+                    - button "Add to cart" [ref=e191] [cursor=pointer]
+              - generic [ref=e193]:
+                - link "Picture of Science" [ref=e195] [cursor=pointer]:
+                  - /url: /science
+                  - img "Picture of Science" [ref=e196]
+                - generic [ref=e197]:
+                  - heading "Science" [level=2] [ref=e198]:
+                    - link "Science" [ref=e199] [cursor=pointer]:
+                      - /url: /science
+                  - generic "451 review(s)" [ref=e200]
+                  - generic [ref=e204]:
+                    - generic [ref=e205]: "67.00"
+                    - generic [ref=e206]: "51.00"
+  - generic [ref=e207]:
+    - generic [ref=e208]:
+      - generic [ref=e209]:
+        - heading "Information" [level=3] [ref=e210]
+        - list [ref=e211]:
+          - listitem [ref=e212]:
+            - link "Sitemap" [ref=e213] [cursor=pointer]:
+              - /url: /sitemap
+          - listitem [ref=e214]:
+            - link "Shipping & Returns" [ref=e215] [cursor=pointer]:
+              - /url: /shipping-returns
+          - listitem [ref=e216]:
+            - link "Privacy Notice" [ref=e217] [cursor=pointer]:
+              - /url: /privacy-policy
+          - listitem [ref=e218]:
+            - link "Conditions of Use" [ref=e219] [cursor=pointer]:
+              - /url: /conditions-of-use
+          - listitem [ref=e220]:
+            - link "About us" [ref=e221] [cursor=pointer]:
+              - /url: /about-us
+          - listitem [ref=e222]:
+            - link "Contact us" [ref=e223] [cursor=pointer]:
+              - /url: /contactus
+      - generic [ref=e224]:
+        - heading "Customer service" [level=3] [ref=e225]
+        - list [ref=e226]:
+          - listitem [ref=e227]:
+            - link "Search" [ref=e228] [cursor=pointer]:
+              - /url: /search
+          - listitem [ref=e229]:
+            - link "News" [ref=e230] [cursor=pointer]:
+              - /url: /news
+          - listitem [ref=e231]:
+            - link "Blog" [ref=e232] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=e233]:
+            - link "Recently viewed products" [ref=e234] [cursor=pointer]:
+              - /url: /recentlyviewedproducts
+          - listitem [ref=e235]:
+            - link "Compare products list" [ref=e236] [cursor=pointer]:
+              - /url: /compareproducts
+          - listitem [ref=e237]:
+            - link "New products" [ref=e238] [cursor=pointer]:
+              - /url: /newproducts
+      - generic [ref=e239]:
+        - heading "My account" [level=3] [ref=e240]
+        - list [ref=e241]:
+          - listitem [ref=e242]:
+            - link "My account" [ref=e243] [cursor=pointer]:
+              - /url: /customer/info
+          - listitem [ref=e244]:
+            - link "Orders" [ref=e245] [cursor=pointer]:
+              - /url: /customer/orders
+          - listitem [ref=e246]:
+            - link "Addresses" [ref=e247] [cursor=pointer]:
+              - /url: /customer/addresses
+          - listitem [ref=e248]:
+            - link "Shopping cart" [ref=e249] [cursor=pointer]:
+              - /url: /cart
+          - listitem [ref=e250]:
+            - link "Wishlist" [ref=e251] [cursor=pointer]:
+              - /url: /wishlist
+      - generic [ref=e252]:
+        - heading "Follow us" [level=3] [ref=e253]
+        - list [ref=e254]:
+          - listitem [ref=e255]:
+            - link "Facebook" [ref=e256] [cursor=pointer]:
+              - /url: http://www.facebook.com/nopCommerce
+          - listitem [ref=e257]:
+            - link "Twitter" [ref=e258] [cursor=pointer]:
+              - /url: https://twitter.com/nopCommerce
+          - listitem [ref=e259]:
+            - link "RSS" [ref=e260] [cursor=pointer]:
+              - /url: /news/rss/1
+          - listitem [ref=e261]:
+            - link "YouTube" [ref=e262] [cursor=pointer]:
+              - /url: http://www.youtube.com/user/nopCommerce
+          - listitem [ref=e263]:
+            - link "Google+" [ref=e264] [cursor=pointer]:
+              - /url: https://plus.google.com/+nopcommerce
+    - generic [ref=e265]:
+      - text: Powered by
+      - link "nopCommerce" [ref=e266] [cursor=pointer]:
+        - /url: http://www.nopcommerce.com/
+    - generic [ref=e267]: Copyright © 2026 Tricentis Demo Web Shop. All rights reserved.
+```
+
+# Test source
+
+```ts
+  1   | import { test, expect } from '@playwright/test';
+  2   | 
+  3   | const BASE_URL = process.env.BASE_URL || 'https://demowebshop.tricentis.com';
+  4   | 
+  5   | test.describe('🚀 COMPREHENSIVE TEST SUITE - AUTO-GENERATED', () => {
+  6   |   test.beforeEach(async ({ page }) => {
+  7   |     // Global setup before each test
+  8   |     page.setDefaultTimeout(60000);
+  9   |   });
+  10  | 
+  11  |   // ═════════════════════════════════════════════════════════
+  12  |   // CATEGORY COVERAGE - All 7 Categories (49 tests total)
+  13  |   // ═════════════════════════════════════════════════════════
+  14  | 
+  15  | 
+  16  |   test.describe('Category: Books', () => {
+  17  |     test('books page loads correctly', async ({ page }) => {
+  18  |       await page.goto(`${BASE_URL}/books`);
+  19  |       await page.waitForLoadState('networkidle');
+  20  |       const title = page.locator('h1, [class*=title]').first();
+  21  |       if (await title.count() > 0) {
+  22  |         await expect(title).toBeVisible();
+  23  |       }
+  24  |     });
+  25  | 
+  26  |     test('books displays product list', async ({ page }) => {
+  27  |       await page.goto(`${BASE_URL}/books`);
+  28  |       const products = page.locator('[class*=product], a[href*=product]');
+  29  |       expect(await products.count()).toBeGreaterThan(0);
+  30  |     });
+  31  | 
+  32  |     test('books filtering functionality', async ({ page }) => {
+  33  |       await page.goto(`${BASE_URL}/books`);
+  34  |       const filter = page.locator('[class*=filter], button:has-text(/filter/i)').first();
+  35  |       if (await filter.count() > 0) {
+  36  |         const isVisible = await filter.isVisible().catch(() => false);
+  37  |         if (isVisible) {
+  38  |           await filter.click();
+  39  |           await page.waitForLoadState('networkidle');
+  40  |         }
+  41  |       }
+  42  |     });
+  43  | 
+  44  |     test('books sorting by price', async ({ page }) => {
+  45  |       await page.goto(`${BASE_URL}/books`);
+  46  |       const sort = page.locator('select[name*=sort], [class*=sort]').first();
+  47  |       if (await sort.count() > 0) {
+  48  |         const isVisible = await sort.isVisible().catch(() => false);
+  49  |         if (isVisible) {
+  50  |           try {
+  51  |             await sort.selectOption('1');
+  52  |           } catch (e) {
+  53  |             // Fallback for non-select elements
+  54  |           }
+  55  |         }
+  56  |       }
+  57  |     });
+  58  | 
+  59  |     test('books pagination works', async ({ page }) => {
+  60  |       await page.goto(`${BASE_URL}/books`);
+  61  |       const pageLinks = page.locator('[class*=pager], a:has-text(/\d+/)');
+  62  |       expect(await pageLinks.count()).toBeGreaterThanOrEqual(0);
+  63  |     });
+  64  | 
+  65  |     test('books product detail link navigates', async ({ page }) => {
+  66  |       await page.goto(`${BASE_URL}/books`);
+  67  |       const productLink = page.locator('a[href*=product]').first();
+  68  |       if (await productLink.count() > 0) {
+  69  |         const isVisible = await productLink.isVisible().catch(() => false);
+  70  |         if (isVisible) {
+  71  |           await productLink.click();
+  72  |           await page.waitForLoadState('networkidle');
+  73  |           expect(page.url()).toContain('product');
+  74  |         }
+  75  |       }
+  76  |     });
+  77  | 
+  78  |     test('books add to cart from listing', async ({ page }) => {
+  79  |       await page.goto(`${BASE_URL}/books`);
+  80  |       const addBtn = page.locator('button:has-text(/add|cart/i), a:has-text(/add|cart/i)').first();
+> 81  |       if (await addBtn.count() > 0) {
+      |                        ^ Error: locator.count: Unexpected token "/" while parsing css selector "button:has-text(/add|cart/i), a:has-text(/add|cart/i)". Did you mean to CSS.escape it?
+  82  |         const isVisible = await addBtn.isVisible().catch(() => false);
+  83  |         if (isVisible) {
+  84  |           await addBtn.click();
+  85  |           await page.waitForLoadState('networkidle');
+  86  |         }
+  87  |       }
+  88  |     });
+  89  |   });
+  90  | 
+  91  |   test.describe('Category: Computers', () => {
+  92  |     test('computers page loads correctly', async ({ page }) => {
+  93  |       await page.goto(`${BASE_URL}/computers`);
+  94  |       await page.waitForLoadState('networkidle');
+  95  |       const title = page.locator('h1, [class*=title]').first();
+  96  |       if (await title.count() > 0) {
+  97  |         await expect(title).toBeVisible();
+  98  |       }
+  99  |     });
+  100 | 
+  101 |     test('computers displays product list', async ({ page }) => {
+  102 |       await page.goto(`${BASE_URL}/computers`);
+  103 |       const products = page.locator('[class*=product], a[href*=product]');
+  104 |       expect(await products.count()).toBeGreaterThan(0);
+  105 |     });
+  106 | 
+  107 |     test('computers filtering functionality', async ({ page }) => {
+  108 |       await page.goto(`${BASE_URL}/computers`);
+  109 |       const filter = page.locator('[class*=filter], button:has-text(/filter/i)').first();
+  110 |       if (await filter.count() > 0) {
+  111 |         const isVisible = await filter.isVisible().catch(() => false);
+  112 |         if (isVisible) {
+  113 |           await filter.click();
+  114 |           await page.waitForLoadState('networkidle');
+  115 |         }
+  116 |       }
+  117 |     });
+  118 | 
+  119 |     test('computers sorting by price', async ({ page }) => {
+  120 |       await page.goto(`${BASE_URL}/computers`);
+  121 |       const sort = page.locator('select[name*=sort], [class*=sort]').first();
+  122 |       if (await sort.count() > 0) {
+  123 |         const isVisible = await sort.isVisible().catch(() => false);
+  124 |         if (isVisible) {
+  125 |           try {
+  126 |             await sort.selectOption('1');
+  127 |           } catch (e) {
+  128 |             // Fallback for non-select elements
+  129 |           }
+  130 |         }
+  131 |       }
+  132 |     });
+  133 | 
+  134 |     test('computers pagination works', async ({ page }) => {
+  135 |       await page.goto(`${BASE_URL}/computers`);
+  136 |       const pageLinks = page.locator('[class*=pager], a:has-text(/\d+/)');
+  137 |       expect(await pageLinks.count()).toBeGreaterThanOrEqual(0);
+  138 |     });
+  139 | 
+  140 |     test('computers product detail link navigates', async ({ page }) => {
+  141 |       await page.goto(`${BASE_URL}/computers`);
+  142 |       const productLink = page.locator('a[href*=product]').first();
+  143 |       if (await productLink.count() > 0) {
+  144 |         const isVisible = await productLink.isVisible().catch(() => false);
+  145 |         if (isVisible) {
+  146 |           await productLink.click();
+  147 |           await page.waitForLoadState('networkidle');
+  148 |           expect(page.url()).toContain('product');
+  149 |         }
+  150 |       }
+  151 |     });
+  152 | 
+  153 |     test('computers add to cart from listing', async ({ page }) => {
+  154 |       await page.goto(`${BASE_URL}/computers`);
+  155 |       const addBtn = page.locator('button:has-text(/add|cart/i), a:has-text(/add|cart/i)').first();
+  156 |       if (await addBtn.count() > 0) {
+  157 |         const isVisible = await addBtn.isVisible().catch(() => false);
+  158 |         if (isVisible) {
+  159 |           await addBtn.click();
+  160 |           await page.waitForLoadState('networkidle');
+  161 |         }
+  162 |       }
+  163 |     });
+  164 |   });
+  165 | 
+  166 |   test.describe('Category: Electronics', () => {
+  167 |     test('electronics page loads correctly', async ({ page }) => {
+  168 |       await page.goto(`${BASE_URL}/electronics`);
+  169 |       await page.waitForLoadState('networkidle');
+  170 |       const title = page.locator('h1, [class*=title]').first();
+  171 |       if (await title.count() > 0) {
+  172 |         await expect(title).toBeVisible();
+  173 |       }
+  174 |     });
+  175 | 
+  176 |     test('electronics displays product list', async ({ page }) => {
+  177 |       await page.goto(`${BASE_URL}/electronics`);
+  178 |       const products = page.locator('[class*=product], a[href*=product]');
+  179 |       expect(await products.count()).toBeGreaterThan(0);
+  180 |     });
+  181 | 
+```
