@@ -26,14 +26,14 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        headless: false, // Headed mode for Chrome - visible browser
+        headless: false, // HEADED MODE - visible browser for manual testing
       },
     },
     {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
-        headless: true, // Headless mode for Firefox
+        headless: true, // HEADLESS MODE - for CI/CD
       },
     },
     // WebKit removed: not installed on this system (acceptable for MVP)
