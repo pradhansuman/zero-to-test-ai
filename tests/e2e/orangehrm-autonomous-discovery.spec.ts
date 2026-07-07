@@ -54,7 +54,7 @@ test.describe('🎯 AUTONOMOUS DISCOVERY AGENT - Orange HRM', () => {
     console.log('PHASE 1: UNDERSTAND CURRENT SCREEN - Login Page');
     console.log('═══════════════════════════════════════════════════════════\n');
 
-    await page.goto(`${baseUrl}/web/index.php/auth/login`);
+    await page.goto(`${baseUrl}/web/index.php/auth/login`, { timeout: 10000, waitUntil: 'domcontentloaded' });
 
     const pageAnalysis = {
       title: await page.title(),
@@ -111,7 +111,7 @@ test.describe('🎯 AUTONOMOUS DISCOVERY AGENT - Orange HRM', () => {
     console.log('PHASE 4-5: EXECUTE & VERIFY - LOGIN WORKFLOW');
     console.log('═══════════════════════════════════════════════════════════\n');
 
-    await page.goto(`${baseUrl}/web/index.php/auth/login`);
+    await page.goto(`${baseUrl}/web/index.php/auth/login`, { timeout: 10000, waitUntil: 'domcontentloaded' });
 
     console.log('🎬 EXECUTING LOGIN...');
     await page.fill('input[name="username"]', credentials.username);
