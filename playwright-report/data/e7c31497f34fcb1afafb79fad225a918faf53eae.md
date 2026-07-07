@@ -1,0 +1,208 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: demoqa-adaptive-ad-aware.spec.ts >> DemoQA - Ad-Aware Forms Platform Testing >> TC-8: Form Labels - Accessible Labels Present
+- Location: tests/e2e/demoqa-adaptive-ad-aware.spec.ts:192:7
+
+# Error details
+
+```
+Test timeout of 60000ms exceeded.
+```
+
+```
+Error: locator.evaluate: Test timeout of 60000ms exceeded.
+Call log:
+  - waiting for locator('span:has-text("Elements")').first()
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link [ref=e4] [cursor=pointer]:
+      - /url: https://demoqa.com
+      - img [ref=e5]
+  - generic [ref=e7]:
+    - link "Selenium Online Training" [ref=e9] [cursor=pointer]:
+      - /url: https://www.toolsqa.com/selenium-training/
+      - img "Selenium Online Training" [ref=e10]
+    - generic [ref=e12]:
+      - link "Elements" [ref=e13] [cursor=pointer]:
+        - /url: /elements
+        - generic [ref=e15]:
+          - img [ref=e18]
+          - heading "Elements" [level=5] [ref=e21]
+      - link "Forms" [ref=e22] [cursor=pointer]:
+        - /url: /forms
+        - generic [ref=e24]:
+          - img [ref=e27]
+          - heading "Forms" [level=5] [ref=e31]
+      - link "Alerts, Frame & Windows" [ref=e32] [cursor=pointer]:
+        - /url: /alertsWindows
+        - generic [ref=e34]:
+          - img [ref=e37]
+          - heading "Alerts, Frame & Windows" [level=5] [ref=e40]
+      - link "Widgets" [ref=e41] [cursor=pointer]:
+        - /url: /widgets
+        - generic [ref=e43]:
+          - img [ref=e46]
+          - heading "Widgets" [level=5] [ref=e50]
+      - link "Interactions" [ref=e51] [cursor=pointer]:
+        - /url: /interaction
+        - generic [ref=e53]:
+          - img [ref=e56]
+          - heading "Interactions" [level=5] [ref=e59]
+      - link "Book Store Application" [ref=e60] [cursor=pointer]:
+        - /url: /books
+        - generic [ref=e62]:
+          - img [ref=e65]
+          - heading "Book Store Application" [level=5] [ref=e68]
+  - contentinfo [ref=e69]:
+    - generic [ref=e70]: © 2013-2026 TOOLSQA.COM | ALL RIGHTS RESERVED.
+```
+
+# Test source
+
+```ts
+  1   | import { test, expect } from '@playwright/test';
+  2   | 
+  3   | /**
+  4   |  * DEMOQA ADAPTIVE TEST SUITE - AD-AWARE VARIANT
+  5   |  * Application Type: FORMS_PLATFORM
+  6   |  * Test Count: 8 (Low complexity)
+  7   |  * Guardrails: REQ-5 (Functional), REQ-6 (Form Validation), REQ-7 (Data), REQ-13 (Accessibility)
+  8   |  * 
+  9   |  * IMPROVEMENTS:
+  10  |  * - Handles Google ad iframe interference
+  11  |  * - Uses forced clicks when elements are blocked
+  12  |  * - Implements ad load detection
+  13  |  * - More robust selector strategies
+  14  |  */
+  15  | 
+  16  | test.describe('DemoQA - Ad-Aware Forms Platform Testing', () => {
+  17  |   
+  18  |   // Helper: Wait for ads to load and stabilize
+  19  |   async function waitForAdStability(page) {
+  20  |     try {
+  21  |       // Wait for Google ad iframe to load
+  22  |       await page.waitForSelector('iframe[id*="google_ads"]', { timeout: 3000 }).catch(() => {});
+  23  |       // Give ads time to stabilize
+  24  |       await page.waitForTimeout(1000);
+  25  |     } catch (e) {
+  26  |       // Ads may not load in all conditions, continue anyway
+  27  |     }
+  28  |   }
+  29  | 
+  30  |   // Helper: Click with forced execution (bypasses ad interference)
+  31  |   async function forcedClick(page, selector) {
+> 32  |     await page.locator(selector).first().evaluate((el: any) => {
+      |                                          ^ Error: locator.evaluate: Test timeout of 60000ms exceeded.
+  33  |       el.click();
+  34  |     });
+  35  |   }
+  36  | 
+  37  |   test.beforeEach(async ({ page }) => {
+  38  |     await page.goto('https://demoqa.com/');
+  39  |     await waitForAdStability(page);
+  40  |   });
+  41  | 
+  42  |   // REQ-5: Functional Testing
+  43  |   test('TC-1: Text Box - Valid Input Submission', async ({ page }) => {
+  44  |     // Preconditions: Application loaded, Text Box form visible
+  45  |     
+  46  |     // Use forced click to bypass ad interference
+  47  |     await forcedClick(page, 'span:has-text("Elements")');
+  48  |     await page.waitForTimeout(500);
+  49  |     
+  50  |     await forcedClick(page, 'span:has-text("Text Box")');
+  51  |     await page.waitForTimeout(500);
+  52  |     
+  53  |     // Steps: Fill in valid text, submit
+  54  |     await page.fill('#userName', 'John Doe');
+  55  |     await page.fill('#userEmail', 'john@example.com');
+  56  |     await page.fill('#currentAddress', '123 Main Street');
+  57  |     await page.fill('#permanentAddress', '456 Oak Avenue');
+  58  |     
+  59  |     // Find and click submit using JavaScript (bypasses ad blocking)
+  60  |     await page.evaluate(() => {
+  61  |       const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Submit'));
+  62  |       if (btn) (btn as any).click();
+  63  |     });
+  64  |     
+  65  |     // Assertions
+  66  |     const output = await page.locator('#output');
+  67  |     await expect(output).toContainText('John Doe');
+  68  |     await expect(output).toContainText('john@example.com');
+  69  |   });
+  70  | 
+  71  |   test('TC-2: Checkbox - Select Multiple Options', async ({ page }) => {
+  72  |     // Preconditions: Checkbox form loaded
+  73  |     await forcedClick(page, 'span:has-text("Elements")');
+  74  |     await page.waitForTimeout(500);
+  75  |     
+  76  |     await forcedClick(page, 'span:has-text("Check Box")');
+  77  |     await page.waitForTimeout(500);
+  78  |     
+  79  |     // Steps: Expand tree and select checkboxes using JavaScript
+  80  |     await page.evaluate(() => {
+  81  |       const toggles = document.querySelectorAll('[type="checkbox"]');
+  82  |       if (toggles.length > 0) {
+  83  |         (toggles[0] as any).click();
+  84  |       }
+  85  |     });
+  86  |     
+  87  |     // Assertions
+  88  |     const checkedItems = await page.locator('input[type="checkbox"]:checked').count();
+  89  |     expect(checkedItems).toBeGreaterThan(0);
+  90  |   });
+  91  | 
+  92  |   test('TC-3: Radio Button - Select Option', async ({ page }) => {
+  93  |     // Preconditions: Radio button form visible
+  94  |     await forcedClick(page, 'span:has-text("Elements")');
+  95  |     await page.waitForTimeout(500);
+  96  |     
+  97  |     await forcedClick(page, 'span:has-text("Radio Button")');
+  98  |     await page.waitForTimeout(500);
+  99  |     
+  100 |     // Steps: Select radio button using JavaScript evaluation
+  101 |     await page.evaluate(() => {
+  102 |       const radios = document.querySelectorAll('input[type="radio"]');
+  103 |       if (radios.length > 0) {
+  104 |         (radios[0] as any).click();
+  105 |       }
+  106 |     });
+  107 |     
+  108 |     // Assertions
+  109 |     const checked = await page.evaluate(() => {
+  110 |       const radios = document.querySelectorAll('input[type="radio"]');
+  111 |       return radios.length > 0 && (radios[0] as any).checked;
+  112 |     });
+  113 |     expect(checked).toBeTruthy();
+  114 |   });
+  115 | 
+  116 |   // REQ-6: Form Validation Testing
+  117 |   test('TC-4: Email Validation - Invalid Format Rejected', async ({ page }) => {
+  118 |     // Preconditions: Text Box form open
+  119 |     await forcedClick(page, 'span:has-text("Elements")');
+  120 |     await page.waitForTimeout(500);
+  121 |     
+  122 |     await forcedClick(page, 'span:has-text("Text Box")');
+  123 |     await page.waitForTimeout(500);
+  124 |     
+  125 |     // Steps: Enter invalid email
+  126 |     await page.fill('#userEmail', 'invalid-email');
+  127 |     
+  128 |     // Assertions: Check HTML5 validation
+  129 |     const validationState = await page.evaluate(() => {
+  130 |       const input = document.getElementById('userEmail') as any;
+  131 |       return input?.validity?.valid;
+  132 |     });
+```

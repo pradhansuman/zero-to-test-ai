@@ -26,7 +26,7 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        headless: false, // HEADED MODE - visible browser for manual testing
+        headless: true, // HEADLESS MODE - automated testing
       },
     },
     {
