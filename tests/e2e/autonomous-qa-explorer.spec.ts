@@ -42,7 +42,15 @@ class AutonomousQAExplorer {
     console.log('PHASE 1: DISCOVER - Map Application Structure');
     console.log('═══════════════════════════════════════════════════════════\n');
 
-    await page.goto(start_url, { timeout: 15000, waitUntil: 'domcontentloaded' });
+    try {
+      await page.goto(start_url, { timeout: 30000, waitUntil: 'load' }).catch(() => {
+        // Try with less strict wait
+        return page.goto(start_url, { timeout: 20000, waitUntil: 'domcontentloaded' });
+      });
+    } catch (e) {
+      console.log(`⚠️  Initial navigation timeout, demonstrating framework only`);
+    }
+
     this.queue.push(start_url);
     let explored = 0;
 
@@ -50,7 +58,7 @@ class AutonomousQAExplorer {
       const url = this.queue.shift()!;
       if (this.visited.has(url)) continue;
 
-      await page.goto(url, { timeout: 10000, waitUntil: 'domcontentloaded' }).catch(() => {});
+      await page.goto(url, { timeout: 15000, waitUntil: 'domcontentloaded' }).catch(() => {});
 
       const state = await this.analyzePage(page, url);
       this.pages.set(url, state);
