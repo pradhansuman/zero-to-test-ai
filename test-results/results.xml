@@ -1,0 +1,659 @@
+<testsuites id="" name="" tests="28" failures="11" skipped="0" errors="3" time="747.9992900000001">
+<testsuite name="orangehrm-comprehensive-sub-functions.spec.ts" timestamp="2026-07-07T07:53:20.947Z" hostname="chromium" tests="28" failures="11" skipped="0" time="703.992" errors="3">
+<testcase name="ADMIN: User Management › WF-1.1: View all system users list" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="17.006">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-e77a2--View-all-system-users-list-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-e77a2--View-all-system-users-list-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-e77a2--View-all-system-users-list-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(received).toBeGreaterThan(expected)" type="expect.toBeGreaterThan">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:30:7 › ADMIN: User Management › WF-1.1: View all system users list 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+      31 |     await expect(page.locator('text=System Users')).toBeVisible();
+      32 |     const rows = page.locator('table tbody tr');
+    > 33 |     expect(await rows.count()).toBeGreaterThan(0);
+         |                                ^
+      34 |   });
+      35 |
+      36 |   test('WF-1.2: Search users by username field', async ({ page }) => {
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:33:32
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-e77a2--View-all-system-users-list-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-e77a2--View-all-system-users-list-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-e77a2--View-all-system-users-list-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.2: Search users by username field" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="13.798">
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.3: Filter by role dropdown (Admin/ESS)" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="16.78">
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.4: Filter by status (Enabled/Disabled)" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="7.531">
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.5: Edit user button functionality" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="13.462">
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.6: Delete user button visibility" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="17.703">
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.7: Reset filters button" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="15.801">
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.8: Add new user button" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="20.329">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-e0ef3--WF-1-8-Add-new-user-button-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-e0ef3--WF-1-8-Add-new-user-button-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-e0ef3--WF-1-8-Add-new-user-button-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:79:7 › ADMIN: User Management › WF-1.8: Add new user button 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('button:has-text("Add")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('button:has-text("Add")')
+
+
+      79 |   test('WF-1.8: Add new user button', async ({ page }) => {
+      80 |     const addBtn = page.locator('button:has-text("Add")');
+    > 81 |     await expect(addBtn).toBeVisible();
+         |                          ^
+      82 |   });
+      83 |
+      84 |   test('WF-1.9: Username column sortable', async ({ page }) => {
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:81:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-e0ef3--WF-1-8-Add-new-user-button-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-e0ef3--WF-1-8-Add-new-user-button-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-e0ef3--WF-1-8-Add-new-user-button-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.9: Username column sortable" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="23.575">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-246aa--9-Username-column-sortable-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-246aa--9-Username-column-sortable-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-246aa--9-Username-column-sortable-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:84:7 › ADMIN: User Management › WF-1.9: Username column sortable 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('th:has-text("Username")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('th:has-text("Username")')
+
+
+      83 |
+      84 |   test('WF-1.9: Username column sortable', async ({ page }) => {
+    > 85 |     await expect(page.locator('th:has-text("Username")')).toBeVisible();
+         |                                                           ^
+      86 |   });
+      87 |
+      88 |   test('WF-1.10: User role column sortable', async ({ page }) => {
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:85:59
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-246aa--9-Username-column-sortable-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-246aa--9-Username-column-sortable-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-246aa--9-Username-column-sortable-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.10: User role column sortable" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="23.874">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-31add-0-User-role-column-sortable-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-31add-0-User-role-column-sortable-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-31add-0-User-role-column-sortable-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:88:7 › ADMIN: User Management › WF-1.10: User role column sortable 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('th:has-text("User Role")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('th:has-text("User Role")')
+
+
+      87 |
+      88 |   test('WF-1.10: User role column sortable', async ({ page }) => {
+    > 89 |     await expect(page.locator('th:has-text("User Role")')).toBeVisible();
+         |                                                            ^
+      90 |   });
+      91 |
+      92 |   test('WF-1.11: Employee name column sortable', async ({ page }) => {
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:89:60
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-31add-0-User-role-column-sortable-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-31add-0-User-role-column-sortable-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-31add-0-User-role-column-sortable-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.11: Employee name column sortable" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="72.482">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-6975d-ployee-name-column-sortable-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-6975d-ployee-name-column-sortable-chromium/error-context.md]]
+]]>
+</system-out>
+<error message="Test timeout of 60000ms exceeded while running &quot;beforeEach&quot; hook." type="Error">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:92:7 › ADMIN: User Management › WF-1.11: Employee name column sortable 
+
+    Test timeout of 60000ms exceeded while running "beforeEach" hook.
+
+      23 |
+      24 | test.describe('ADMIN: User Management', () => {
+    > 25 |   test.beforeEach(async ({ page }) => {
+         |        ^
+      26 |     await login(page);
+      27 |     await navigateToModule(page, '/web/index.php/admin/viewAdminModule');
+      28 |   });
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:25:8
+
+    Error: page.fill: Test timeout of 60000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="username"]')
+
+
+       7 | async function login(page: Page) {
+       8 |   await page.goto(`${BASE_URL}/web/index.php/auth/login`);
+    >  9 |   await page.fill('input[name="username"]', ADMIN_USER);
+         |              ^
+      10 |   await page.fill('input[name="password"]', ADMIN_PASSWORD);
+      11 |   await page.click('button[type="submit"]');
+      12 |   await page.waitForURL(`${BASE_URL}/**`);
+        at login (/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:9:14)
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:26:5
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-6975d-ployee-name-column-sortable-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-6975d-ployee-name-column-sortable-chromium/error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ADMIN: User Management › WF-1.12: Status column sortable" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="24.137">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-11017-1-12-Status-column-sortable-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-11017-1-12-Status-column-sortable-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-11017-1-12-Status-column-sortable-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:96:7 › ADMIN: User Management › WF-1.12: Status column sortable 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('th:has-text("Status")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('th:has-text("Status")')
+
+
+       95 |
+       96 |   test('WF-1.12: Status column sortable', async ({ page }) => {
+    >  97 |     await expect(page.locator('th:has-text("Status")')).toBeVisible();
+          |                                                         ^
+       98 |   });
+       99 | });
+      100 |
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:97:57
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-11017-1-12-Status-column-sortable-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-11017-1-12-Status-column-sortable-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-11017-1-12-Status-column-sortable-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="PIM: Employee List › WF-2.1: View employee list with 133 records" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="74.908">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-3dedc-loyee-list-with-133-records-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-3dedc-loyee-list-with-133-records-chromium/error-context.md]]
+]]>
+</system-out>
+<error message="Test timeout of 60000ms exceeded while running &quot;beforeEach&quot; hook." type="Error">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:111:7 › PIM: Employee List › WF-2.1: View employee list with 133 records 
+
+    Test timeout of 60000ms exceeded while running "beforeEach" hook.
+
+      104 |
+      105 | test.describe('PIM: Employee List', () => {
+    > 106 |   test.beforeEach(async ({ page }) => {
+          |        ^
+      107 |     await login(page);
+      108 |     await navigateToModule(page, '/web/index.php/pim/viewEmployeeList');
+      109 |   });
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:106:8
+
+    Error: page.goto: Test timeout of 60000ms exceeded.
+    Call log:
+      - navigating to "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login", waiting until "load"
+
+
+       6 |
+       7 | async function login(page: Page) {
+    >  8 |   await page.goto(`${BASE_URL}/web/index.php/auth/login`);
+         |              ^
+       9 |   await page.fill('input[name="username"]', ADMIN_USER);
+      10 |   await page.fill('input[name="password"]', ADMIN_PASSWORD);
+      11 |   await page.click('button[type="submit"]');
+        at login (/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:8:14)
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:107:11
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-3dedc-loyee-list-with-133-records-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-3dedc-loyee-list-with-133-records-chromium/error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="PIM: Employee List › WF-2.2: Search by employee name" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="17.95">
+</testcase>
+<testcase name="PIM: Employee List › WF-2.3: Search by employee ID" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="15.605">
+</testcase>
+<testcase name="PIM: Employee List › WF-2.4: Filter by employment status" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="18.946">
+</testcase>
+<testcase name="PIM: Employee List › WF-2.5: Include past employees checkbox" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="17.15">
+</testcase>
+<testcase name="PIM: Employee List › WF-2.6: Employee ID column sort" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="28.265">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-eac04-2-6-Employee-ID-column-sort-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-eac04-2-6-Employee-ID-column-sort-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-eac04-2-6-Employee-ID-column-sort-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:147:7 › PIM: Employee List › WF-2.6: Employee ID column sort 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('th:has-text("Employee ID")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('th:has-text("Employee ID")')
+
+
+      146 |
+      147 |   test('WF-2.6: Employee ID column sort', async ({ page }) => {
+    > 148 |     await expect(page.locator('th:has-text("Employee ID")')).toBeVisible();
+          |                                                              ^
+      149 |   });
+      150 |
+      151 |   test('WF-2.7: Employee name column sort', async ({ page }) => {
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:148:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-eac04-2-6-Employee-ID-column-sort-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-eac04-2-6-Employee-ID-column-sort-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-eac04-2-6-Employee-ID-column-sort-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="PIM: Employee List › WF-2.7: Employee name column sort" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="25.519">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-affd8-7-Employee-name-column-sort-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-affd8-7-Employee-name-column-sort-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-affd8-7-Employee-name-column-sort-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:151:7 › PIM: Employee List › WF-2.7: Employee name column sort 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('th:has-text("Employee Name")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('th:has-text("Employee Name")')
+
+
+      150 |
+      151 |   test('WF-2.7: Employee name column sort', async ({ page }) => {
+    > 152 |     await expect(page.locator('th:has-text("Employee Name")')).toBeVisible();
+          |                                                                ^
+      153 |   });
+      154 |
+      155 |   test('WF-2.8: Job title column sort', async ({ page }) => {
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:152:64
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-affd8-7-Employee-name-column-sort-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-affd8-7-Employee-name-column-sort-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-affd8-7-Employee-name-column-sort-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="PIM: Employee List › WF-2.8: Job title column sort" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="19.074">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-fb769-F-2-8-Job-title-column-sort-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-fb769-F-2-8-Job-title-column-sort-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-fb769-F-2-8-Job-title-column-sort-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:155:7 › PIM: Employee List › WF-2.8: Job title column sort 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('th:has-text("Job Title")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('th:has-text("Job Title")')
+
+
+      154 |
+      155 |   test('WF-2.8: Job title column sort', async ({ page }) => {
+    > 156 |     await expect(page.locator('th:has-text("Job Title")')).toBeVisible();
+          |                                                            ^
+      157 |   });
+      158 |
+      159 |   test('WF-2.9: Employment status column sort', async ({ page }) => {
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:156:60
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-fb769-F-2-8-Job-title-column-sort-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-fb769-F-2-8-Job-title-column-sort-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-fb769-F-2-8-Job-title-column-sort-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="PIM: Employee List › WF-2.9: Employment status column sort" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="24.37">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-438eb-ployment-status-column-sort-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-438eb-ployment-status-column-sort-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-438eb-ployment-status-column-sort-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:159:7 › PIM: Employee List › WF-2.9: Employment status column sort 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('th:has-text("Employment Status")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('th:has-text("Employment Status")')
+
+
+      158 |
+      159 |   test('WF-2.9: Employment status column sort', async ({ page }) => {
+    > 160 |     await expect(page.locator('th:has-text("Employment Status")')).toBeVisible();
+          |                                                                    ^
+      161 |   });
+      162 |
+      163 |   test('WF-2.10: Sub unit column sort', async ({ page }) => {
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:160:68
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-438eb-ployment-status-column-sort-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-438eb-ployment-status-column-sort-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-438eb-ployment-status-column-sort-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="PIM: Employee List › WF-2.10: Sub unit column sort" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="26.111">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-56451-F-2-10-Sub-unit-column-sort-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-56451-F-2-10-Sub-unit-column-sort-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-56451-F-2-10-Sub-unit-column-sort-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:163:7 › PIM: Employee List › WF-2.10: Sub unit column sort 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('th:has-text("Sub Unit")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('th:has-text("Sub Unit")')
+
+
+      162 |
+      163 |   test('WF-2.10: Sub unit column sort', async ({ page }) => {
+    > 164 |     await expect(page.locator('th:has-text("Sub Unit")')).toBeVisible();
+          |                                                           ^
+      165 |   });
+      166 |
+      167 |   test('WF-2.11: Edit employee icon', async ({ page }) => {
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:164:59
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-56451-F-2-10-Sub-unit-column-sort-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-56451-F-2-10-Sub-unit-column-sort-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-56451-F-2-10-Sub-unit-column-sort-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="PIM: Employee List › WF-2.11: Edit employee icon" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="16.592">
+</testcase>
+<testcase name="PIM: Employee List › WF-2.12: Delete employee icon" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="17.119">
+</testcase>
+<testcase name="PIM: Employee List › WF-2.13: Add employee button" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="74.717">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-080ac-WF-2-13-Add-employee-button-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-080ac-WF-2-13-Add-employee-button-chromium/error-context.md]]
+]]>
+</system-out>
+<error message="Test timeout of 60000ms exceeded while running &quot;beforeEach&quot; hook." type="Error">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:181:7 › PIM: Employee List › WF-2.13: Add employee button 
+
+    Test timeout of 60000ms exceeded while running "beforeEach" hook.
+
+      104 |
+      105 | test.describe('PIM: Employee List', () => {
+    > 106 |   test.beforeEach(async ({ page }) => {
+          |        ^
+      107 |     await login(page);
+      108 |     await navigateToModule(page, '/web/index.php/pim/viewEmployeeList');
+      109 |   });
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:106:8
+
+    Error: page.goto: Test timeout of 60000ms exceeded.
+    Call log:
+      - navigating to "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login", waiting until "load"
+
+
+       6 |
+       7 | async function login(page: Page) {
+    >  8 |   await page.goto(`${BASE_URL}/web/index.php/auth/login`);
+         |              ^
+       9 |   await page.fill('input[name="username"]', ADMIN_USER);
+      10 |   await page.fill('input[name="password"]', ADMIN_PASSWORD);
+      11 |   await page.click('button[type="submit"]');
+        at login (/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:8:14)
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:107:11
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-080ac-WF-2-13-Add-employee-button-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-080ac-WF-2-13-Add-employee-button-chromium/error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="PIM: Employee List › WF-2.14: Reset filters" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="11.417">
+</testcase>
+<testcase name="PIM: Employee List › WF-2.15: Table pagination" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="15.473">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|orangehrm-comprehensive-su-bd900-st-WF-2-15-Table-pagination-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-bd900-st-WF-2-15-Table-pagination-chromium/video.webm]]
+
+[[ATTACHMENT|orangehrm-comprehensive-su-bd900-st-WF-2-15-Table-pagination-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(received).toBeGreaterThan(expected)" type="expect.toBeGreaterThan">
+<![CDATA[  [chromium] › orangehrm-comprehensive-sub-functions.spec.ts:189:7 › PIM: Employee List › WF-2.15: Table pagination 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+      189 |   test('WF-2.15: Table pagination', async ({ page }) => {
+      190 |     const rows = page.locator('table tbody tr');
+    > 191 |     expect(await rows.count()).toBeGreaterThan(0);
+          |                                ^
+      192 |   });
+      193 | });
+      194 |
+        at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:191:32
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-bd900-st-WF-2-15-Table-pagination-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/orangehrm-comprehensive-su-bd900-st-WF-2-15-Table-pagination-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/orangehrm-comprehensive-su-bd900-st-WF-2-15-Table-pagination-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="PIM: My Info - Personal Details › WF-3.5: Employee ID read-only field" classname="orangehrm-comprehensive-sub-functions.spec.ts" time="34.298">
+</testcase>
+</testsuite>
+</testsuites>

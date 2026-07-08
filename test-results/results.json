@@ -1,0 +1,1661 @@
+{
+  "config": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/Users/skp/Downloads/QA_AGents/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+      "--project=chromium",
+      "--headed",
+      "--workers=1",
+      "--grep",
+      "ADMIN|PIM.*Employee"
+    ],
+    "configFile": "/Users/skp/Downloads/QA_AGents/playwright.config.ts",
+    "rootDir": "/Users/skp/Downloads/QA_AGents/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/skp/Downloads/QA_AGents/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/skp/Downloads/QA_AGents/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/skp/Downloads/QA_AGents/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/skp/Downloads/QA_AGents/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "test-results/results.xml"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "orangehrm-comprehensive-sub-functions.spec.ts",
+      "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "ADMIN: User Management",
+          "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "WF-1.1: View all system users list",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 17006,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:33:32",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 32,
+                          "line": 33
+                        },
+                        "snippet": "  31 |     await expect(page.locator('text=System Users')).toBeVisible();\n  32 |     const rows = page.locator('table tbody tr');\n> 33 |     expect(await rows.count()).toBeGreaterThan(0);\n     |                                ^\n  34 |   });\n  35 |\n  36 |   test('WF-1.2: Search users by username field', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 32,
+                            "line": 33
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n\n  31 |     await expect(page.locator('text=System Users')).toBeVisible();\n  32 |     const rows = page.locator('table tbody tr');\n> 33 |     expect(await rows.count()).toBeGreaterThan(0);\n     |                                ^\n  34 |   });\n  35 |\n  36 |   test('WF-1.2: Search users by username field', async ({ page }) => {\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:33:32"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:53:22.144Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-e77a2--View-all-system-users-list-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-e77a2--View-all-system-users-list-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-e77a2--View-all-system-users-list-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 32,
+                        "line": 33
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-0daae05ee9d972e0bbc2",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 30,
+              "column": 7
+            },
+            {
+              "title": "WF-1.2: Search users by username field",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13798,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:53:43.241Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-09b8ab01d2a387ff60ea",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 36,
+              "column": 7
+            },
+            {
+              "title": "WF-1.3: Filter by role dropdown (Admin/ESS)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 16780,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:53:57.996Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-75246835565c82879b17",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 45,
+              "column": 7
+            },
+            {
+              "title": "WF-1.4: Filter by status (Enabled/Disabled)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7531,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:54:14.879Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-26381c44aeba45eb6bac",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 53,
+              "column": 7
+            },
+            {
+              "title": "WF-1.5: Edit user button functionality",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13462,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:54:22.458Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-798d9ecd4d6cbb4fb8d8",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "WF-1.6: Delete user button visibility",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 17703,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:54:35.970Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-cdb54e11b96394722068",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 67,
+              "column": 7
+            },
+            {
+              "title": "WF-1.7: Reset filters button",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15801,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:54:53.712Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-6d581b83b70c0cf4b95c",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 74,
+              "column": 7
+            },
+            {
+              "title": "WF-1.8: Add new user button",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 20329,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('button:has-text(\"Add\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('button:has-text(\"Add\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('button:has-text(\"Add\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('button:has-text(\"Add\")')\u001b[22m\n\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:81:26",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 26,
+                          "line": 81
+                        },
+                        "snippet": "  79 |   test('WF-1.8: Add new user button', async ({ page }) => {\n  80 |     const addBtn = page.locator('button:has-text(\"Add\")');\n> 81 |     await expect(addBtn).toBeVisible();\n     |                          ^\n  82 |   });\n  83 |\n  84 |   test('WF-1.9: Username column sortable', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 26,
+                            "line": 81
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('button:has-text(\"Add\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('button:has-text(\"Add\")')\u001b[22m\n\n\n  79 |   test('WF-1.8: Add new user button', async ({ page }) => {\n  80 |     const addBtn = page.locator('button:has-text(\"Add\")');\n> 81 |     await expect(addBtn).toBeVisible();\n     |                          ^\n  82 |   });\n  83 |\n  84 |   test('WF-1.9: Username column sortable', async ({ page }) => {\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:81:26"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:55:09.547Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-e0ef3--WF-1-8-Add-new-user-button-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-e0ef3--WF-1-8-Add-new-user-button-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-e0ef3--WF-1-8-Add-new-user-button-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 26,
+                        "line": 81
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-75c2b9b37ed668a34dff",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 79,
+              "column": 7
+            },
+            {
+              "title": "WF-1.9: Username column sortable",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 23575,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Username\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Username\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Username\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Username\")')\u001b[22m\n\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:85:59",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 59,
+                          "line": 85
+                        },
+                        "snippet": "  83 |\n  84 |   test('WF-1.9: Username column sortable', async ({ page }) => {\n> 85 |     await expect(page.locator('th:has-text(\"Username\")')).toBeVisible();\n     |                                                           ^\n  86 |   });\n  87 |\n  88 |   test('WF-1.10: User role column sortable', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 59,
+                            "line": 85
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Username\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Username\")')\u001b[22m\n\n\n  83 |\n  84 |   test('WF-1.9: Username column sortable', async ({ page }) => {\n> 85 |     await expect(page.locator('th:has-text(\"Username\")')).toBeVisible();\n     |                                                           ^\n  86 |   });\n  87 |\n  88 |   test('WF-1.10: User role column sortable', async ({ page }) => {\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:85:59"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:55:31.147Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-246aa--9-Username-column-sortable-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-246aa--9-Username-column-sortable-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-246aa--9-Username-column-sortable-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 59,
+                        "line": 85
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-31f054fe4ab34aeb5544",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 84,
+              "column": 7
+            },
+            {
+              "title": "WF-1.10: User role column sortable",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 23874,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"User Role\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"User Role\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"User Role\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"User Role\")')\u001b[22m\n\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:89:60",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 60,
+                          "line": 89
+                        },
+                        "snippet": "  87 |\n  88 |   test('WF-1.10: User role column sortable', async ({ page }) => {\n> 89 |     await expect(page.locator('th:has-text(\"User Role\")')).toBeVisible();\n     |                                                            ^\n  90 |   });\n  91 |\n  92 |   test('WF-1.11: Employee name column sortable', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 60,
+                            "line": 89
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"User Role\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"User Role\")')\u001b[22m\n\n\n  87 |\n  88 |   test('WF-1.10: User role column sortable', async ({ page }) => {\n> 89 |     await expect(page.locator('th:has-text(\"User Role\")')).toBeVisible();\n     |                                                            ^\n  90 |   });\n  91 |\n  92 |   test('WF-1.11: Employee name column sortable', async ({ page }) => {\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:89:60"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:55:56.840Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-31add-0-User-role-column-sortable-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-31add-0-User-role-column-sortable-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-31add-0-User-role-column-sortable-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 60,
+                        "line": 89
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-72b4a2d8178d1c3c19c5",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 88,
+              "column": 7
+            },
+            {
+              "title": "WF-1.11: Employee name column sortable",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 72482,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 60000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 60000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:25:8",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 8,
+                          "line": 25
+                        },
+                        "snippet": "  23 |\n  24 | test.describe('ADMIN: User Management', () => {\n> 25 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  26 |     await login(page);\n  27 |     await navigateToModule(page, '/web/index.php/admin/viewAdminModule');\n  28 |   });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 8,
+                            "line": 25
+                          },
+                          "message": "\u001b[31mTest timeout of 60000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  23 |\n  24 | test.describe('ADMIN: User Management', () => {\n> 25 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  26 |     await login(page);\n  27 |     await navigateToModule(page, '/web/index.php/admin/viewAdminModule');\n  28 |   });\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:25:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 14,
+                            "line": 9
+                          },
+                          "message": "Error: page.fill: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[name=\"username\"]')\u001b[22m\n\n\n   7 | async function login(page: Page) {\n   8 |   await page.goto(`${BASE_URL}/web/index.php/auth/login`);\n>  9 |   await page.fill('input[name=\"username\"]', ADMIN_USER);\n     |              ^\n  10 |   await page.fill('input[name=\"password\"]', ADMIN_PASSWORD);\n  11 |   await page.click('button[type=\"submit\"]');\n  12 |   await page.waitForURL(`${BASE_URL}/**`);\n    at login (/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:9:14)\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:26:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:56:23.015Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-6975d-ployee-name-column-sortable-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-6975d-ployee-name-column-sortable-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 8,
+                        "line": 25
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-58e7af37982c18abafea",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 92,
+              "column": 7
+            },
+            {
+              "title": "WF-1.12: Status column sortable",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 24137,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Status\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Status\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Status\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Status\")')\u001b[22m\n\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:97:57",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 57,
+                          "line": 97
+                        },
+                        "snippet": "   95 |\n   96 |   test('WF-1.12: Status column sortable', async ({ page }) => {\n>  97 |     await expect(page.locator('th:has-text(\"Status\")')).toBeVisible();\n      |                                                         ^\n   98 |   });\n   99 | });\n  100 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 57,
+                            "line": 97
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Status\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Status\")')\u001b[22m\n\n\n   95 |\n   96 |   test('WF-1.12: Status column sortable', async ({ page }) => {\n>  97 |     await expect(page.locator('th:has-text(\"Status\")')).toBeVisible();\n      |                                                         ^\n   98 |   });\n   99 | });\n  100 |\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:97:57"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:57:37.480Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-11017-1-12-Status-column-sortable-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-11017-1-12-Status-column-sortable-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-11017-1-12-Status-column-sortable-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 57,
+                        "line": 97
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-59c099b20b5b60dacad5",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 96,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "PIM: Employee List",
+          "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+          "line": 105,
+          "column": 6,
+          "specs": [
+            {
+              "title": "WF-2.1: View employee list with 133 records",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 74908,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 60000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 60000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:106:8",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 8,
+                          "line": 106
+                        },
+                        "snippet": "  104 |\n  105 | test.describe('PIM: Employee List', () => {\n> 106 |   test.beforeEach(async ({ page }) => {\n      |        ^\n  107 |     await login(page);\n  108 |     await navigateToModule(page, '/web/index.php/pim/viewEmployeeList');\n  109 |   });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 8,
+                            "line": 106
+                          },
+                          "message": "\u001b[31mTest timeout of 60000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  104 |\n  105 | test.describe('PIM: Employee List', () => {\n> 106 |   test.beforeEach(async ({ page }) => {\n      |        ^\n  107 |     await login(page);\n  108 |     await navigateToModule(page, '/web/index.php/pim/viewEmployeeList');\n  109 |   });\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:106:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 14,
+                            "line": 8
+                          },
+                          "message": "Error: page.goto: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://opensource-demo.orangehrmlive.com/web/index.php/auth/login\", waiting until \"load\"\u001b[22m\n\n\n   6 |\n   7 | async function login(page: Page) {\n>  8 |   await page.goto(`${BASE_URL}/web/index.php/auth/login`);\n     |              ^\n   9 |   await page.fill('input[name=\"username\"]', ADMIN_USER);\n  10 |   await page.fill('input[name=\"password\"]', ADMIN_PASSWORD);\n  11 |   await page.click('button[type=\"submit\"]');\n    at login (/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:8:14)\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:107:11"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:58:04.104Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-3dedc-loyee-list-with-133-records-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-3dedc-loyee-list-with-133-records-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 8,
+                        "line": 106
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-d80fefbb8f8b9cbb1127",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 111,
+              "column": 7
+            },
+            {
+              "title": "WF-2.2: Search by employee name",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 17950,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:59:21.279Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-767fe416ef336088c9a1",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 115,
+              "column": 7
+            },
+            {
+              "title": "WF-2.3: Search by employee ID",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15605,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:59:41.057Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-7f6c99e7874a3be33f2e",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 123,
+              "column": 7
+            },
+            {
+              "title": "WF-2.4: Filter by employment status",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 18946,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T07:59:56.774Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-ab7ab83eb635f8f23538",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 130,
+              "column": 7
+            },
+            {
+              "title": "WF-2.5: Include past employees checkbox",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 17150,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:00:15.780Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-5b4ca931a78fd89dccf3",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 140,
+              "column": 7
+            },
+            {
+              "title": "WF-2.6: Employee ID column sort",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 28265,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Employee ID\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Employee ID\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Employee ID\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Employee ID\")')\u001b[22m\n\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:148:62",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 62,
+                          "line": 148
+                        },
+                        "snippet": "  146 |\n  147 |   test('WF-2.6: Employee ID column sort', async ({ page }) => {\n> 148 |     await expect(page.locator('th:has-text(\"Employee ID\")')).toBeVisible();\n      |                                                              ^\n  149 |   });\n  150 |\n  151 |   test('WF-2.7: Employee name column sort', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 62,
+                            "line": 148
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Employee ID\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Employee ID\")')\u001b[22m\n\n\n  146 |\n  147 |   test('WF-2.6: Employee ID column sort', async ({ page }) => {\n> 148 |     await expect(page.locator('th:has-text(\"Employee ID\")')).toBeVisible();\n      |                                                              ^\n  149 |   });\n  150 |\n  151 |   test('WF-2.7: Employee name column sort', async ({ page }) => {\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:148:62"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:00:32.969Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-eac04-2-6-Employee-ID-column-sort-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-eac04-2-6-Employee-ID-column-sort-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-eac04-2-6-Employee-ID-column-sort-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 62,
+                        "line": 148
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-5e6cfe4b09eb899a3bfe",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 147,
+              "column": 7
+            },
+            {
+              "title": "WF-2.7: Employee name column sort",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 25519,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Employee Name\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Employee Name\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Employee Name\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Employee Name\")')\u001b[22m\n\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:152:64",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 64,
+                          "line": 152
+                        },
+                        "snippet": "  150 |\n  151 |   test('WF-2.7: Employee name column sort', async ({ page }) => {\n> 152 |     await expect(page.locator('th:has-text(\"Employee Name\")')).toBeVisible();\n      |                                                                ^\n  153 |   });\n  154 |\n  155 |   test('WF-2.8: Job title column sort', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 64,
+                            "line": 152
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Employee Name\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Employee Name\")')\u001b[22m\n\n\n  150 |\n  151 |   test('WF-2.7: Employee name column sort', async ({ page }) => {\n> 152 |     await expect(page.locator('th:has-text(\"Employee Name\")')).toBeVisible();\n      |                                                                ^\n  153 |   });\n  154 |\n  155 |   test('WF-2.8: Job title column sort', async ({ page }) => {\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:152:64"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:01:03.063Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-affd8-7-Employee-name-column-sort-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-affd8-7-Employee-name-column-sort-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-affd8-7-Employee-name-column-sort-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 64,
+                        "line": 152
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-25fcfce9ce9d827d816b",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 151,
+              "column": 7
+            },
+            {
+              "title": "WF-2.8: Job title column sort",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 19074,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Job Title\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Job Title\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Job Title\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Job Title\")')\u001b[22m\n\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:156:60",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 60,
+                          "line": 156
+                        },
+                        "snippet": "  154 |\n  155 |   test('WF-2.8: Job title column sort', async ({ page }) => {\n> 156 |     await expect(page.locator('th:has-text(\"Job Title\")')).toBeVisible();\n      |                                                            ^\n  157 |   });\n  158 |\n  159 |   test('WF-2.9: Employment status column sort', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 60,
+                            "line": 156
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Job Title\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Job Title\")')\u001b[22m\n\n\n  154 |\n  155 |   test('WF-2.8: Job title column sort', async ({ page }) => {\n> 156 |     await expect(page.locator('th:has-text(\"Job Title\")')).toBeVisible();\n      |                                                            ^\n  157 |   });\n  158 |\n  159 |   test('WF-2.9: Employment status column sort', async ({ page }) => {\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:156:60"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:01:31.420Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-fb769-F-2-8-Job-title-column-sort-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-fb769-F-2-8-Job-title-column-sort-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-fb769-F-2-8-Job-title-column-sort-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 60,
+                        "line": 156
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-e48c6cd6104d9b87d421",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 155,
+              "column": 7
+            },
+            {
+              "title": "WF-2.9: Employment status column sort",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 24370,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Employment Status\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Employment Status\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Employment Status\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Employment Status\")')\u001b[22m\n\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:160:68",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 68,
+                          "line": 160
+                        },
+                        "snippet": "  158 |\n  159 |   test('WF-2.9: Employment status column sort', async ({ page }) => {\n> 160 |     await expect(page.locator('th:has-text(\"Employment Status\")')).toBeVisible();\n      |                                                                    ^\n  161 |   });\n  162 |\n  163 |   test('WF-2.10: Sub unit column sort', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 68,
+                            "line": 160
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Employment Status\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Employment Status\")')\u001b[22m\n\n\n  158 |\n  159 |   test('WF-2.9: Employment status column sort', async ({ page }) => {\n> 160 |     await expect(page.locator('th:has-text(\"Employment Status\")')).toBeVisible();\n      |                                                                    ^\n  161 |   });\n  162 |\n  163 |   test('WF-2.10: Sub unit column sort', async ({ page }) => {\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:160:68"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:01:53.109Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-438eb-ployment-status-column-sort-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-438eb-ployment-status-column-sort-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-438eb-ployment-status-column-sort-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 68,
+                        "line": 160
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-e8da07b9ead5703dc988",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 159,
+              "column": 7
+            },
+            {
+              "title": "WF-2.10: Sub unit column sort",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 26111,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Sub Unit\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Sub Unit\")')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Sub Unit\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Sub Unit\")')\u001b[22m\n\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:164:59",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 59,
+                          "line": 164
+                        },
+                        "snippet": "  162 |\n  163 |   test('WF-2.10: Sub unit column sort', async ({ page }) => {\n> 164 |     await expect(page.locator('th:has-text(\"Sub Unit\")')).toBeVisible();\n      |                                                           ^\n  165 |   });\n  166 |\n  167 |   test('WF-2.11: Edit employee icon', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 59,
+                            "line": 164
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('th:has-text(\"Sub Unit\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('th:has-text(\"Sub Unit\")')\u001b[22m\n\n\n  162 |\n  163 |   test('WF-2.10: Sub unit column sort', async ({ page }) => {\n> 164 |     await expect(page.locator('th:has-text(\"Sub Unit\")')).toBeVisible();\n      |                                                           ^\n  165 |   });\n  166 |\n  167 |   test('WF-2.11: Edit employee icon', async ({ page }) => {\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:164:59"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:02:19.864Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-56451-F-2-10-Sub-unit-column-sort-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-56451-F-2-10-Sub-unit-column-sort-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-56451-F-2-10-Sub-unit-column-sort-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 59,
+                        "line": 164
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-9b80bc01ffd697a94209",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 163,
+              "column": 7
+            },
+            {
+              "title": "WF-2.11: Edit employee icon",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 16592,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:02:48.930Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-bbd75109456e1e16182b",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 167,
+              "column": 7
+            },
+            {
+              "title": "WF-2.12: Delete employee icon",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 17119,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:03:06.985Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-c598953deca3f49d5889",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 174,
+              "column": 7
+            },
+            {
+              "title": "WF-2.13: Add employee button",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 74717,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 60000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 60000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:106:8",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 8,
+                          "line": 106
+                        },
+                        "snippet": "  104 |\n  105 | test.describe('PIM: Employee List', () => {\n> 106 |   test.beforeEach(async ({ page }) => {\n      |        ^\n  107 |     await login(page);\n  108 |     await navigateToModule(page, '/web/index.php/pim/viewEmployeeList');\n  109 |   });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 8,
+                            "line": 106
+                          },
+                          "message": "\u001b[31mTest timeout of 60000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  104 |\n  105 | test.describe('PIM: Employee List', () => {\n> 106 |   test.beforeEach(async ({ page }) => {\n      |        ^\n  107 |     await login(page);\n  108 |     await navigateToModule(page, '/web/index.php/pim/viewEmployeeList');\n  109 |   });\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:106:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 14,
+                            "line": 8
+                          },
+                          "message": "Error: page.goto: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://opensource-demo.orangehrmlive.com/web/index.php/auth/login\", waiting until \"load\"\u001b[22m\n\n\n   6 |\n   7 | async function login(page: Page) {\n>  8 |   await page.goto(`${BASE_URL}/web/index.php/auth/login`);\n     |              ^\n   9 |   await page.fill('input[name=\"username\"]', ADMIN_USER);\n  10 |   await page.fill('input[name=\"password\"]', ADMIN_PASSWORD);\n  11 |   await page.click('button[type=\"submit\"]');\n    at login (/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:8:14)\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:107:11"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:03:24.154Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-080ac-WF-2-13-Add-employee-button-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-080ac-WF-2-13-Add-employee-button-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 8,
+                        "line": 106
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-d33b87171a9fe104f1e2",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 181,
+              "column": 7
+            },
+            {
+              "title": "WF-2.14: Reset filters",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11417,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:04:40.626Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-75b90ce0e98666e410da",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 185,
+              "column": 7
+            },
+            {
+              "title": "WF-2.15: Table pagination",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 15473,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:191:32",
+                        "location": {
+                          "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                          "column": 32,
+                          "line": 191
+                        },
+                        "snippet": "  189 |   test('WF-2.15: Table pagination', async ({ page }) => {\n  190 |     const rows = page.locator('table tbody tr');\n> 191 |     expect(await rows.count()).toBeGreaterThan(0);\n      |                                ^\n  192 |   });\n  193 | });\n  194 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                            "column": 32,
+                            "line": 191
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n\n  189 |   test('WF-2.15: Table pagination', async ({ page }) => {\n  190 |     const rows = page.locator('table tbody tr');\n> 191 |     expect(await rows.count()).toBeGreaterThan(0);\n      |                                ^\n  192 |   });\n  193 | });\n  194 |\n    at /Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts:191:32"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:04:53.648Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-bd900-st-WF-2-15-Table-pagination-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-bd900-st-WF-2-15-Table-pagination-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/skp/Downloads/QA_AGents/test-results/orangehrm-comprehensive-su-bd900-st-WF-2-15-Table-pagination-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/skp/Downloads/QA_AGents/tests/e2e/orangehrm-comprehensive-sub-functions.spec.ts",
+                        "column": 32,
+                        "line": 191
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-b66ca0f1cc73b54e99e7",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 189,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "PIM: My Info - Personal Details",
+          "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+          "line": 199,
+          "column": 6,
+          "specs": [
+            {
+              "title": "WF-3.5: Employee ID read-only field",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 34298,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-07T08:05:11.622Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "33664ff6e4e18a7fcf2d-10b60efa6c7223cab3e1",
+              "file": "orangehrm-comprehensive-sub-functions.spec.ts",
+              "line": 228,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-07T07:53:20.766Z",
+    "duration": 747999.29,
+    "expected": 14,
+    "skipped": 0,
+    "unexpected": 14,
+    "flaky": 0
+  }
+}
